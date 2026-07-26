@@ -1,0 +1,32 @@
+[
+  {
+    "id": "river-seed-inventory",
+    "name": "River seed inventory",
+    "type": "Seed",
+    "rarity": "Not verified",
+    "sourceId": "roblox-official",
+    "unlock": "River purchase area",
+    "cost": null,
+    "harvestValue": null,
+    "growthMinutes": null,
+    "stage": "all",
+    "verification": "needs-check",
+    "verifiedAt": "2026-07-26",
+    "notes": "The official listing confirms that seeds are bought at the river; the complete shop roster still needs an in-game capture."
+  },
+  {
+    "id": "dragon-fruit-cactus",
+    "name": "Dragon Fruit Cactus",
+    "type": "Plant or tree",
+    "rarity": "Not verified",
+    "sourceId": "gg-wiki",
+    "unlock": "Needs an in-game check",
+    "cost": null,
+    "harvestValue": null,
+    "growthMinutes": null,
+    "stage": "all",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26",
+    "notes": "The name appears in community-facing guide material, but its spelling and values are not confirmed by an official public source."
+  }
+]
