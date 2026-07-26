@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import StatusBadge from './StatusBadge.astro';
+import type { SourceRecord } from '../lib/content';
+
+interface Props {
+  items: SourceRecord[];
+  title?: string;
+}
+const { items, title = 'Sources checked' } = Astro.props;
+---
+
+<section class="rounded-xl border border-line bg-ink-900/70 p-5 sm:p-6" aria-labelledby="source-list-title">
+  <div class="flex items-center gap-2 text-leaf-400"><Icon name="source" size={17} /><h2 id="source-list-title" class="font-mono text-xs font-bold uppercase tracking-[.18em]">{title}</h2></div>
+  <ul class="mt-4 grid gap-3">
+    {items.map((source) => (
+      <li class="flex flex-col gap-2 rounded-lg border border-line/70 bg-ink-950/50 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div><a href={source.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm font-semibold text-sand-100 hover:text-leaf-400">{source.name} <Icon name="external" size={13} /></a></div>
+        <StatusBadge state={source.trust} />
+      </li>
+    ))}
+  </ul>
+</section>

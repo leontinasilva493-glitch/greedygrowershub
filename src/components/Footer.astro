@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../lib/content';
+---
+
+<footer class="border-t border-line bg-[#040b09]">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
+    <div>
+      <div class="flex items-center gap-2 text-leaf-400"><Icon name="sprout" /><span class="font-display font-bold text-white">Greedy Growers Hub</span></div>
+      <p class="mt-4 max-w-md text-sm leading-6 text-sand-300">Independent player tools for checking codes, comparing recorded seed details, and planning a first harvest without invented game values.</p>
+      <p class="mt-5 text-xs leading-5 text-sand-300/70">Fan-made and not affiliated with Roblox or the Greedy Growers developers.</p>
+    </div>
+    <div>
+      <h2 class="font-mono text-xs uppercase tracking-[.2em] text-leaf-400">Player tasks</h2>
+      <ul class="mt-4 grid gap-3 text-sm text-sand-300">
+        <li><a href="/codes" class="hover:text-white">Check codes</a></li>
+        <li><a href="/beginner-guide" class="hover:text-white">Start first harvest</a></li>
+        <li><a href="/seeds" class="hover:text-white">Browse seeds</a></li>
+        <li><a href="/calculator" class="hover:text-white">Calculate a run</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-mono text-xs uppercase tracking-[.2em] text-leaf-400">Site</h2>
+      <ul class="mt-4 grid gap-3 text-sm text-sand-300">
+        <li><a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 hover:text-white">Official Roblox page <Icon name="external" size={13} /></a></li>
+        <li><a href="/privacy" class="hover:text-white">Privacy</a></li>
+        <li><a href="/disclaimer" class="hover:text-white">Disclaimer</a></li>
+        <li><a href="/contact" class="hover:text-white">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-line/70 px-4 py-5 text-center font-mono text-[11px] uppercase tracking-[.16em] text-sand-300/60">
+    © {new Date().getFullYear()} Greedy Growers Hub · Last editorial check {site.checkedAt}
+  </div>
+</footer>
