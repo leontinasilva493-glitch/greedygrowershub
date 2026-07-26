@@ -17,8 +17,8 @@ const seedLinks = [
 ];
 const mechanicLinks = [
   { label: 'Mechanics Hub', href: '/mechanics/' },
-  { label: 'Lightning', href: '/mechanics/lightning/' },
   { label: 'When to Harvest', href: '/mechanics/when-to-harvest/' },
+  { label: 'Lightning', href: '/mechanics/lightning/' },
 ];
 ---
 
@@ -30,19 +30,19 @@ const mechanicLinks = [
     </a>
 
     <nav class="hidden items-center gap-0.5 lg:flex" aria-label="Primary navigation">
-      <details class="group relative" open={false}>
-        <summary class:list={['cursor-pointer list-none rounded-md px-2.5 py-2 text-sm font-medium transition-colors', (currentPath.startsWith('/guides/') || currentPath === '/beginner-guide/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Guides <span aria-hidden="true">▾</span></summary>
-        <div class="absolute left-0 mt-2 w-64 rounded-xl border border-line bg-ink-900 p-2 shadow-2xl">{guideLinks.map((item) => <a href={item.href} class:list={['block rounded-lg px-4 py-3 text-sm font-semibold no-underline', isActive(item.href) ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-100 hover:bg-white/5']}>{item.label}</a>)}</div>
-      </details>
+      <a href="/" class:list={['rounded-md px-2.5 py-2 text-sm font-medium no-underline transition-colors', isActive('/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Calculator</a>
       <details class="group relative" open={false}>
         <summary class:list={['cursor-pointer list-none rounded-md px-2.5 py-2 text-sm font-medium transition-colors', currentPath.startsWith('/seeds/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Seeds <span aria-hidden="true">▾</span></summary>
         <div class="absolute left-0 mt-2 w-64 rounded-xl border border-line bg-ink-900 p-2 shadow-2xl">{seedLinks.map((item) => <a href={item.href} class:list={['block rounded-lg px-4 py-3 text-sm font-semibold no-underline', isActive(item.href) ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-100 hover:bg-white/5']}>{item.label}</a>)}</div>
       </details>
       <details class="group relative" open={false}>
+        <summary class:list={['cursor-pointer list-none rounded-md px-2.5 py-2 text-sm font-medium transition-colors', (currentPath.startsWith('/guides/') || currentPath === '/beginner-guide/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Guides <span aria-hidden="true">▾</span></summary>
+        <div class="absolute left-0 mt-2 w-64 rounded-xl border border-line bg-ink-900 p-2 shadow-2xl">{guideLinks.map((item) => <a href={item.href} class:list={['block rounded-lg px-4 py-3 text-sm font-semibold no-underline', isActive(item.href) ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-100 hover:bg-white/5']}>{item.label}</a>)}</div>
+      </details>
+      <details class="group relative" open={false}>
         <summary class:list={['cursor-pointer list-none rounded-md px-2.5 py-2 text-sm font-medium transition-colors', currentPath.startsWith('/mechanics/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Mechanics <span aria-hidden="true">▾</span></summary>
         <div class="absolute left-0 mt-2 w-64 rounded-xl border border-line bg-ink-900 p-2 shadow-2xl">{mechanicLinks.map((item) => <a href={item.href} class:list={['block rounded-lg px-4 py-3 text-sm font-semibold no-underline', isActive(item.href) ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-100 hover:bg-white/5']}>{item.label}</a>)}</div>
       </details>
-      <a href="/" class:list={['rounded-md px-2.5 py-2 text-sm font-medium no-underline transition-colors', isActive('/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Calculator</a>
       <a href="/codes/" class:list={['rounded-md px-2.5 py-2 text-sm font-medium no-underline transition-colors', isActive('/codes/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Codes</a>
       <a href="/updates/" class:list={['rounded-md px-2.5 py-2 text-sm font-medium no-underline transition-colors', isActive('/updates/') ? 'bg-leaf-500/10 text-leaf-400' : 'text-sand-300 hover:bg-white/5 hover:text-white']}>Updates</a>
     </nav>
@@ -52,10 +52,11 @@ const mechanicLinks = [
     <details class="relative lg:hidden">
       <summary class="grid size-10 cursor-pointer list-none place-items-center rounded-md border border-line bg-ink-900 text-sand-100" aria-label="Open navigation"><Icon name="menu" size={21} /></summary>
       <div class="absolute right-0 mt-2 max-h-[calc(100vh-5rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-xl border border-line bg-ink-900 p-3 shadow-2xl">
-        <p class="px-3 pb-2 font-mono text-[10px] uppercase tracking-[.18em] text-leaf-400">Guides</p>{guideLinks.map((item) => <a href={item.href} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-sand-100 no-underline hover:bg-white/5">{item.label}</a>)}
+        <a href="/" class="block rounded-lg bg-leaf-500/10 px-3 py-3 text-sm font-bold text-leaf-400 no-underline hover:bg-leaf-500/15">Calculator</a>
         <p class="mt-3 border-t border-line px-3 pb-2 pt-4 font-mono text-[10px] uppercase tracking-[.18em] text-leaf-400">Seeds</p>{seedLinks.map((item) => <a href={item.href} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-sand-100 no-underline hover:bg-white/5">{item.label}</a>)}
+        <p class="mt-3 border-t border-line px-3 pb-2 pt-4 font-mono text-[10px] uppercase tracking-[.18em] text-leaf-400">Guides</p>{guideLinks.map((item) => <a href={item.href} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-sand-100 no-underline hover:bg-white/5">{item.label}</a>)}
         <p class="mt-3 border-t border-line px-3 pb-2 pt-4 font-mono text-[10px] uppercase tracking-[.18em] text-leaf-400">Mechanics</p>{mechanicLinks.map((item) => <a href={item.href} class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-sand-100 no-underline hover:bg-white/5">{item.label}</a>)}
-        <div class="mt-3 grid grid-cols-3 gap-2 border-t border-line pt-3"><a href="/" class="rounded-lg px-2 py-3 text-center text-xs font-bold text-sand-100 no-underline hover:bg-white/5">Calculator</a><a href="/codes/" class="rounded-lg px-2 py-3 text-center text-xs font-bold text-sand-100 no-underline hover:bg-white/5">Codes</a><a href="/updates/" class="rounded-lg px-2 py-3 text-center text-xs font-bold text-sand-100 no-underline hover:bg-white/5">Updates</a></div>
+        <div class="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-3"><a href="/codes/" class="rounded-lg px-2 py-3 text-center text-xs font-bold text-sand-100 no-underline hover:bg-white/5">Codes</a><a href="/updates/" class="rounded-lg px-2 py-3 text-center text-xs font-bold text-sand-100 no-underline hover:bg-white/5">Updates</a></div>
         <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="mt-3 flex items-center justify-between rounded-lg bg-leaf-500 px-4 py-3 text-sm font-bold text-ink-950 no-underline">Play on Roblox <Icon name="external" size={15} /></a>
       </div>
     </details>
