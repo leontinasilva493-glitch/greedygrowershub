@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Calculator from '../components/Calculator.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+---
+
+<BaseLayout
+  title="Greedy Growers Profit Calculator — Plan Every Planting Run"
+  description="Calculate profit per harvest, profit per minute, break-even value, and the cost of failed Greedy Growers planting runs."
+  canonicalPath="/calculator"
+>
+  <section class="mx-auto max-w-6xl px-5 pb-12 pt-14 sm:px-8 sm:pt-20">
+    <div class="max-w-3xl">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Manual calculator</p>
+      <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">Know the return before you plant.</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-8 text-sand-300">Enter the seed price, harvest value, wait time, and recent failed runs. The calculator updates instantly and keeps every assumption visible.</p>
+    </div>
+
+    <div class="mt-10"><Calculator /></div>
+  </section>
+
+  <section class="border-y border-line bg-ink-900/45">
+    <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+      <SectionHeading eyebrow="How it works" title="Simple arithmetic, no hidden game claims" />
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Successful profit</h2><p class="mt-2 text-sm leading-6 text-sand-300">Harvest value minus one seed cost.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Break-even value</h2><p class="mt-2 text-sm leading-6 text-sand-300">The harvest required to recover the successful seed plus any failed seeds.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Adjusted rate</h2><p class="mt-2 text-sm leading-6 text-sand-300">Adjusted profit divided by the total time spent across all attempts.</p></article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

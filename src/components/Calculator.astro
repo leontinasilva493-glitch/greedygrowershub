@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
+  <form class="rounded-3xl border border-line bg-ink-900 p-5 sm:p-7" data-calculator>
+    <div class="mb-6 flex items-center gap-3">
+      <span class="grid size-10 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" /></span>
+      <div>
+        <h2 id="calculator-title" class="text-xl font-semibold">Enter one planting run</h2>
+        <p class="text-sm text-sand-300">Use the values shown in your current game session.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="grid gap-2 text-sm font-medium">
+        Seed cost
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedCost" type="number" min="0" step="any" value="100" inputmode="decimal" required />
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Harvest value
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestValue" type="number" min="0" step="any" value="160" inputmode="decimal" required />
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Wait time (minutes)
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="waitMinutes" type="number" min="0.01" step="any" value="3" inputmode="decimal" required />
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Failed runs before success
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
+      </label>
+    </div>
+
+    <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
+  </form>
+
+  <div class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-7" aria-live="polite">
+    <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Live result</p>
+    <div class="mt-5 grid gap-3 sm:grid-cols-2">
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Profit per success</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="profitPerSuccess">60</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Profit per minute</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="profitPerMinute">20</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4 sm:col-span-2">
+        <p class="text-sm text-sand-300">Break-even harvest after failed runs</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="breakEvenHarvest">100</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Risk-adjusted profit</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="riskAdjustedProfit">60</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Adjusted profit / minute</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="riskAdjustedProfitPerMinute">20</p>
+      </div>
+    </div>
+    <p class="mt-5 text-xs leading-5 text-sand-300">This is a manual planning tool. It does not read your Roblox account or predict random events.</p>
+  </div>
+</section>
+
+<script>import '../scripts/calculator';</script>
