@@ -53,16 +53,16 @@ const schemas = [
     </div>
 
     <section class="mt-10" aria-labelledby="seed-records-title">
-      <div id="seed-records-title"><SectionHeading eyebrow="Reported records" title="Greedy Growers seed list and stats" description="Sort the copied snapshot, then replace a preset with your own observed values before making a high-cost decision." /></div>
+      <div id="seed-records-title"><SectionHeading eyebrow="Reported records" title="Greedy Growers Seed Table — Sort and Filter" description="Sort the copied snapshot, then replace a preset with your own observed values before making a high-cost decision." /></div>
       <div class="mt-8"><SeedExplorer items={seeds} /></div>
     </section>
 
     <section class="mt-14">
-      <SectionHeading eyebrow="Read the numbers" title="How to read Greedy Growers seed stats" description="Use the same definitions for every recorded run before comparing one seed with another." />
+      <SectionHeading eyebrow="Read the numbers" title="How to Read Seed Data and Verification Status" description="Use the same definitions and evidence labels for every recorded run before comparing one Greedy Growers seed with another." />
       <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">What profit per minute means</h3><p class="mt-3 text-sm leading-6 text-sand-300">Subtract the seed cost from the harvest value, then divide the successful profit by the recorded wait time.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">How failed runs change seed profit</h3><p class="mt-3 text-sm leading-6 text-sand-300">Each failed seed increases the harvest value needed to break even. Record failures instead of hiding them.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Growth time versus harvest value</h3><p class="mt-3 text-sm leading-6 text-sand-300">A higher harvest value is not automatically better when it takes longer or follows repeated failed attempts.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">What Each Seed Column Means</h3><p class="mt-3 text-sm leading-6 text-sand-300">Read cost, harvest value, growth time, stage, tier, and evidence status together instead of judging a seed by one number.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Profit per Minute vs Total Profit</h3><p class="mt-3 text-sm leading-6 text-sand-300">Subtract seed cost from harvest value, then divide by wait time. A large total return can still have a slower reported pace.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Why Verification Status Matters</h3><p class="mt-3 text-sm leading-6 text-sand-300">Community figures may change after updates. Recheck expensive choices in game and record failed runs before relying on a ranking.</p></article>
       </div>
       <nav class="mt-8 flex flex-wrap gap-3" aria-label="Continue planning with seed data"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Plug seed data into the profit calculator</a><a href="/seeds/best-seeds/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Compare best seeds by goal</a><a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Follow the first-harvest guide</a></nav>
     </section>
