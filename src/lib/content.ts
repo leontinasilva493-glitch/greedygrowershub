@@ -1,12 +1,15 @@
 import siteData from '../data/site.json';
 import codeData from '../data/codes.json';
 import seedData from '../data/seeds.json';
+import fertilizerData from '../data/fertilizers.json';
+import rebirthData from '../data/rebirths.json';
 import sourceData from '../data/sources.json';
 
 export type SourceTrust = 'official' | 'reported' | 'community';
 export type CodeStatus = 'active' | 'expired' | 'reported';
 export type VerificationState = 'verified' | 'community-lead' | 'needs-check';
 export type PlayerStage = 'starter' | 'progression' | 'late' | 'all';
+export type SeedTier = 'S' | 'A' | 'B' | 'C' | 'D';
 
 export interface SiteData {
   name: string;
@@ -42,10 +45,34 @@ export interface SeedRecord {
   cost: number | null;
   harvestValue: number | null;
   growthMinutes: number | null;
+  multiHarvest: boolean;
+  reportedProfitPerMinute: number | null;
+  tier: SeedTier | null;
+  bestUse: string;
   stage: PlayerStage;
   verification: VerificationState;
   verifiedAt: string;
   notes: string;
+}
+
+export interface FertilizerRecord {
+  id: string;
+  name: string;
+  cost: number;
+  boostMultiplier: number;
+  sourceId: string;
+  verification: VerificationState;
+  verifiedAt: string;
+  notes: string;
+}
+
+export interface RebirthRecord {
+  level: number;
+  requirement: string;
+  perks: string[];
+  sourceId: string;
+  verification: VerificationState;
+  verifiedAt: string;
 }
 
 export interface ContentBundle {
@@ -53,12 +80,15 @@ export interface ContentBundle {
   sources: SourceRecord[];
   codes: CodeRecord[];
   seeds: SeedRecord[];
+  fertilizers: FertilizerRecord[];
+  rebirths: RebirthRecord[];
 }
 
 const sourceTrusts = new Set<SourceTrust>(['official', 'reported', 'community']);
 const codeStatuses = new Set<CodeStatus>(['active', 'expired', 'reported']);
 const verificationStates = new Set<VerificationState>(['verified', 'community-lead', 'needs-check']);
 const playerStages = new Set<PlayerStage>(['starter', 'progression', 'late', 'all']);
+const seedTiers = new Set<SeedTier>(['S', 'A', 'B', 'C', 'D']);
 
 const assertUrl = (value: string, label: string) => {
   try {
@@ -94,16 +124,40 @@ export function validateContent(input: ContentBundle): void {
     seedIds.add(seed.id);
     if (!verificationStates.has(seed.verification)) throw new Error('Unsupported verification state');
     if (!playerStages.has(seed.stage)) throw new Error(`Unsupported player stage: ${seed.stage}`);
+    if (seed.tier !== null && !seedTiers.has(seed.tier)) throw new Error(`Unsupported seed tier: ${seed.tier}`);
     if (!sourceIds.has(seed.sourceId)) throw new Error(`Unknown source: ${seed.sourceId}`);
     for (const [label, value] of [
       ['cost', seed.cost],
       ['harvest value', seed.harvestValue],
       ['growth minutes', seed.growthMinutes],
+      ['reported profit per minute', seed.reportedProfitPerMinute],
     ] as const) {
       if (value !== null && (!Number.isFinite(value) || value < 0)) {
         throw new Error(`Seed ${label} must be non-negative`);
       }
     }
+  }
+
+  const fertilizerIds = new Set<string>();
+  for (const fertilizer of input.fertilizers) {
+    if (fertilizerIds.has(fertilizer.id)) throw new Error(`Duplicate fertilizer: ${fertilizer.id}`);
+    fertilizerIds.add(fertilizer.id);
+    if (!sourceIds.has(fertilizer.sourceId)) throw new Error(`Unknown source: ${fertilizer.sourceId}`);
+    if (!verificationStates.has(fertilizer.verification)) throw new Error('Unsupported verification state');
+    if (!Number.isFinite(fertilizer.cost) || fertilizer.cost < 0) throw new Error('Fertilizer cost must be non-negative');
+    if (!Number.isFinite(fertilizer.boostMultiplier) || fertilizer.boostMultiplier < 1) {
+      throw new Error('Fertilizer boost multiplier must be at least 1');
+    }
+  }
+
+  const rebirthLevels = new Set<number>();
+  for (const rebirth of input.rebirths) {
+    if (rebirthLevels.has(rebirth.level)) throw new Error(`Duplicate rebirth level: ${rebirth.level}`);
+    rebirthLevels.add(rebirth.level);
+    if (!Number.isInteger(rebirth.level) || rebirth.level < 1) throw new Error('Rebirth level must be a positive whole number');
+    if (!sourceIds.has(rebirth.sourceId)) throw new Error(`Unknown source: ${rebirth.sourceId}`);
+    if (!verificationStates.has(rebirth.verification)) throw new Error('Unsupported verification state');
+    if (!rebirth.requirement.trim() || !rebirth.perks.length) throw new Error(`Rebirth level ${rebirth.level} needs a requirement and perks`);
   }
 }
 
@@ -112,11 +166,13 @@ export const content: ContentBundle = {
   sources: sourceData as SourceRecord[],
   codes: codeData as CodeRecord[],
   seeds: seedData as SeedRecord[],
+  fertilizers: fertilizerData as FertilizerRecord[],
+  rebirths: rebirthData as RebirthRecord[],
 };
 
 validateContent(content);
 
-export const { site, sources, codes, seeds } = content;
+export const { site, sources, codes, seeds, fertilizers, rebirths } = content;
 
 export function getSource(sourceId: string): SourceRecord {
   const source = sources.find((item) => item.id === sourceId);

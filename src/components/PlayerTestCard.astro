@@ -1,0 +1,47 @@
+---
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  videoId: string;
+  title: string;
+  author: string;
+  test: string;
+  conclusion: string;
+  reproducibility: string;
+  status: 'official' | 'in-game-verified' | 'community-reported' | 'creator-experience' | 'not-verified';
+}
+
+const { videoId, title, author, test, conclusion, reproducibility, status } = Astro.props;
+const statusConfig = {
+  official: { state: 'official', label: 'Official' },
+  'in-game-verified': { state: 'verified', label: 'In-game verified' },
+  'community-reported': { state: 'reported', label: 'Community-reported' },
+  'creator-experience': { state: 'community', label: 'Creator experience' },
+  'not-verified': { state: 'needs-check', label: 'Not verified' },
+} as const;
+const badge = statusConfig[status];
+---
+
+<article class="overflow-hidden rounded-2xl border border-line bg-ink-900">
+  <div class="aspect-video bg-ink-950">
+    <iframe
+      class="size-full"
+      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+      title={title}
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+    ></iframe>
+  </div>
+  <div class="p-5 sm:p-6">
+    <div class="flex flex-wrap items-center gap-3"><StatusBadge state={badge.state} label={badge.label}/><span class="text-xs text-sand-300">Video by {author}</span></div>
+    <h3 class="mt-4 font-display text-xl font-bold text-white">{title}</h3>
+    <dl class="mt-5 grid gap-4 text-sm leading-6">
+      <div><dt class="font-semibold text-leaf-400">What the video tests</dt><dd class="mt-1 text-sand-300">{test}</dd></div>
+      <div><dt class="font-semibold text-leaf-400">Creator conclusion</dt><dd class="mt-1 text-sand-300">{conclusion}</dd></div>
+      <div><dt class="font-semibold text-leaf-400">What we can reproduce</dt><dd class="mt-1 text-sand-300">{reproducibility}</dd></div>
+    </dl>
+    <a class="mt-5 inline-flex text-sm font-bold text-leaf-400" href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer">Watch on YouTube →</a>
+  </div>
+</article>

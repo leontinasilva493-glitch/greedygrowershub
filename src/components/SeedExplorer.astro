@@ -22,20 +22,21 @@ const formatValue = (value: number | null, suffix = '') => value === null ? 'Not
     </label>
     <label class="grid gap-2 text-sm font-medium">Sort
       <select class="rounded-xl border border-line bg-ink-950 px-4 py-3" data-seed-sort>
-        <option value="name:asc">Name A–Z</option><option value="cost:asc">Cost: low first</option><option value="cost:desc">Cost: high first</option><option value="growthMinutes:asc">Growth: fastest</option><option value="harvestValue:desc">Harvest: highest</option>
+        <option value="name:asc">Name A–Z</option><option value="cost:asc">Cost: low first</option><option value="cost:desc">Cost: high first</option><option value="growthMinutes:asc">Growth: fastest</option><option value="harvestValue:desc">Harvest: highest</option><option value="reportedProfitPerMinute:desc">Reported profit/min</option>
       </select>
     </label>
   </div>
 
   <div class="mt-5 hidden overflow-x-auto rounded-2xl border border-line md:block">
     <table class="w-full border-collapse text-left text-sm">
-      <thead class="bg-ink-900 font-mono text-[11px] uppercase tracking-[.12em] text-sand-300"><tr><th class="px-4 py-4">Compare</th><th class="px-4 py-4">Name</th><th class="px-4 py-4">Cost</th><th class="px-4 py-4">Harvest</th><th class="px-4 py-4">Growth</th><th class="px-4 py-4">Evidence</th></tr></thead>
+      <thead class="bg-ink-900 font-mono text-[11px] uppercase tracking-[.12em] text-sand-300"><tr><th class="px-4 py-4">Compare</th><th class="px-4 py-4">Name</th><th class="px-4 py-4">Tier</th><th class="px-4 py-4">Cost</th><th class="px-4 py-4">Harvest</th><th class="px-4 py-4">Growth</th><th class="px-4 py-4">Profit/min</th><th class="px-4 py-4">Evidence</th></tr></thead>
       <tbody data-seed-list>
         {items.map((seed) => (
-          <tr class="border-t border-line bg-ink-950/40" data-seed-item data-id={seed.id} data-name={seed.name} data-verification={seed.verification} data-stage={seed.stage} data-cost={seed.cost ?? ''} data-harvest-value={seed.harvestValue ?? ''} data-growth-minutes={seed.growthMinutes ?? ''}>
+          <tr class="border-t border-line bg-ink-950/40" data-seed-item data-id={seed.id} data-name={seed.name} data-verification={seed.verification} data-stage={seed.stage} data-cost={seed.cost ?? ''} data-harvest-value={seed.harvestValue ?? ''} data-growth-minutes={seed.growthMinutes ?? ''} data-reported-profit-per-minute={seed.reportedProfitPerMinute ?? ''}>
             <td class="px-4 py-4"><input type="checkbox" value={seed.id} data-seed-compare aria-label={`Compare ${seed.name}`} /></td>
             <td class="px-4 py-4"><strong>{seed.name}</strong><p class="mt-1 text-xs text-sand-300">{seed.type} · {seed.rarity}</p></td>
-            <td class="px-4 py-4">{formatValue(seed.cost)}</td><td class="px-4 py-4">{formatValue(seed.harvestValue)}</td><td class="px-4 py-4">{formatValue(seed.growthMinutes, ' min')}</td>
+            <td class="px-4 py-4 font-mono font-bold text-leaf-400">{seed.tier ?? '—'}</td>
+            <td class="px-4 py-4">{formatValue(seed.cost)}</td><td class="px-4 py-4">{formatValue(seed.harvestValue)}</td><td class="px-4 py-4">{formatValue(seed.growthMinutes, ' min')}</td><td class="px-4 py-4">{formatValue(seed.reportedProfitPerMinute)}</td>
             <td class="px-4 py-4"><StatusBadge state={seed.verification} /></td>
           </tr>
         ))}
@@ -45,9 +46,9 @@ const formatValue = (value: number | null, suffix = '') => value === null ? 'Not
 
   <div class="mt-5 grid gap-4 md:hidden" data-seed-list>
     {items.map((seed) => (
-      <article class="rounded-2xl border border-line bg-ink-900 p-5" data-seed-item data-id={seed.id} data-name={seed.name} data-verification={seed.verification} data-stage={seed.stage} data-cost={seed.cost ?? ''} data-harvest-value={seed.harvestValue ?? ''} data-growth-minutes={seed.growthMinutes ?? ''}>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5" data-seed-item data-id={seed.id} data-name={seed.name} data-verification={seed.verification} data-stage={seed.stage} data-cost={seed.cost ?? ''} data-harvest-value={seed.harvestValue ?? ''} data-growth-minutes={seed.growthMinutes ?? ''} data-reported-profit-per-minute={seed.reportedProfitPerMinute ?? ''}>
         <div class="flex items-start justify-between gap-3"><div><h3 class="font-semibold">{seed.name}</h3><p class="mt-1 text-xs text-sand-300">{seed.type} · {seed.rarity}</p></div><StatusBadge state={seed.verification} /></div>
-        <dl class="mt-5 grid grid-cols-3 gap-2 text-sm"><div><dt class="text-xs text-sand-300">Cost</dt><dd class="mt-1">{formatValue(seed.cost)}</dd></div><div><dt class="text-xs text-sand-300">Harvest</dt><dd class="mt-1">{formatValue(seed.harvestValue)}</dd></div><div><dt class="text-xs text-sand-300">Growth</dt><dd class="mt-1">{formatValue(seed.growthMinutes, ' min')}</dd></div></dl>
+        <dl class="mt-5 grid grid-cols-2 gap-3 text-sm"><div><dt class="text-xs text-sand-300">Tier</dt><dd class="mt-1 font-bold text-leaf-400">{seed.tier ?? '—'}</dd></div><div><dt class="text-xs text-sand-300">Reported profit/min</dt><dd class="mt-1">{formatValue(seed.reportedProfitPerMinute)}</dd></div><div><dt class="text-xs text-sand-300">Cost</dt><dd class="mt-1">{formatValue(seed.cost)}</dd></div><div><dt class="text-xs text-sand-300">Harvest</dt><dd class="mt-1">{formatValue(seed.harvestValue)}</dd></div><div><dt class="text-xs text-sand-300">Growth</dt><dd class="mt-1">{formatValue(seed.growthMinutes, ' min')}</dd></div><div><dt class="text-xs text-sand-300">Harvest type</dt><dd class="mt-1">{seed.multiHarvest ? 'Multi' : 'Single'}</dd></div></dl>
         <label class="mt-5 flex items-center gap-2 border-t border-line pt-4 text-sm"><input type="checkbox" value={seed.id} data-seed-compare /> Add to comparison</label>
       </article>
     ))}
@@ -62,7 +63,7 @@ const formatValue = (value: number | null, suffix = '') => value === null ? 'Not
       {items.map((seed) => (
         <article class="hidden rounded-2xl border border-line bg-ink-950/70 p-5" data-compare-card={seed.id}>
           <h3 class="text-lg font-semibold">{seed.name}</h3>
-          <dl class="mt-4 grid gap-2 text-sm"><div class="flex justify-between gap-4"><dt class="text-sand-300">Cost</dt><dd>{formatValue(seed.cost)}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Harvest</dt><dd>{formatValue(seed.harvestValue)}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Growth</dt><dd>{formatValue(seed.growthMinutes, ' min')}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Source</dt><dd class="text-right">{getSource(seed.sourceId).name}</dd></div></dl>
+          <dl class="mt-4 grid gap-2 text-sm"><div class="flex justify-between gap-4"><dt class="text-sand-300">Tier</dt><dd>{seed.tier ?? '—'}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Cost</dt><dd>{formatValue(seed.cost)}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Harvest</dt><dd>{formatValue(seed.harvestValue)}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Growth</dt><dd>{formatValue(seed.growthMinutes, ' min')}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Reported profit/min</dt><dd>{formatValue(seed.reportedProfitPerMinute)}</dd></div><div class="flex justify-between gap-4"><dt class="text-sand-300">Source</dt><dd class="text-right">{getSource(seed.sourceId).name}</dd></div></dl>
         </article>
       ))}
     </div>

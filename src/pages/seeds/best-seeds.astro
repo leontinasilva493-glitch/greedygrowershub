@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getSource, seeds, site } from '../../lib/content';
+import { groupSeedsByTier, sortSeeds } from '../../lib/seeds';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
+
+const metadata = pageSeo.bestSeeds;
+const source = getSource('greedygrowers-codes');
+const beginnerSeeds = sortSeeds(seeds.filter((seed) => seed.stage === 'starter'), 'reportedProfitPerMinute', 'desc');
+const fastMoneySeeds = sortSeeds(seeds, 'reportedProfitPerMinute', 'desc').slice(0, 5);
+const highRiskSeeds = sortSeeds(seeds, 'cost', 'desc').slice(0, 4);
+const tierGroups = groupSeedsByTier(seeds);
+const schemas = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: metadata.h1,
+    description: metadata.description,
+    url: absoluteUrl(metadata.canonicalPath),
+    dateModified: site.checkedAt,
+  },
+  buildBreadcrumbSchema([
+    { name: 'Greedy Growers Calculator', path: '/' },
+    { name: 'Seeds', path: '/seeds/' },
+    { name: 'Best Seeds', path: metadata.canonicalPath },
+  ]),
+];
+const format = (value: number | null) => value === null ? 'Needs check' : new Intl.NumberFormat('en-US').format(value);
+---
+
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
+  <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+    <div class="max-w-4xl">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Rank by the decision, not one universal list</p>
+      <h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1>
+      <p class="mt-5 text-lg leading-8 text-sand-300">Use player stage, capital at risk, growth time, and reported profit pace together. A high reported rate is not automatically the safest choice.</p>
+      <div class="mt-7 flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-sm text-amber-100"><StatusBadge state="community-lead" label="Needs in-game recheck"/><span>Ranking snapshot copied from <a class="underline" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a> on {site.checkedAt}.</span></div>
+    </div>
+
+    <section class="mt-16">
+      <SectionHeading eyebrow="Starting capital" title="Best Greedy Growers seeds for beginners" description="These reported starter records keep the entry cost lower while you learn the harvest button and lightning-loss loop." />
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        {beginnerSeeds.map((seed) => <article class="rounded-2xl border border-line bg-ink-900 p-5"><div class="flex items-center justify-between"><h3 class="font-display text-xl font-bold text-white">{seed.name}</h3><span class="font-mono text-leaf-400">Tier {seed.tier}</span></div><dl class="mt-4 grid gap-2 text-sm"><div class="flex justify-between"><dt class="text-sand-300">Reported cost</dt><dd>{format(seed.cost)}</dd></div><div class="flex justify-between"><dt class="text-sand-300">Profit/min</dt><dd>{format(seed.reportedProfitPerMinute)}</dd></div></dl><p class="mt-4 text-sm text-sand-300">{seed.bestUse}</p></article>)}
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <SectionHeading eyebrow="Reported pace" title="Best Greedy Growers seeds for fast money" description="This ordering copies reported clean-run profit per minute. It does not include lightning probability, failed runs, or whether you can afford the initial seed." />
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-line">
+        <table class="w-full text-left text-sm"><thead class="bg-ink-900 font-mono text-xs uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Seed</th><th class="px-5 py-4">Cost</th><th class="px-5 py-4">Growth</th><th class="px-5 py-4">Reported profit/min</th></tr></thead><tbody>{fastMoneySeeds.map((seed) => <tr class="border-t border-line bg-ink-950/40"><td class="px-5 py-4 font-bold">{seed.name}</td><td class="px-5 py-4">{format(seed.cost)}</td><td class="px-5 py-4">{seed.growthMinutes} min</td><td class="px-5 py-4 text-leaf-400">{format(seed.reportedProfitPerMinute)}</td></tr>)}</tbody></table>
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <SectionHeading eyebrow="Capital exposure" title="Best high-risk Greedy Growers seeds" description="The most expensive reported seeds also create the largest loss when lightning destroys a run. Test their recovery line in the Calculator before buying." />
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{highRiskSeeds.map((seed) => <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-display text-lg font-bold text-white">{seed.name}</h3><p class="mt-3 text-3xl font-bold text-leaf-400">{format(seed.cost)}</p><p class="mt-2 text-sm text-sand-300">reported coins at risk per seed</p></article>)}</div>
+    </section>
+
+    <section class="mt-16">
+      <SectionHeading eyebrow="Community tier snapshot" title="Greedy Growers S to D seed tiers" description="Use these tiers as a research lead. The ranking remains community-reported until the inputs can be reproduced in the current game version." />
+      <div class="mt-8 grid gap-5">{tierGroups.map((group) => <article class="rounded-2xl border border-line bg-ink-900 p-6"><div class="flex items-baseline gap-3"><span class="font-display text-4xl font-bold text-leaf-400">{group.tier}</span><h3 class="font-display text-xl font-bold text-white">Tier seeds</h3></div><div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{group.items.map((seed) => <div class="rounded-xl border border-line bg-ink-950/70 p-4"><p class="font-bold text-white">{seed.name}</p><p class="mt-1 text-sm text-sand-300">{seed.bestUse} · {format(seed.reportedProfitPerMinute)} profit/min</p></div>)}</div></article>)}</div>
+    </section>
+
+    <nav class="mt-14 flex flex-wrap gap-3" aria-label="Continue from the best seeds guide"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Test a seed in the Calculator</a><a href="/seeds/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Open the full Seed List</a><a href="/mechanics/when-to-harvest/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Choose a harvest strategy</a></nav>
+  </section>
+</BaseLayout>

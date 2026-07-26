@@ -1,0 +1,32 @@
+[
+  {
+    "id": "basic-fertilizer",
+    "name": "Basic Fertilizer",
+    "cost": 100,
+    "boostMultiplier": 1.25,
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26",
+    "notes": "Reported as a 25% harvest-value boost; needs an in-game recheck."
+  },
+  {
+    "id": "premium-fertilizer",
+    "name": "Premium Fertilizer",
+    "cost": 500,
+    "boostMultiplier": 1.5,
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26",
+    "notes": "Reported as a 50% harvest-value boost; needs an in-game recheck."
+  },
+  {
+    "id": "ultra-fertilizer",
+    "name": "Ultra Fertilizer",
+    "cost": 2000,
+    "boostMultiplier": 2,
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26",
+    "notes": "Reported as a 100% harvest-value boost; needs an in-game recheck."
+  }
+]

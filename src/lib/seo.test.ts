@@ -13,8 +13,38 @@ describe('indexable page metadata', () => {
     expect(metadata.title.startsWith('Greedy Growers')).toBe(true);
     expect(metadata.description.length).toBeGreaterThanOrEqual(150);
     expect(metadata.description.length).toBeLessThanOrEqual(160);
-    expect(metadata.description).toMatch(/^(Explore|Check|Follow|Browse|Calculate)\b/);
+    expect(metadata.description).toMatch(/^(Explore|Check|Follow|Browse|Calculate|Learn|Choose|Track|Compare)\b/);
     expect(metadata.h1).toContain('Greedy Growers');
+  });
+
+  it('assigns the calculator intent exclusively to the homepage', () => {
+    expect(pageSeo.home).toMatchObject({
+      title: 'Greedy Growers Calculator: Profit, Break-Even & Risk',
+      canonicalPath: '/',
+      h1: 'Greedy Growers Calculator',
+    });
+    expect('calculator' in pageSeo).toBe(false);
+  });
+
+  it('defines unique metadata for every approved acquisition route', () => {
+    const expectedKeys = [
+      'home',
+      'codes',
+      'beginnerGuide',
+      'seeds',
+      'bestSeeds',
+      'guides',
+      'getMoneyFast',
+      'progression',
+      'tickets',
+      'mechanics',
+      'lightning',
+      'whenToHarvest',
+      'updates',
+    ];
+
+    expect(Object.keys(pageSeo)).toEqual(expectedKeys);
+    expect(new Set(Object.values(pageSeo).map((metadata) => metadata.canonicalPath)).size).toBe(expectedKeys.length);
   });
 });
 

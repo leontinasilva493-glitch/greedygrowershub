@@ -12,9 +12,10 @@ The deployed site has several routes, but the homepage and flat navigation still
 
 - `/` becomes the Greedy Growers Calculator landing page.
 - `/calculator/` redirects permanently to `/` and is excluded from the sitemap.
-- Primary navigation becomes `Calculator / Codes / Seeds / Guides / Updates / Play on Roblox`.
-- Guides contains `All Guides / Beginner Guide / Lightning & Harvest Timing / Profit Data & Methodology`.
-- A separate `/tier-list/` page lives under the Seeds information cluster but is not a top-level navigation item.
+- Primary navigation becomes `Guides / Seeds / Mechanics / Calculator / Codes / Updates / Play on Roblox`.
+- Guides contains `Beginner Guide / Get Money Fast / Progression / Tickets`.
+- Mechanics contains `Lightning / When to Harvest`; Multipliers stays deferred until its formula is verified.
+- A separate `/seeds/best-seeds/` page owns stage, risk, and profit-per-minute recommendations instead of publishing a generic Tier List.
 - Seed, fertilizer, tier, and rebirth data copied from `greedygrowers.codes` is stored locally and labeled as a community snapshot that needs an in-game recheck.
 - Existing Codes, Seeds, Beginner Guide, privacy, disclaimer, and contact routes remain usable.
 
@@ -28,19 +29,24 @@ This approach is preferred because it is the fastest reliable MVP implementation
 
 ### Primary navigation
 
-1. `Calculator` -> `/`
-2. `Codes` -> `/codes/`
-3. `Seeds` -> `/seeds/`
-4. `Guides` -> `/guides/`, with a dropdown for the three guide routes
-5. `Updates` -> `/updates/`
-6. `Play on Roblox` -> the existing official Roblox URL
+1. `Guides` -> `/guides/`
+2. `Seeds` -> `/seeds/`
+3. `Mechanics` -> `/mechanics/`
+4. `Calculator` -> `/`
+5. `Codes` -> `/codes/`
+6. `Updates` -> `/updates/`
+7. `Play on Roblox` -> the existing official Roblox URL
 
 ### Secondary routes
 
-- `/tier-list/`
 - `/beginner-guide/`
-- `/guides/lightning-harvest/`
-- `/guides/profit-data/`
+- `/guides/get-money-fast/`
+- `/guides/progression/`
+- `/guides/tickets/`
+- `/seeds/best-seeds/`
+- `/mechanics/`
+- `/mechanics/lightning/`
+- `/mechanics/when-to-harvest/`
 
 ### Footer-only routes
 
@@ -80,20 +86,34 @@ Each record contains `level`, `requirement`, `perks`, `sourceId`, `verification`
 
 The calculator does not claim official lightning odds or predict the next strike.
 
-## Tier List behavior
+## Best Seeds behavior
 
-The `/tier-list/` page groups records by the copied S-D tier assignments, shows cost and reported profit per minute, links back to the Calculator and Seeds pages, and explains that the ranking is copied from a community site pending in-game revalidation.
+The `/seeds/best-seeds/` page uses the copied S-D snapshot as supporting evidence but presents recommendations by player goal: beginner, fast money, after rebirth, high risk, and reported profit per minute. It explains the ranking basis and links back to the Calculator and factual Seeds list. Copied rankings remain pending in-game revalidation.
+
+## Mechanics behavior
+
+- `/mechanics/lightning/` separates official facts, community reports, creator experience, and unverified claims.
+- `/mechanics/when-to-harvest/` combines harvesting and greed/risk intent. It covers conservative, balanced, and maximum-greed strategies plus failed-run break-even math.
+- A reusable `What Players Are Testing` module embeds problem-specific creator videos and labels each conclusion by evidence state.
+- `/mechanics/multipliers/` is not published until x-multiplier calculations can be reproduced.
+
+## Progression behavior
+
+`/guides/progression/` is the initial pillar for Early Game, Mid Game, Late Game, Tickets, Fertilizer, Rebirth, and Farmer's Market. Fertilizer, Rebirth, and Farmer's Market only become standalone routes after they have enough verified data and independent search intent.
 
 ## Page content and SEO ownership
 
 - `/` owns calculator, profit, ROI, break-even, and run-risk intent.
 - `/codes/` owns codes, redeem, active, and expired intent.
 - `/seeds/` owns seed list, cost, harvest value, and growth-time intent.
-- `/tier-list/` owns best seeds and tier-list intent.
+- `/seeds/best-seeds/` owns best seeds, player-stage rankings, risk rankings, and tier-list intent.
 - `/guides/` owns the guides-hub intent.
 - `/beginner-guide/` owns first-session intent.
-- `/guides/lightning-harvest/` owns lightning and harvest-timing intent without claiming hidden odds.
-- `/guides/profit-data/` owns player data-recording and methodology intent.
+- `/guides/get-money-fast/` owns immediate money-making intent.
+- `/guides/progression/` owns unlock order and early/mid/late progression intent.
+- `/guides/tickets/` owns ticket acquisition intent while clearly marking unknown limits and sources.
+- `/mechanics/lightning/` owns factual lightning-mechanic intent.
+- `/mechanics/when-to-harvest/` owns harvesting, greed/risk, and harvest-strategy intent.
 - `/updates/` owns dated site and game-change notes.
 
 Every indexable page must have a unique title, description, H1, canonical URL, Open Graph/Twitter metadata through `BaseLayout`, structured data, and contextual internal links. Footer-only utility pages remain `noindex`.
@@ -121,5 +141,6 @@ Every indexable page must have a unique title, description, H1, canonical URL, O
 - No live competitor scraping.
 - No database, account system, comments, or uploads.
 - No official-odds claim or lightning prediction.
-- No seed detail routes in this release.
+- No seed detail routes until a seed has enough verified data and original evidence.
+- No standalone Fertilizer, Rebirth, Farmer's Market, or Multipliers pages in this release.
 - No Scripts, Players, Status, Routes, or Official Links top-level navigation.

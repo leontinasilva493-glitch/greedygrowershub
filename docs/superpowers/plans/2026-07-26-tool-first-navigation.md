@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn the current hub into a calculator-led multi-page site with scalable navigation and clearly labeled competitor-reported seed, fertilizer, tier, and rebirth data.
+**Goal:** Turn the current hub into a calculator-led multi-page site with Guides, Seeds, Mechanics, Codes, and Updates clusters plus clearly labeled competitor-reported gameplay data.
 
 **Architecture:** Keep Astro static output and the existing JSON-driven content pattern. Add local snapshot datasets and pure TypeScript calculator/tier helpers, render new static Astro pages, and use Cloudflare `_redirects` plus Astro redirect configuration for the retired `/calculator/` route.
 
@@ -128,7 +128,7 @@ Run: `npm test -- src/lib/calculator.test.ts && npm test`
 
 - [ ] **Step 1: Write failing SEO ownership tests**
 
-Assert that `pageSeo.home` has canonical `/`, H1 `Greedy Growers Calculator`, and a calculator-led title. Assert that `pageSeo` has metadata for tier list, guides, lightning, profit data, and updates.
+Assert that `pageSeo.home` has canonical `/`, H1 `Greedy Growers Calculator`, and a calculator-led title. Assert that `pageSeo` has metadata for best seeds, guides, get money fast, progression, tickets, mechanics, lightning, when to harvest, and updates.
 
 - [ ] **Step 2: Run SEO tests and verify RED**
 
@@ -150,19 +150,19 @@ Expected: homepage builds with calculator metadata and the redirect asset is pre
 
 ---
 
-### Task 4: Publish seed list and community tier list
+### Task 4: Publish seed list and goal-based Best Seeds page
 
 **Files:**
 - Modify: `src/components/SeedExplorer.astro`
 - Modify: `src/lib/seeds.ts`
 - Modify: `src/lib/seeds.test.ts`
 - Modify: `src/pages/seeds.astro`
-- Create: `src/pages/tier-list.astro`
+- Create: `src/pages/seeds/best-seeds.astro`
 
 **Interfaces:**
 - Produces: `groupSeedsByTier(records)` returning S-D groups in fixed order.
 - `/seeds/` shows all 12 reported records and source status.
-- `/tier-list/` shows copied ranking groups and links to `/` and `/seeds/`.
+- `/seeds/best-seeds/` shows rankings by beginner fit, fast money, post-rebirth, risk, and reported profit per minute.
 
 - [ ] **Step 1: Write a failing tier grouping test**
 
@@ -176,7 +176,7 @@ Run: `npm test -- src/lib/seeds.test.ts`
 
 - [ ] **Step 3: Implement grouping and page rendering**
 
-Add profit-per-minute, tier, and multi-harvest information to desktop and mobile seed views. The tier page must include the source link and `Needs in-game recheck` notice above the rankings.
+Add profit-per-minute, tier, and multi-harvest information to desktop and mobile seed views. The Best Seeds page must include its ranking method, source link, and `Needs in-game recheck` notice above the recommendations.
 
 - [ ] **Step 4: Run focused and full tests**
 
@@ -184,29 +184,36 @@ Run: `npm test -- src/lib/seeds.test.ts && npm test`
 
 ---
 
-### Task 5: Add Guides and Updates routes
+### Task 5: Add Guides, Mechanics, and Updates routes
 
 **Files:**
 - Create: `src/pages/guides/index.astro`
-- Create: `src/pages/guides/lightning-harvest.astro`
-- Create: `src/pages/guides/profit-data.astro`
+- Create: `src/pages/guides/get-money-fast.astro`
+- Create: `src/pages/guides/progression.astro`
+- Create: `src/pages/guides/tickets.astro`
+- Create: `src/pages/mechanics/index.astro`
+- Create: `src/pages/mechanics/lightning.astro`
+- Create: `src/pages/mechanics/when-to-harvest.astro`
 - Create: `src/pages/updates.astro`
+- Create: `src/components/PlayerTestCard.astro`
 
 **Interfaces:**
-- `/guides/` links to the existing beginner guide and both new guide pages.
-- `/guides/lightning-harvest/` discusses observed risk without inventing odds.
-- `/guides/profit-data/` explains reproducible calculator input collection.
+- `/guides/` links to Beginner, Get Money Fast, Progression, and Tickets.
+- `/guides/progression/` contains Early, Mid, Late, Tickets, Fertilizer, Rebirth, and Farmer's Market sections.
+- `/mechanics/lightning/` discusses mechanism facts without inventing odds.
+- `/mechanics/when-to-harvest/` combines harvesting and greed/risk strategy.
+- `PlayerTestCard` embeds a relevant YouTube video and labels the claim state.
 - `/updates/` contains at least three dated entries: site launch baseline, competitor snapshot import, and navigation/tool expansion.
 
 - [ ] **Step 1: Create the four static pages using existing layout components**
 
-Every page gets one H1, three to five H2 sections, descriptive H3s, two to five contextual internal links, breadcrumbs, and schema.
+Every page gets one H1, three to five H2 sections, descriptive H3s, two to five contextual internal links, breadcrumbs, and schema. Videos appear only inside the page that answers the video's problem.
 
 - [ ] **Step 2: Build and inspect generated headings and canonicals**
 
 Run: `npm run build`
 
-Expected routes: `/guides/`, `/guides/lightning-harvest/`, `/guides/profit-data/`, and `/updates/`.
+Expected routes: `/guides/`, `/guides/get-money-fast/`, `/guides/progression/`, `/guides/tickets/`, `/mechanics/`, `/mechanics/lightning/`, `/mechanics/when-to-harvest/`, and `/updates/`.
 
 ---
 
@@ -217,7 +224,7 @@ Expected routes: `/guides/`, `/guides/lightning-harvest/`, `/guides/profit-data/
 - Modify: `src/components/Footer.astro`
 
 **Interfaces:**
-- Desktop navigation has Calculator, Codes, Seeds, Guides dropdown, Updates, and Play on Roblox.
+- Desktop navigation has Guides, Seeds, Mechanics, Calculator, Codes, Updates, and Play on Roblox.
 - Mobile menu exposes the same destinations without hover-only behavior.
 - Footer groups Tools, Guides, and Trust links.
 

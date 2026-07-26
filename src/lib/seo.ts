@@ -9,10 +9,10 @@ export interface PageMetadata {
 
 export const pageSeo = {
   home: {
-    title: 'Greedy Growers Guide, Codes, Seeds & Profit Calculator',
-    description: 'Explore Greedy Growers codes, verified seed records, a profit calculator, and a first-harvest guide built to help you plan safer, smarter planting runs.',
+    title: 'Greedy Growers Calculator: Profit, Break-Even & Risk',
+    description: 'Calculate Greedy Growers profit per minute, break-even value, and risk-adjusted returns. Enter seed cost, harvest value, wait time, and failed runs for free.',
     canonicalPath: '/',
-    h1: 'Greedy Growers Tools Hub',
+    h1: 'Greedy Growers Calculator',
   },
   codes: {
     title: 'Greedy Growers Codes - Current Status & Redeem Guide',
@@ -32,11 +32,59 @@ export const pageSeo = {
     canonicalPath: '/seeds/',
     h1: 'Greedy Growers Seeds Comparison',
   },
-  calculator: {
-    title: 'Greedy Growers Profit Calculator - Plan Every Planting Run',
-    description: 'Calculate Greedy Growers profit per harvest and minute, compare seed costs with harvest values, account for failed runs, and find a reliable break-even target.',
-    canonicalPath: '/calculator/',
-    h1: 'Greedy Growers Profit Calculator',
+  bestSeeds: {
+    title: 'Greedy Growers Best Seeds by Stage, Profit, Risk & ROI',
+    description: 'Compare Greedy Growers seeds by player stage, reported profit per minute, harvest risk, and community tier data before choosing where to invest your coins.',
+    canonicalPath: '/seeds/best-seeds/',
+    h1: 'Greedy Growers Best Seeds by Stage and Risk',
+  },
+  guides: {
+    title: 'Greedy Growers Guides - Money, Progression & Tickets',
+    description: 'Explore Greedy Growers guides for your first harvest, faster money, progression, tickets, fertilizer, rebirths, and safer decisions before every planting run.',
+    canonicalPath: '/guides/',
+    h1: 'Greedy Growers Guides',
+  },
+  getMoneyFast: {
+    title: 'Greedy Growers Get Money Fast Guide - Safer Profit',
+    description: 'Learn how to make money faster in Greedy Growers, protect your starting coins, recover after lightning losses, prioritize upgrades, and compare runs for free.',
+    canonicalPath: '/guides/get-money-fast/',
+    h1: 'Greedy Growers Get Money Fast Guide',
+  },
+  progression: {
+    title: 'Greedy Growers Progression Guide - Early to Late Game',
+    description: "Follow Greedy Growers progression from early to late game. Compare tickets, fertilizer, rebirth, and Farmer's Market priorities before spending your coins.",
+    canonicalPath: '/guides/progression/',
+    h1: 'Greedy Growers Progression Guide',
+  },
+  tickets: {
+    title: 'Greedy Growers Tickets Guide - Sources, Uses & Limits',
+    description: 'Check how Greedy Growers tickets work, where players look for them, what limits still need verification, and which sources to trust after every game update.',
+    canonicalPath: '/guides/tickets/',
+    h1: 'Greedy Growers Tickets Guide',
+  },
+  mechanics: {
+    title: 'Greedy Growers Mechanics - Lightning & Harvest Timing',
+    description: 'Explore Greedy Growers mechanics for lightning, harvest timing, failed-run recovery, and player-tested strategies without treating odds as official facts.',
+    canonicalPath: '/mechanics/',
+    h1: 'Greedy Growers Mechanics',
+  },
+  lightning: {
+    title: 'Greedy Growers Lightning Guide - Facts, Risk & Signals',
+    description: 'Check what lightning does in Greedy Growers, which warning signals are confirmed, what players are testing, and which timing or seed claims remain unverified.',
+    canonicalPath: '/mechanics/lightning/',
+    h1: 'Greedy Growers Lightning Guide',
+  },
+  whenToHarvest: {
+    title: 'Greedy Growers When to Harvest - Risk Strategy Guide',
+    description: 'Choose when to harvest in Greedy Growers with conservative, balanced, and high-risk strategies, failed-run break-even math, and community-tested challenges.',
+    canonicalPath: '/mechanics/when-to-harvest/',
+    h1: 'When to Harvest in Greedy Growers',
+  },
+  updates: {
+    title: 'Greedy Growers Updates - Patch, Codes & Data Changes',
+    description: 'Track Greedy Growers updates, codes status, calculator data changes, source checks, and affected guides so you can recheck strategies after every game patch.',
+    canonicalPath: '/updates/',
+    h1: 'Greedy Growers Updates',
   },
 } as const satisfies Record<string, PageMetadata>;
 

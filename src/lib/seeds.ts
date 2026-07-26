@@ -1,12 +1,17 @@
-import type { PlayerStage, SeedRecord, VerificationState } from './content';
+import type { PlayerStage, SeedRecord, SeedTier, VerificationState } from './content';
 
 export interface SeedFilters {
   verification: VerificationState | 'all';
   stage: PlayerStage | 'all';
 }
 
-export type SeedSortKey = 'name' | 'cost' | 'harvestValue' | 'growthMinutes';
+export type SeedSortKey = 'name' | 'cost' | 'harvestValue' | 'growthMinutes' | 'reportedProfitPerMinute';
 export type SortDirection = 'asc' | 'desc';
+
+export interface SeedTierGroup {
+  tier: SeedTier;
+  items: SeedRecord[];
+}
 
 export function filterSeeds(records: SeedRecord[], filters: SeedFilters): SeedRecord[] {
   return records.filter((seed) => {
@@ -37,5 +42,16 @@ export function compareSeeds(records: SeedRecord[], ids: string[]): SeedRecord[]
   return ids.flatMap((id) => {
     const seed = byId.get(id);
     return seed ? [seed] : [];
+  });
+}
+
+export function groupSeedsByTier(records: SeedRecord[]): SeedTierGroup[] {
+  const tierOrder: SeedTier[] = ['S', 'A', 'B', 'C', 'D'];
+
+  return tierOrder.flatMap((tier) => {
+    const items = records
+      .filter((seed) => seed.tier === tier)
+      .sort((left, right) => (right.reportedProfitPerMinute ?? -1) - (left.reportedProfitPerMinute ?? -1));
+    return items.length ? [{ tier, items }] : [];
   });
 }

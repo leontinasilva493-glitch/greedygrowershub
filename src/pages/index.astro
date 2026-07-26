@@ -1,89 +1,99 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import GameStatus from '../components/GameStatus.astro';
-import RouteSteps from '../components/RouteSteps.astro';
+import Calculator from '../components/Calculator.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import CodeStatus from '../components/CodeStatus.astro';
-import SourceList from '../components/SourceList.astro';
 import Icon from '../components/Icon.astro';
-import { site, sources } from '../lib/content';
+import { site } from '../lib/content';
 import { absoluteUrl, pageSeo } from '../lib/seo';
 
-const tasks = [
-  { title: 'Check Greedy Growers codes', description: 'Review verified active and expired status before trying copied rewards.', href: '/codes/', icon: 'ticket' },
-  { title: 'Read the Greedy Growers beginner guide', description: 'Follow the official river-to-plot route for a clean first harvest.', href: '/beginner-guide/', icon: 'book' },
-  { title: 'Compare Greedy Growers seeds', description: 'Compare recorded seed details without treating missing values as facts.', href: '/seeds/', icon: 'sprout' },
-  { title: 'Use the Greedy Growers profit calculator', description: 'Enter one run and measure profit, pace, and failed-seed break-even.', href: '/calculator/', icon: 'calculator' },
-] as const;
-const route = [
-  { title: 'Buy at the river', description: 'Use the river purchase area described by the official experience.' },
-  { title: 'Plant in your plot', description: 'Return to your own plot and plant the seed you bought.' },
-  { title: 'Watch it grow', description: 'Keep the live tree in view while learning how the risk loop feels.' },
-  { title: 'Harvest before lightning', description: 'Cash out before a lightning strike ends the run.' },
-];
-const faqs = [
-  ['What is Greedy Growers?', 'A Roblox simulation and tycoon experience where players buy river seeds, grow trees, and decide when to harvest before lightning strikes.'],
-  ['Are there active codes?', 'No active code is presented here without a current source or repeatable in-game result. Check the Codes page for the latest status.'],
-  ['Does the calculator know hidden odds?', 'No. It uses only the cost, harvest value, wait time, and failed runs entered by the player.'],
-  ['Is this an official site?', 'No. This is an independent fan-made player resource. Roblox and the creator remain the official sources.'],
-];
 const metadata = pageSeo.home;
-const homeSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  name: metadata.h1,
-  description: metadata.description,
-  url: absoluteUrl(metadata.canonicalPath),
-  isPartOf: { '@type': 'WebSite', name: site.name, url: absoluteUrl('/') },
-};
+const faqs = [
+  ['Are the seed and fertilizer presets official?', 'No. They are copied from a community calculator snapshot and marked for an in-game recheck. You can replace every seed value with numbers from your own run.'],
+  ['Does this calculator predict lightning?', 'No. It records failed runs that already happened and shows their cost. It does not know hidden odds or predict the next strike.'],
+  ['How is profit per minute calculated?', 'The calculator subtracts seed and fertilizer cost from the boosted harvest value, then divides one successful run by the entered wait time.'],
+  ['Why can risk-adjusted profit be negative?', 'Every failed run adds another seed and fertilizer investment. A later harvest can be profitable by itself but still fail to recover the earlier losses.'],
+];
+const schemas = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: metadata.h1,
+    description: metadata.description,
+    url: absoluteUrl('/'),
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    isPartOf: { '@type': 'WebSite', name: site.name, url: absoluteUrl('/') },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  },
+];
 ---
 
-<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={homeSchema}>
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
   <section class="border-b border-line bg-[linear-gradient(120deg,#071510_0%,#0a2117_54%,#08130f_100%)]">
-    <div class="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8">
-      <div>
-        <div class="inline-flex items-center gap-2 rounded-full border border-leaf-500/25 bg-leaf-500/[.07] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400"><Icon name="shield" size={13}/> Fan-made Roblox guide</div>
-        <h1 class="mt-6 max-w-3xl font-display text-5xl font-bold leading-[.96] tracking-[-.055em] text-white sm:text-6xl lg:text-7xl">Greedy Growers<br/><span class="text-leaf-400">Tools Hub.</span></h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-sand-300">Check code status, follow the first harvest route, compare seed evidence, and calculate a recorded run before greed meets lightning.</p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/codes/" class="inline-flex items-center gap-2 rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline hover:bg-leaf-400"><Icon name="ticket" size={17}/> Check Greedy Growers codes</a>
-          <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line bg-ink-900 px-5 py-3 text-sm font-bold text-white no-underline hover:border-leaf-500/40"><Icon name="external" size={17}/> Play on Roblox</a>
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 rounded-full border border-leaf-500/25 bg-leaf-500/[.07] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400"><Icon name="calculator" size={13}/> Free player-run calculator</div>
+        <h1 class="mt-6 font-display text-5xl font-bold leading-[.96] tracking-[-.055em] text-white sm:text-6xl lg:text-7xl">{metadata.h1}</h1>
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-sand-300">Calculate profit per minute, recover failed-run costs, and test reported seed and fertilizer presets before risking another tree to lightning.</p>
+        <div class="mt-7 flex flex-wrap gap-3 text-sm">
+          <a href="#calculator" class="rounded-md bg-leaf-500 px-5 py-3 font-bold text-ink-950 no-underline">Start calculating</a>
+          <a href="/mechanics/when-to-harvest/" class="rounded-md border border-line bg-ink-900 px-5 py-3 font-bold text-white no-underline">Plan when to harvest</a>
+          <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 font-bold text-white no-underline">Play on Roblox <Icon name="external" size={15}/></a>
         </div>
       </div>
-      <GameStatus />
+    </div>
+  </section>
+
+  <section id="calculator" class="mx-auto max-w-7xl scroll-mt-24 px-4 py-14 sm:px-6 lg:px-8">
+    <Calculator />
+  </section>
+
+  <section class="border-y border-line bg-ink-900/45">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <SectionHeading eyebrow="Clean inputs" title="How to record clean Greedy Growers run data" description="One repeatable run is more useful than a confident-looking preset. Keep the seed and wait target consistent before comparing strategies." />
+      <div class="mt-9 grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-6"><h3 class="font-display text-xl font-bold text-white">Start with one seed type</h3><p class="mt-3 text-sm leading-6 text-sand-300">Write down the river cost and use the same seed for several attempts. Changing seeds makes the result harder to compare.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-6"><h3 class="font-display text-xl font-bold text-white">Keep the wait consistent</h3><p class="mt-3 text-sm leading-6 text-sand-300">Choose one harvest target and time it. A shorter clean run and a taller risky run should be measured separately.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-6"><h3 class="font-display text-xl font-bold text-white">Count lightning failures</h3><p class="mt-3 text-sm leading-6 text-sand-300">Each destroyed run still consumed its seed and fertilizer. Add every failure before judging whether the strategy recovered its cost.</p></article>
+      </div>
     </div>
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Choose a task" title="Greedy Growers codes, seeds, guides, and calculator" description="Each page owns one player decision, so you can move from a quick check to a useful next action." />
+    <SectionHeading eyebrow="Transparent math" title="How Greedy Growers profit and break-even math works" description="The tool uses only visible inputs and simple arithmetic. It does not add hidden lightning odds or claim access to Roblox account data." />
     <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {tasks.map((task) => <a href={task.href} class="group rounded-xl border border-line bg-ink-900 p-5 no-underline transition hover:-translate-y-1 hover:border-leaf-500/50"><span class="grid size-10 place-items-center rounded-lg border border-leaf-500/25 bg-leaf-500/[.07] text-leaf-400"><Icon name={task.icon} /></span><h3 class="mt-5 font-display text-xl font-bold text-white">{task.title}</h3><p class="mt-2 text-sm leading-6 text-sand-300">{task.description}</p><span class="mt-5 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[.14em] text-leaf-400">Open tool <span aria-hidden="true">→</span></span></a>)}
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Cost per attempt</h3><code class="mt-3 block text-sm text-leaf-400">seed + fertilizer</code></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Boosted harvest</h3><code class="mt-3 block text-sm text-leaf-400">harvest × multiplier</code></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Profit per success</h3><code class="mt-3 block text-sm text-leaf-400">boosted value − cost</code></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Failed-run break-even</h3><code class="mt-3 block text-sm text-leaf-400">cost × total attempts</code></article>
     </div>
   </section>
 
   <section class="border-y border-line bg-ink-900/45">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <SectionHeading eyebrow="Codes" title="Current Greedy Growers code status" description="No guessed rewards, recycled strings, or fake active lists. The useful answer can be an honest empty state." />
-      <div class="mt-8"><CodeStatus /></div>
-      <a href="/codes/" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Read the Greedy Growers codes guide <span>→</span></a>
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="First harvest" title="Greedy Growers first harvest route" description="Learn the official flow before chasing taller trees, unverified seed tiers, or longer waits." />
-    <div class="mt-8"><RouteSteps steps={route} compact /></div>
-    <a href="/beginner-guide/" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Read the Greedy Growers beginner guide <span>→</span></a>
-  </section>
-
-  <section class="border-y border-line bg-ink-900/45">
-    <div class="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[.85fr_1.15fr] lg:px-8">
-      <SectionHeading eyebrow="Claim boundaries" title="Verified Greedy Growers sources" description="Changing game values need a dated source or current in-game check. Unknowns remain unknown instead of becoming confident-looking filler." />
-      <SourceList items={sources.slice(0, 4)} />
+      <SectionHeading eyebrow="Next decision" title="Continue with Greedy Growers guides and data" description="Use the calculator result as a starting point, then check the factual seed list, goal-based rankings, and harvest mechanics." />
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <a href="/seeds/" class="rounded-2xl border border-line bg-ink-950/60 p-5 no-underline hover:border-leaf-500/50"><h3 class="font-bold text-white">Seed List</h3><p class="mt-2 text-sm text-sand-300">Compare reported cost, value, time, and status.</p></a>
+        <a href="/seeds/best-seeds/" class="rounded-2xl border border-line bg-ink-950/60 p-5 no-underline hover:border-leaf-500/50"><h3 class="font-bold text-white">Best Seeds by Goal</h3><p class="mt-2 text-sm text-sand-300">Separate beginner, fast-money, and high-risk picks.</p></a>
+        <a href="/guides/get-money-fast/" class="rounded-2xl border border-line bg-ink-950/60 p-5 no-underline hover:border-leaf-500/50"><h3 class="font-bold text-white">Get Money Fast</h3><p class="mt-2 text-sm text-sand-300">Protect capital and recover after failed runs.</p></a>
+        <a href="/mechanics/when-to-harvest/" class="rounded-2xl border border-line bg-ink-950/60 p-5 no-underline hover:border-leaf-500/50"><h3 class="font-bold text-white">When to Harvest</h3><p class="mt-2 text-sm text-sand-300">Choose a conservative, balanced, or risky plan.</p></a>
+      </div>
     </div>
   </section>
 
   <section class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Quick answers" title="Greedy Growers FAQ" />
-    <div class="mt-8 grid gap-3">{faqs.map(([question, answer]) => <details class="group rounded-xl border border-line bg-ink-900 p-5"><summary class="cursor-pointer list-none pr-8 font-display font-bold text-white">{question}<span class="float-right text-leaf-400 transition group-open:rotate-45">+</span></summary><p class="mt-4 max-w-3xl text-sm leading-6 text-sand-300">{answer}</p></details>)}</div>
+    <SectionHeading eyebrow="Quick answers" title="Greedy Growers calculator FAQ" />
+    <div class="mt-8 grid gap-3">
+      {faqs.map(([question, answer]) => <details class="group rounded-xl border border-line bg-ink-900 p-5"><summary class="cursor-pointer list-none pr-8 font-display font-bold text-white">{question}<span class="float-right text-leaf-400 transition group-open:rotate-45">+</span></summary><p class="mt-4 max-w-3xl text-sm leading-6 text-sand-300">{answer}</p></details>)}
+    </div>
   </section>
 </BaseLayout>

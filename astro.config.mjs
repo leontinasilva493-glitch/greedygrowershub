@@ -7,7 +7,10 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://greedygrowerhub.wiki',
   trailingSlash: 'always',
-  integrations: [sitemap({ filter: (page) => !['/privacy/', '/disclaimer/', '/contact/'].some((route) => page.endsWith(route)) })],
+  redirects: {
+    '/calculator': '/',
+  },
+  integrations: [sitemap({ filter: (page) => !['/privacy/', '/disclaimer/', '/contact/', '/calculator/'].some((route) => page.endsWith(route)) })],
   vite: {
     plugins: [tailwindcss()],
   },

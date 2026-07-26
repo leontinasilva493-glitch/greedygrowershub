@@ -1,0 +1,42 @@
+[
+  {
+    "level": 1,
+    "requirement": "Collect 10,000 coins",
+    "perks": ["Basic Fertilizer Unlock", "Farmer's Market Access"],
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26"
+  },
+  {
+    "level": 2,
+    "requirement": "Collect 100,000 coins",
+    "perks": ["Premium Fertilizer", "Extra Garden Plot"],
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26"
+  },
+  {
+    "level": 3,
+    "requirement": "Collect 1,000,000 coins",
+    "perks": ["Ultra Fertilizer", "Lightning Protection Charm"],
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26"
+  },
+  {
+    "level": 4,
+    "requirement": "Collect 10,000,000 coins",
+    "perks": ["Mythical Seed Discount", "Auto-Harvest Unlock"],
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26"
+  },
+  {
+    "level": 5,
+    "requirement": "Collect 100,000,000 coins",
+    "perks": ["Divine Seed Access", "Rainbow Mutation Boost"],
+    "sourceId": "greedygrowers-codes",
+    "verification": "community-lead",
+    "verifiedAt": "2026-07-26"
+  }
+]

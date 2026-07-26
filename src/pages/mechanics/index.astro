@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
+
+const metadata = pageSeo.mechanics;
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', name: metadata.h1, description: metadata.description, url: absoluteUrl(metadata.canonicalPath) },
+  buildBreadcrumbSchema([{ name: 'Greedy Growers Calculator', path: '/' }, { name: 'Mechanics', path: metadata.canonicalPath }]),
+];
+---
+
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schema}>
+  <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+    <div class="max-w-4xl"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">The game's differentiating decision</p><h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1><p class="mt-5 text-lg leading-8 text-sand-300">Separate what lightning officially does from the strategy decision of when to harvest. This keeps facts and player risk tolerance from becoming one vague page.</p></div>
+
+    <section class="mt-16"><SectionHeading eyebrow="Mechanics map" title="Choose the Greedy Growers mechanic you need" description="Lightning covers facts and signals. When to Harvest covers strategy, capital exposure, and failed-run recovery."/><div class="mt-8 grid gap-5 md:grid-cols-2"><a href="/mechanics/lightning/" class="rounded-2xl border border-line bg-ink-900 p-7 no-underline hover:border-leaf-500/50"><p class="font-mono text-xs uppercase tracking-[.16em] text-leaf-400">Mechanism facts</p><h3 class="mt-3 font-display text-2xl font-bold text-white">Lightning</h3><p class="mt-3 text-sm leading-6 text-sand-300">What a strike can do, which signals are confirmed, and which time, height, or seed claims remain unverified.</p></a><a href="/mechanics/when-to-harvest/" class="rounded-2xl border border-leaf-500/35 bg-leaf-500/[.045] p-7 no-underline hover:border-leaf-500/70"><p class="font-mono text-xs uppercase tracking-[.16em] text-leaf-400">Highest priority</p><h3 class="mt-3 font-display text-2xl font-bold text-white">When to Harvest</h3><p class="mt-3 text-sm leading-6 text-sand-300">Choose conservative, balanced, or maximum-greed timing and calculate the recovery line after failed runs.</p></a></div></section>
+
+    <section class="mt-16"><SectionHeading eyebrow="Why two pages" title="Lightning facts versus harvest strategy" description="The same game moment contains two different questions that deserve separate answers."/><div class="mt-8 grid gap-4 md:grid-cols-2"><article class="rounded-2xl border border-line bg-ink-900 p-6"><h3 class="font-display text-xl font-bold text-white">Can lightning destroy this run?</h3><p class="mt-3 text-sm leading-6 text-sand-300">This is a mechanism question: consequence, warnings, relation to time or height, and current evidence strength.</p></article><article class="rounded-2xl border border-line bg-ink-900 p-6"><h3 class="font-display text-xl font-bold text-white">Should I keep waiting?</h3><p class="mt-3 text-sm leading-6 text-sand-300">This is a strategy question: bankroll, failed runs, target return, and how much loss the player accepts.</p></article></div></section>
+
+    <section class="mt-16"><SectionHeading eyebrow="Deferred" title="Why Greedy Growers multipliers are not published yet" description="Search interest alone is not enough when the multiplier formula and upper limit cannot be reproduced."/><div class="mt-8 rounded-2xl border border-amber-400/25 bg-amber-300/[.06] p-6"><h3 class="font-bold text-amber-100">200x and 1000x remain community challenge terms</h3><p class="mt-3 max-w-3xl text-sm leading-6 text-sand-300">The future page needs an observed multiplier calculation, upper-limit test, and repeatable relationship among tree height, value, and the displayed multiplier. Until then, those numbers should not drive the Calculator.</p></div></section>
+
+    <nav class="mt-14 flex flex-wrap gap-3"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Open the Calculator</a><a href="/guides/get-money-fast/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Protect your coins</a><a href="/updates/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Check updates</a></nav>
+  </section>
+</BaseLayout>

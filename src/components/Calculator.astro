@@ -1,15 +1,46 @@
 ---
 import Icon from './Icon.astro';
+import { fertilizers, getSource, seeds } from '../lib/content';
+
+const snapshotSource = getSource('greedygrowers-codes');
 ---
 
 <section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
   <form class="rounded-3xl border border-line bg-ink-900 p-5 sm:p-7" data-calculator>
     <div class="mb-6 flex items-center gap-3">
       <span class="grid size-10 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" /></span>
-      <div>
+      <div class="min-w-0">
         <h2 id="calculator-title" class="text-xl font-semibold">Greedy Growers profit and break-even calculator</h2>
-        <p class="text-sm text-sand-300">Use the values shown in your current game session.</p>
+        <p class="text-sm text-sand-300">Choose a reported preset, then replace any value with what you see in your game.</p>
       </div>
+    </div>
+
+    <div class="mb-5 grid gap-4 sm:grid-cols-2">
+      <label class="grid gap-2 text-sm font-medium">
+        Seed preset
+        <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedPreset" data-seed-preset>
+          <option value="">Manual values</option>
+          {seeds.map((seed) => (
+            <option
+              value={seed.id}
+              data-cost={seed.cost ?? ''}
+              data-harvest-value={seed.harvestValue ?? ''}
+              data-wait-minutes={seed.growthMinutes ?? ''}
+            >{seed.name} · {seed.rarity}</option>
+          ))}
+        </select>
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Fertilizer
+        <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
+          <option value="" data-cost="0" data-multiplier="1">None · x1</option>
+          {fertilizers.map((fertilizer) => (
+            <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
+              {fertilizer.name} · x{fertilizer.boostMultiplier}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2">
@@ -29,14 +60,33 @@ import Icon from './Icon.astro';
         Failed runs before success
         <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
       </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Fertilizer cost
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" readonly />
+      </label>
+      <label class="grid gap-2 text-sm font-medium">
+        Harvest multiplier
+        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" readonly />
+      </label>
     </div>
 
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
+    <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
+      Presets are a community snapshot from <a class="font-semibold underline" href={snapshotSource.url} target="_blank" rel="noopener noreferrer">{snapshotSource.name}</a>, checked {seeds[0]?.verifiedAt}. They are not official game values and still need an in-game recheck.
+    </p>
   </form>
 
   <div class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-7" aria-live="polite">
     <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Live result</p>
     <div class="mt-5 grid gap-3 sm:grid-cols-2">
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Cost per attempt</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="totalInvestment">100</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Boosted harvest value</p>
+        <p class="mt-2 text-2xl font-semibold" data-output="boostedHarvestValue">160</p>
+      </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
         <p class="text-sm text-sand-300">Profit per success</p>
         <p class="mt-2 text-2xl font-semibold" data-output="profitPerSuccess">60</p>
@@ -58,7 +108,7 @@ import Icon from './Icon.astro';
         <p class="mt-2 text-2xl font-semibold" data-output="riskAdjustedProfitPerMinute">20</p>
       </div>
     </div>
-    <p class="mt-5 text-xs leading-5 text-sand-300">This is a manual planning tool. It does not read your Roblox account or predict random events.</p>
+    <p class="mt-5 text-xs leading-5 text-sand-300">This planning tool runs in your browser. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
   </div>
 </section>
 

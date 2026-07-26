@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import type { SeedRecord } from './content';
-import { compareSeeds, filterSeeds, sortSeeds } from './seeds';
+import { compareSeeds, filterSeeds, groupSeedsByTier, sortSeeds } from './seeds';
 
 const fixtures: SeedRecord[] = [
-  { id: 'alpha', name: 'Alpha', type: 'Seed', rarity: 'Common', sourceId: 'source', unlock: 'River', cost: 40, harvestValue: 75, growthMinutes: 2, stage: 'starter', verification: 'verified', verifiedAt: '2026-07-26', notes: '' },
-  { id: 'beta', name: 'Beta', type: 'Plant', rarity: 'Rare', sourceId: 'source', unlock: 'Quest', cost: null, harvestValue: null, growthMinutes: null, stage: 'all', verification: 'community-lead', verifiedAt: '2026-07-26', notes: '' },
-  { id: 'gamma', name: 'Gamma', type: 'Tree', rarity: 'Epic', sourceId: 'source', unlock: 'Shop', cost: 120, harvestValue: 210, growthMinutes: 5, stage: 'late', verification: 'needs-check', verifiedAt: '2026-07-26', notes: '' },
+  { id: 'alpha', name: 'Alpha', type: 'Seed', rarity: 'Common', sourceId: 'source', unlock: 'River', cost: 40, harvestValue: 75, growthMinutes: 2, multiHarvest: false, reportedProfitPerMinute: 17.5, tier: 'C', bestUse: 'Starter sample', stage: 'starter', verification: 'verified', verifiedAt: '2026-07-26', notes: '' },
+  { id: 'beta', name: 'Beta', type: 'Plant', rarity: 'Rare', sourceId: 'source', unlock: 'Quest', cost: null, harvestValue: null, growthMinutes: null, multiHarvest: false, reportedProfitPerMinute: null, tier: null, bestUse: 'Unknown sample', stage: 'all', verification: 'community-lead', verifiedAt: '2026-07-26', notes: '' },
+  { id: 'gamma', name: 'Gamma', type: 'Tree', rarity: 'Epic', sourceId: 'source', unlock: 'Shop', cost: 120, harvestValue: 210, growthMinutes: 5, multiHarvest: true, reportedProfitPerMinute: 18, tier: 'S', bestUse: 'Late sample', stage: 'late', verification: 'needs-check', verifiedAt: '2026-07-26', notes: '' },
 ];
 
 describe('filterSeeds', () => {
@@ -34,5 +34,19 @@ describe('sortSeeds', () => {
 describe('compareSeeds', () => {
   it('returns selected records in the requested order and ignores unknown ids', () => {
     expect(compareSeeds(fixtures, ['gamma', 'missing', 'alpha']).map((seed) => seed.id)).toEqual(['gamma', 'alpha']);
+  });
+});
+
+describe('groupSeedsByTier', () => {
+  it('returns non-empty groups in S-to-D ranking order', () => {
+    const tierFixtures: SeedRecord[] = [
+      { ...fixtures[0], id: 'tier-d', tier: 'D' },
+      { ...fixtures[0], id: 'tier-b', tier: 'B' },
+      { ...fixtures[0], id: 'tier-s', tier: 'S' },
+      { ...fixtures[0], id: 'tier-c', tier: 'C' },
+      { ...fixtures[0], id: 'tier-a', tier: 'A' },
+    ];
+
+    expect(groupSeedsByTier(tierFixtures).map((group) => group.tier)).toEqual(['S', 'A', 'B', 'C', 'D']);
   });
 });

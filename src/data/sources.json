@@ -22,5 +22,11 @@
     "name": "Greedy Growers Wiki",
     "url": "https://greedy-growers-wiki.wiki/",
     "trust": "community"
+  },
+  {
+    "id": "greedygrowers-codes",
+    "name": "greedygrowers.codes calculator and tier list snapshot",
+    "url": "https://greedygrowers.codes/calculator/",
+    "trust": "community"
   }
 ]

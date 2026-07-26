@@ -38,13 +38,39 @@ const makeBundle = (): ContentBundle => ({
       cost: null,
       harvestValue: null,
       growthMinutes: null,
+      multiHarvest: false,
+      reportedProfitPerMinute: null,
+      tier: null,
+      bestUse: 'Needs a verified seed record.',
       stage: 'all',
       verification: 'needs-check',
       verifiedAt: '2026-07-26',
       notes: 'The official loop confirms seed buying, not the full roster.',
     },
   ],
-});
+  fertilizers: [
+    {
+      id: 'basic-fertilizer',
+      name: 'Basic Fertilizer',
+      cost: 100,
+      boostMultiplier: 1.25,
+      sourceId: 'roblox-official',
+      verification: 'community-lead',
+      verifiedAt: '2026-07-26',
+      notes: 'Community-reported snapshot.',
+    },
+  ],
+  rebirths: [
+    {
+      level: 1,
+      requirement: 'Collect 10,000 coins',
+      perks: ['Basic Fertilizer Unlock'],
+      sourceId: 'roblox-official',
+      verification: 'community-lead',
+      verifiedAt: '2026-07-26',
+    },
+  ],
+} as ContentBundle);
 
 describe('validateContent', () => {
   it('accepts a complete conservative content bundle', () => {
@@ -77,5 +103,26 @@ describe('validateContent', () => {
     bundle.codes[0].sourceId = 'missing-source';
 
     expect(() => validateContent(bundle)).toThrow('Unknown source: missing-source');
+  });
+
+  it('rejects unsupported seed tiers before they can power rankings', () => {
+    const bundle = makeBundle();
+    bundle.seeds[0].tier = 'Z' as never;
+
+    expect(() => validateContent(bundle)).toThrow('Unsupported seed tier: Z');
+  });
+
+  it('rejects fertilizer multipliers below the neutral baseline', () => {
+    const bundle = makeBundle();
+    bundle.fertilizers[0].boostMultiplier = 0.5;
+
+    expect(() => validateContent(bundle)).toThrow('Fertilizer boost multiplier must be at least 1');
+  });
+
+  it('rejects duplicate rebirth levels', () => {
+    const bundle = makeBundle();
+    bundle.rebirths.push({ ...bundle.rebirths[0] });
+
+    expect(() => validateContent(bundle)).toThrow('Duplicate rebirth level: 1');
   });
 });
