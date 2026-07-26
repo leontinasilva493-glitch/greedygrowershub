@@ -1,10 +1,10 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SeedExplorer from '../components/SeedExplorer.astro';
-import SourceList from '../components/SourceList.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import { seeds, site, sources } from '../lib/content';
-import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../lib/seo';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SeedExplorer from '../../components/SeedExplorer.astro';
+import SourceList from '../../components/SourceList.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { seeds, site, sources } from '../../lib/content';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
 
 const metadata = pageSeo.seeds;
 const schemas = [
@@ -49,7 +49,7 @@ const schemas = [
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Community snapshot database</p>
       <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">{metadata.h1}</h1>
       <p class="mt-5 text-lg leading-8 text-sand-300">Filter 12 community-reported seed records by stage, cost, growth time, and profit pace. These values are useful starting points, not official game data.</p>
-      <div class="mt-6 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-sm leading-6 text-amber-100">Snapshot checked {site.checkedAt}. Every copied value is marked as a community lead and still needs an in-game recheck.</div>
+      <div class="mt-6 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-sm leading-6 text-amber-100">Last checked {site.checkedAt}. Every copied value is marked as a community lead and still needs an in-game recheck.</div>
     </div>
 
     <section class="mt-10" aria-labelledby="seed-records-title">
@@ -58,13 +58,13 @@ const schemas = [
     </section>
 
     <section class="mt-14">
-      <SectionHeading eyebrow="Read the numbers" title="How to Read Seed Data and Verification Status" description="Use the same definitions and evidence labels for every recorded run before comparing one Greedy Growers seed with another." />
+      <SectionHeading eyebrow="Read the numbers" title="Seed Data Dictionary — How to Read Seed Data and Verification Status" description="Use the same definitions and evidence labels for every recorded run before comparing one Greedy Growers seed with another." />
       <div class="mt-8 grid gap-4 md:grid-cols-3">
         <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">What Each Seed Column Means</h3><p class="mt-3 text-sm leading-6 text-sand-300">Read cost, harvest value, growth time, stage, tier, and evidence status together instead of judging a seed by one number.</p></article>
         <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Profit per Minute vs Total Profit</h3><p class="mt-3 text-sm leading-6 text-sand-300">Subtract seed cost from harvest value, then divide by wait time. A large total return can still have a slower reported pace.</p></article>
         <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Why Verification Status Matters</h3><p class="mt-3 text-sm leading-6 text-sand-300">Community figures may change after updates. Recheck expensive choices in game and record failed runs before relying on a ranking.</p></article>
       </div>
-      <nav class="mt-8 flex flex-wrap gap-3" aria-label="Continue planning with seed data"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Plug seed data into the profit calculator</a><a href="/seeds/best-seeds/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Compare best seeds by goal</a><a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Follow the first-harvest guide</a></nav>
+      <nav class="mt-8 flex flex-wrap gap-3" aria-label="Continue planning with seed data"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Plug seed data into the profit calculator</a><a href="/seeds/best/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Compare best seeds by goal</a><a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Follow the first-harvest guide</a></nav>
     </section>
     <div class="mt-10"><SourceList items={sources.filter((source) => ['roblox-official', 'greedygrowers-codes'].includes(source.id))} title="Sources used for seed records" /></div>
   </section>

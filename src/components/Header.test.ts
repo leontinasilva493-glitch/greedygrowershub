@@ -67,4 +67,17 @@ describe('global navigation order', () => {
       '>Lightning<',
     ]);
   });
+
+  test('links only to the canonical Seed List and Best Seeds routes', () => {
+    const combinedNavigation = `${headerSource}\n${footerSource}`;
+
+    expect(combinedNavigation).toContain('href: \'/seeds/list/\'');
+    expect(combinedNavigation).toContain('href: \'/seeds/best/\'');
+    expect(combinedNavigation).toContain('href="/seeds/list/"');
+    expect(combinedNavigation).toContain('href="/seeds/best/"');
+    expect(combinedNavigation).not.toContain('href: \'/seeds/\'');
+    expect(combinedNavigation).not.toContain('href: \'/seeds/best-seeds/\'');
+    expect(combinedNavigation).not.toContain('href="/seeds/"');
+    expect(combinedNavigation).not.toContain('href="/seeds/best-seeds/"');
+  });
 });

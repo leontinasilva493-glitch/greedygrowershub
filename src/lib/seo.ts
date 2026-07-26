@@ -29,13 +29,13 @@ export const pageSeo = {
   seeds: {
     title: 'Greedy Growers Seed List: Costs, Growth & Profit Data',
     description: 'Explore the Greedy Growers seed list with reported costs, growth times, harvest values, profit per minute, tiers, and verification status for current seeds.',
-    canonicalPath: '/seeds/',
+    canonicalPath: '/seeds/list/',
     h1: 'Greedy Growers Seed List — All Seeds Compared',
   },
   bestSeeds: {
     title: 'Greedy Growers Best Seeds by Stage, Profit & Risk Guide',
     description: 'Find the best Greedy Growers seeds by game stage, reported profit per minute, investment cost, and risk. Compare community-ranked picks before spending coins.',
-    canonicalPath: '/seeds/best-seeds/',
+    canonicalPath: '/seeds/best/',
     h1: 'Best Greedy Growers Seeds by Stage & Risk',
   },
   guides: {

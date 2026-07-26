@@ -26,9 +26,9 @@ describe('source-visible TDH heading contracts', () => {
   });
 
   test('gives Seeds pages distinct comparison and ranking headings', () => {
-    const seedList = readSource('../pages/seeds.astro');
+    const seedList = readSource('../pages/seeds/list.astro');
     const seedExplorer = readSource('../components/SeedExplorer.astro');
-    const bestSeeds = readSource('../pages/seeds/best-seeds.astro');
+    const bestSeeds = readSource('../pages/seeds/best.astro');
 
     expectPhrases(`${seedList}\n${seedExplorer}`, [
       'Greedy Growers Seed Table — Sort and Filter',
@@ -126,6 +126,59 @@ describe('source-visible TDH heading contracts', () => {
       'Codes Status After Game Updates',
       'Official Sources for Greedy Growers Updates',
       'What We Recheck After Every Patch',
+    ]);
+  });
+
+  test('adds actionable decision support to the four first-priority pages', () => {
+    const beginner = readSource('../pages/beginner-guide.astro');
+    const money = readSource('../pages/guides/get-money-fast.astro');
+    const seedData = readSource('../data/seeds.json');
+    const lightning = readSource('../pages/mechanics/lightning.astro');
+    const harvest = readSource('../pages/mechanics/when-to-harvest.astro');
+
+    expectPhrases(beginner, [
+      'First-Run Checklist',
+      'Record the Result Before Buying Again',
+    ]);
+    expectPhrases(money, [
+      'Money Route by Player Stage',
+      'Reported Seed Pace Is Not Guaranteed Profit',
+      "'basic-seed', 'blueberry-seed', 'pumpkin-seed'",
+    ]);
+    expectPhrases(seedData, ['"basic-seed"', '"blueberry-seed"', '"pumpkin-seed"']);
+    expectPhrases(lightning, [
+      'Confirmed',
+      'Not Verified',
+      'Use Exposure Time, Not Invented Odds',
+    ]);
+    expectPhrases(harvest, [
+      'Choose a Harvest Strategy by Bankroll',
+      'Two or More Failed Runs',
+    ]);
+  });
+
+  test('adds evidence and decision support to the four second-priority pages', () => {
+    const seedList = readSource('../pages/seeds/list.astro');
+    const bestSeeds = readSource('../pages/seeds/best.astro');
+    const progression = readSource('../pages/guides/progression.astro');
+    const tickets = readSource('../pages/guides/tickets.astro');
+
+    expectPhrases(seedList, [
+      'Seed Data Dictionary',
+      'Last checked',
+    ]);
+    expectPhrases(bestSeeds, [
+      'Best Seeds by Player Goal',
+      'Ranking Limits',
+    ]);
+    expectPhrases(progression, [
+      'Early Game Checklist',
+      'Mid Game Checklist',
+      'Late Game Checklist',
+    ]);
+    expectPhrases(tickets, [
+      'Ticket Evidence Checklist',
+      'Do Not Assume a Daily Reset',
     ]);
   });
 });

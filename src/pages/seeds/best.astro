@@ -23,7 +23,7 @@ const schemas = [
   },
   buildBreadcrumbSchema([
     { name: 'Greedy Growers Calculator', path: '/' },
-    { name: 'Seeds', path: '/seeds/' },
+    { name: 'Seeds', path: '/seeds/list/' },
     { name: 'Best Seeds', path: metadata.canonicalPath },
   ]),
 ];
@@ -38,6 +38,15 @@ const format = (value: number | null) => value === null ? 'Needs check' : new In
       <p class="mt-5 text-lg leading-8 text-sand-300">Use player stage, capital at risk, growth time, and reported profit pace together. A high reported rate is not automatically the safest choice.</p>
       <div class="mt-7 flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-sm text-amber-100"><StatusBadge state="community-lead" label="Needs in-game recheck"/><span>Ranking snapshot copied from <a class="underline" href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a> on {site.checkedAt}.</span></div>
     </div>
+
+    <section class="mt-12 rounded-2xl border border-line bg-ink-900 p-6">
+      <h2 class="font-display text-2xl font-bold text-white">Best Seeds by Player Goal</h2>
+      <div class="mt-5 grid gap-4 text-sm sm:grid-cols-3">
+        <p><strong class="block text-leaf-400">Learning the loop</strong><span class="text-sand-300">Start with the lower-cost starter group and protect enough coins for another run.</span></p>
+        <p><strong class="block text-leaf-400">Faster clean-run pace</strong><span class="text-sand-300">Compare reported profit per minute, then replace copied inputs with your own observed run.</span></p>
+        <p><strong class="block text-leaf-400">Higher-risk growth</strong><span class="text-sand-300">Check the full seed cost and failed-run recovery line before buying an expensive seed.</span></p>
+      </div>
+    </section>
 
     <section class="mt-16">
       <SectionHeading eyebrow="Starting capital" title="Early Game — Best Budget Seeds" description="These reported starter records keep the entry cost lower while you learn the harvest button and lightning-loss loop." />
@@ -60,9 +69,10 @@ const format = (value: number | null) => value === null ? 'Needs check' : new In
 
     <section class="mt-16">
       <SectionHeading eyebrow="Community tier snapshot" title="How We Rank Seeds and Use Community Tiers" description="Use these tiers as a research lead. The ranking remains community-reported until the inputs can be reproduced in the current game version." />
+      <div class="mt-8 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-5"><h3 class="font-bold text-amber-100">Ranking Limits</h3><p class="mt-2 text-sm leading-6 text-amber-100/85">The current order uses community-reported clean-run inputs. It does not estimate lightning odds, failed-run frequency, fertilizer affordability, or how much reserve capital you need. Verify those factors before treating any seed as universally best.</p></div>
       <div class="mt-8 grid gap-5">{tierGroups.map((group) => <article class="rounded-2xl border border-line bg-ink-900 p-6"><div class="flex items-baseline gap-3"><span class="font-display text-4xl font-bold text-leaf-400">{group.tier}</span><h3 class="font-display text-xl font-bold text-white">Tier seeds</h3></div><div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{group.items.map((seed) => <div class="rounded-xl border border-line bg-ink-950/70 p-4"><p class="font-bold text-white">{seed.name}</p><p class="mt-1 text-sm text-sand-300">{seed.bestUse} · {format(seed.reportedProfitPerMinute)} profit/min</p></div>)}</div></article>)}</div>
     </section>
 
-    <nav class="mt-14 flex flex-wrap gap-3" aria-label="Continue from the best seeds guide"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Test a seed in the Calculator</a><a href="/seeds/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Open the full Seed List</a><a href="/mechanics/when-to-harvest/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Choose a harvest strategy</a></nav>
+    <nav class="mt-14 flex flex-wrap gap-3" aria-label="Continue from the best seeds guide"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Test a seed in the Calculator</a><a href="/seeds/list/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Open the full Seed List</a><a href="/mechanics/when-to-harvest/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Choose a harvest strategy</a></nav>
   </section>
 </BaseLayout>
