@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SeedExplorer from '../components/SeedExplorer.astro';
+import SourceList from '../components/SourceList.astro';
+import { seeds, sources } from '../lib/content';
+---
+
+<BaseLayout
+  title="Greedy Growers Seeds — Verified Stats and Comparison"
+  description="Browse Greedy Growers seed records, filter by evidence and player stage, and compare known costs, harvest values, and growth times."
+  canonicalPath="/seeds"
+>
+  <section class="mx-auto max-w-6xl px-5 pb-16 pt-14 sm:px-8 sm:pt-20">
+    <div class="max-w-3xl">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Evidence-first database</p>
+      <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">Seed records without invented stats.</h1>
+      <p class="mt-5 text-lg leading-8 text-sand-300">Filter and compare the public facts we can currently support. A blank number is marked “Not verified” until an in-game capture or reliable public source confirms it.</p>
+    </div>
+
+    <div class="mt-10"><SeedExplorer items={seeds} /></div>
+    <div class="mt-10"><SourceList items={sources.filter((source) => ['roblox-official', 'gg-wiki'].includes(source.id))} title="Sources used for seed records" /></div>
+  </section>
+</BaseLayout>
