@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+
+const fallback = {
+  playing: 9510,
+  visits: 2629512,
+  maxPlayers: 4,
+  updated: '2026-07-26',
+  checkedAt: '2026-07-26 19:00 UTC+8',
+};
+---
+
+<section class="overflow-hidden rounded-2xl border border-line bg-ink-900 shadow-[0_24px_70px_rgba(0,0,0,.28)]" data-game-status>
+  <div class="relative border-b border-line bg-[radial-gradient(circle_at_80%_20%,rgba(101,229,114,.2),transparent_45%)] p-6 sm:p-7">
+    <div class="flex items-start justify-between gap-5">
+      <div>
+        <p class="font-mono text-[10px] font-bold uppercase tracking-[.2em] text-leaf-400">Official game snapshot</p>
+        <h2 class="mt-2 font-display text-2xl font-bold tracking-tight text-white">What is confirmed now</h2>
+      </div>
+      <span class="relative mt-1 flex size-3"><span class="absolute inline-flex size-full animate-ping rounded-full bg-leaf-400 opacity-40"></span><span class="relative inline-flex size-3 rounded-full bg-leaf-500"></span></span>
+    </div>
+    <p class="mt-3 text-sm leading-6 text-sand-300">Live values refresh from Roblox when available. The game loop remains the official source of truth.</p>
+  </div>
+  <dl class="grid grid-cols-2 gap-px bg-line lg:grid-cols-4">
+    <div class="bg-ink-900 p-5"><dt class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-sand-300"><Icon name="sprout" size={14}/> Playing</dt><dd class="mt-2 font-display text-2xl font-bold text-white" data-status-value="playing">{fallback.playing.toLocaleString()}</dd></div>
+    <div class="bg-ink-900 p-5"><dt class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-sand-300"><Icon name="source" size={14}/> Visits</dt><dd class="mt-2 font-display text-2xl font-bold text-white" data-status-value="visits">{fallback.visits.toLocaleString()}</dd></div>
+    <div class="bg-ink-900 p-5"><dt class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-sand-300"><Icon name="shield" size={14}/> Server size</dt><dd class="mt-2 font-display text-2xl font-bold text-white" data-status-value="maxPlayers">{fallback.maxPlayers}</dd></div>
+    <div class="bg-ink-900 p-5"><dt class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-sand-300"><Icon name="clock" size={14}/> Updated</dt><dd class="mt-2 font-display text-lg font-bold text-white" data-status-value="updated">{fallback.updated}</dd></div>
+  </dl>
+  <p class="border-t border-line px-5 py-3 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300/70" data-status-message>Snapshot checked {fallback.checkedAt}</p>
+</section>

@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+
+interface Step {
+  title: string;
+  description: string;
+  label?: string;
+}
+interface Props { steps: Step[]; compact?: boolean; }
+const { steps, compact = false } = Astro.props;
+---
+
+<ol class:list={['grid gap-3', compact ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-2']}>
+  {steps.map((step, index) => (
+    <li class="group relative overflow-hidden rounded-xl border border-line bg-ink-900 p-5 transition hover:-translate-y-0.5 hover:border-leaf-500/40">
+      <div class="flex items-center justify-between gap-3">
+        <span class="grid size-8 place-items-center rounded-md bg-leaf-500 font-mono text-xs font-bold text-ink-950">{String(index + 1).padStart(2, '0')}</span>
+        {step.label && <span class="font-mono text-[9px] uppercase tracking-[.15em] text-leaf-400">{step.label}</span>}
+      </div>
+      <h3 class="mt-5 font-display text-lg font-bold text-white">{step.title}</h3>
+      <p class="mt-2 text-sm leading-6 text-sand-300">{step.description}</p>
+      <Icon name="sprout" size={68} class="absolute -bottom-5 -right-4 text-leaf-500/[.045] transition group-hover:text-leaf-500/[.08]" />
+    </li>
+  ))}
+</ol>

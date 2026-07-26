@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RouteSteps from '../components/RouteSteps.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SourceList from '../components/SourceList.astro';
+import Icon from '../components/Icon.astro';
+import { site, sources } from '../lib/content';
+
+const steps = [
+  { title: 'Open the official experience', description: 'Start from the official Roblox page so you can verify the experience and creator before joining.', label: 'Official' },
+  { title: 'Buy one seed from the river', description: 'The official description points players to the river for seed buying. Keep the first purchase simple.', label: 'Official' },
+  { title: 'Plant it in your plot', description: 'Return to your own plot, plant the seed, and keep the tree visible while learning the loop.', label: 'Official' },
+  { title: 'Watch the tree grow', description: 'Height creates temptation, but published sources do not provide a reliable public timer or lightning probability.', label: 'Official boundary' },
+  { title: 'Harvest before lightning', description: 'Cash out earlier on first runs. Extend the wait only after you understand what the current server shows.', label: 'Official + editorial' },
+];
+const mistakes = [
+  ['Joining clone links', 'Open the experience through Roblox before following reposted servers or social invitations.'],
+  ['Waiting for maximum height immediately', 'Your first goal is learning the harvest action, not proving how long one tree can survive.'],
+  ['Chasing codes first', 'No verified active code currently improves the basic buy, plant, watch, and harvest loop.'],
+  ['Trusting unsourced seed tiers', 'A useful ranking needs names, costs, outcomes, conditions, and a checked date.'],
+];
+---
+
+<BaseLayout title="Greedy Growers Beginner Guide — First Harvest Route" description="Follow the confirmed Greedy Growers river-to-plot route and learn what to watch before your first harvest." canonicalPath="/beginner-guide">
+  <section class="border-b border-line bg-[radial-gradient(circle_at_70%_20%,rgba(101,229,114,.14),transparent_38%)]"><div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8"><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Roblox beginner guide</p><h1 class="mt-4 max-w-4xl font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">Your first Greedy Growers harvest</h1><p class="mt-5 max-w-3xl text-lg leading-8 text-sand-300">Learn the official loop first. A clean early cash-out teaches more than an unsupported timer, seed tier, or perfect-height promise.</p><div class="mt-7 flex flex-wrap gap-3"><a href="#first-route" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Start first harvest</a><a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Play on Roblox <Icon name="external" size={15}/></a></div></div></section>
+  <div class="mx-auto max-w-7xl space-y-16 px-4 py-16 sm:px-6 lg:px-8">
+    <section id="first-route"><SectionHeading eyebrow="Immediate route" title="First Harvest Route" description="Five steps from the official listing, with cautious beginner guidance where public game values stop."/><div class="mt-8"><RouteSteps steps={steps}/></div></section>
+    <section class="grid gap-8 lg:grid-cols-[.8fr_1.2fr]"><SectionHeading eyebrow="Timing" title="What to watch before harvesting" description="No verified public timer or lightning chance is used here. Read the live tree, protect your first seed cost, and treat every longer wait as a test."/><div class="grid gap-4 sm:grid-cols-3"><article class="rounded-xl border border-line bg-ink-900 p-5"><Icon name="sprout" class="text-leaf-400"/><h3 class="mt-4 font-display font-bold text-white">Tree height tempts</h3><p class="mt-2 text-sm leading-6 text-sand-300">A taller tree can look valuable without proving the best cash-out point.</p></article><article class="rounded-xl border border-line bg-ink-900 p-5"><Icon name="bolt" class="text-amber-300"/><h3 class="mt-4 font-display font-bold text-white">Lightning pressures</h3><p class="mt-2 text-sm leading-6 text-sand-300">The official listing warns it may strike at any moment.</p></article><article class="rounded-xl border border-line bg-ink-900 p-5"><Icon name="shield" class="text-sky-300"/><h3 class="mt-4 font-display font-bold text-white">Short runs teach</h3><p class="mt-2 text-sm leading-6 text-sand-300">Practice a complete cycle before stretching the wait.</p></article></div></section>
+    <section><SectionHeading eyebrow="Early mistakes" title="Avoid these on your first session"/><div class="mt-8 grid gap-4 md:grid-cols-2">{mistakes.map(([title, description]) => <article class="rounded-xl border border-line bg-ink-900 p-5"><h3 class="font-display font-bold text-white">{title}</h3><p class="mt-3 text-sm leading-6 text-sand-300">{description}</p></article>)}</div></section>
+    <section class="rounded-2xl border border-leaf-500/25 bg-leaf-500/[.055] p-6 sm:p-8"><SectionHeading eyebrow="Next choices" title="Compare a record, then calculate it" description="After one complete run, use the Seeds page to record what is known and the Calculator to compare cost, value, time, and failures."/><div class="mt-7 flex flex-wrap gap-3"><a href="/seeds" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Open Seeds</a><a href="/calculator" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Use Calculator</a></div></section>
+    <SourceList items={sources.slice(0, 3)} title="Last checked and claim strength" />
+  </div>
+</BaseLayout>

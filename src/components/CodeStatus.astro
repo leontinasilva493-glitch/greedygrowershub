@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import { codes, getSource } from '../lib/content';
+
+const activeCodes = codes.filter((code) => code.status === 'active');
+const expiredCodes = codes.filter((code) => code.status === 'expired');
+---
+
+<div class="grid gap-4 lg:grid-cols-2">
+  <section class="rounded-xl border border-leaf-500/25 bg-leaf-500/[.055] p-5 sm:p-6">
+    <div class="flex items-start justify-between gap-4">
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Active codes</p><h2 class="mt-2 font-display text-2xl font-bold text-white">{activeCodes.length ? `${activeCodes.length} verified code${activeCodes.length === 1 ? '' : 's'}` : 'No verified active codes'}</h2></div>
+      <span class="grid size-10 place-items-center rounded-lg border border-leaf-500/30 bg-leaf-500/10 text-leaf-400"><Icon name={activeCodes.length ? 'check' : 'ticket'} /></span>
+    </div>
+    {activeCodes.length ? (
+      <ul class="mt-5 grid gap-3">{activeCodes.map((code) => <li class="rounded-lg border border-leaf-500/20 bg-ink-950/50 p-4"><code class="font-mono font-bold text-leaf-400">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p><p class="mt-3 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300/70">{getSource(code.sourceId).name} · {code.verifiedAt}</p></li>)}</ul>
+    ) : <p class="mt-5 text-sm leading-6 text-sand-300">The latest checked sources do not provide a reproducible active code. An empty list is more useful than copied rewards with no proof.</p>}
+  </section>
+
+  <section class="rounded-xl border border-line bg-ink-900 p-5 sm:p-6">
+    <div class="flex items-start justify-between gap-4">
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Expired codes</p><h2 class="mt-2 font-display text-2xl font-bold text-white">{expiredCodes.length ? `${expiredCodes.length} recorded` : 'No verified history yet'}</h2></div>
+      <span class="grid size-10 place-items-center rounded-lg border border-line bg-white/5 text-sand-300"><Icon name="clock" /></span>
+    </div>
+    {expiredCodes.length ? (
+      <ul class="mt-5 grid gap-3">{expiredCodes.map((code) => <li class="rounded-lg border border-line bg-ink-950/50 p-4"><code class="font-mono font-bold text-sand-300 line-through">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p></li>)}</ul>
+    ) : <p class="mt-5 text-sm leading-6 text-sand-300">No previously working code has been verified as expired. Future records need the original reward, source, and check date.</p>}
+  </section>
+</div>
