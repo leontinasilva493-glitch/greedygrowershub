@@ -40,10 +40,10 @@
 Run:
 
 ```powershell
-npm create astro@7.1.3 . -- --template minimal --install --no-git --yes
+npm create astro@5.2.2 . -- --template minimal --install --no-git --yes
 ```
 
-Expected: Astro creates a minimal project without replacing the existing `docs` or `.git` directories.
+Expected: create-astro 5.2.2 creates an Astro 7 project without replacing the existing `docs` or `.git` directories; the framework itself is pinned to Astro 7.1.3 in the next step.
 
 - [ ] **Step 2: Install the fixed MVP dependencies**
 
