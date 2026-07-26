@@ -9,7 +9,7 @@ const expiredCodes = codes.filter((code) => code.status === 'expired');
 <div class="grid gap-4 lg:grid-cols-2">
   <section class="rounded-xl border border-leaf-500/25 bg-leaf-500/[.055] p-5 sm:p-6">
     <div class="flex items-start justify-between gap-4">
-      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Active codes</p><h2 class="mt-2 font-display text-2xl font-bold text-white">{activeCodes.length ? `${activeCodes.length} verified code${activeCodes.length === 1 ? '' : 's'}` : 'No verified active codes'}</h2></div>
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Active codes</p><h3 class="mt-2 font-display text-2xl font-bold text-white">{activeCodes.length ? `${activeCodes.length} verified code${activeCodes.length === 1 ? '' : 's'}` : 'No verified active Greedy Growers codes'}</h3></div>
       <span class="grid size-10 place-items-center rounded-lg border border-leaf-500/30 bg-leaf-500/10 text-leaf-400"><Icon name={activeCodes.length ? 'check' : 'ticket'} /></span>
     </div>
     {activeCodes.length ? (
@@ -19,7 +19,7 @@ const expiredCodes = codes.filter((code) => code.status === 'expired');
 
   <section class="rounded-xl border border-line bg-ink-900 p-5 sm:p-6">
     <div class="flex items-start justify-between gap-4">
-      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Expired codes</p><h2 class="mt-2 font-display text-2xl font-bold text-white">{expiredCodes.length ? `${expiredCodes.length} recorded` : 'No verified history yet'}</h2></div>
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Expired codes</p><h3 class="mt-2 font-display text-2xl font-bold text-white">{expiredCodes.length ? `${expiredCodes.length} recorded` : 'No verified expired-code history yet'}</h3></div>
       <span class="grid size-10 place-items-center rounded-lg border border-line bg-white/5 text-sand-300"><Icon name="clock" /></span>
     </div>
     {expiredCodes.length ? (

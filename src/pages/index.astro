@@ -7,12 +7,13 @@ import CodeStatus from '../components/CodeStatus.astro';
 import SourceList from '../components/SourceList.astro';
 import Icon from '../components/Icon.astro';
 import { site, sources } from '../lib/content';
+import { absoluteUrl, pageSeo } from '../lib/seo';
 
 const tasks = [
-  { title: 'Codes', description: 'Check verified active and expired status before trying copied rewards.', href: '/codes', icon: 'ticket' },
-  { title: 'New player', description: 'Follow the official river-to-plot route for a clean first harvest.', href: '/beginner-guide', icon: 'book' },
-  { title: 'Seeds', description: 'Compare recorded seed details without treating missing values as facts.', href: '/seeds', icon: 'sprout' },
-  { title: 'Calculator', description: 'Enter one run and measure profit, pace, and failed-seed break-even.', href: '/calculator', icon: 'calculator' },
+  { title: 'Check Greedy Growers codes', description: 'Review verified active and expired status before trying copied rewards.', href: '/codes/', icon: 'ticket' },
+  { title: 'Read the Greedy Growers beginner guide', description: 'Follow the official river-to-plot route for a clean first harvest.', href: '/beginner-guide/', icon: 'book' },
+  { title: 'Compare Greedy Growers seeds', description: 'Compare recorded seed details without treating missing values as facts.', href: '/seeds/', icon: 'sprout' },
+  { title: 'Use the Greedy Growers profit calculator', description: 'Enter one run and measure profit, pace, and failed-seed break-even.', href: '/calculator/', icon: 'calculator' },
 ] as const;
 const route = [
   { title: 'Buy at the river', description: 'Use the river purchase area described by the official experience.' },
@@ -26,17 +27,26 @@ const faqs = [
   ['Does the calculator know hidden odds?', 'No. It uses only the cost, harvest value, wait time, and failed runs entered by the player.'],
   ['Is this an official site?', 'No. This is an independent fan-made player resource. Roblox and the creator remain the official sources.'],
 ];
+const metadata = pageSeo.home;
+const homeSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: metadata.h1,
+  description: metadata.description,
+  url: absoluteUrl(metadata.canonicalPath),
+  isPartOf: { '@type': 'WebSite', name: site.name, url: absoluteUrl('/') },
+};
 ---
 
-<BaseLayout title="Greedy Growers Guide, Codes, Seeds & Calculator" description={site.description} canonicalPath="/">
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={homeSchema}>
   <section class="border-b border-line bg-[linear-gradient(120deg,#071510_0%,#0a2117_54%,#08130f_100%)]">
     <div class="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:px-8">
       <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-leaf-500/25 bg-leaf-500/[.07] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400"><Icon name="shield" size={13}/> Fan-made Roblox guide</div>
-        <h1 class="mt-6 max-w-3xl font-display text-5xl font-bold leading-[.96] tracking-[-.055em] text-white sm:text-6xl lg:text-7xl">Greedy Growers<br/><span class="text-leaf-400">player tools.</span></h1>
+        <h1 class="mt-6 max-w-3xl font-display text-5xl font-bold leading-[.96] tracking-[-.055em] text-white sm:text-6xl lg:text-7xl">Greedy Growers<br/><span class="text-leaf-400">Tools Hub.</span></h1>
         <p class="mt-6 max-w-2xl text-lg leading-8 text-sand-300">Check code status, follow the first harvest route, compare seed evidence, and calculate a recorded run before greed meets lightning.</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/codes" class="inline-flex items-center gap-2 rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline hover:bg-leaf-400"><Icon name="ticket" size={17}/> Check codes first</a>
+          <a href="/codes/" class="inline-flex items-center gap-2 rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline hover:bg-leaf-400"><Icon name="ticket" size={17}/> Check Greedy Growers codes</a>
           <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line bg-ink-900 px-5 py-3 text-sm font-bold text-white no-underline hover:border-leaf-500/40"><Icon name="external" size={17}/> Play on Roblox</a>
         </div>
       </div>
@@ -45,29 +55,29 @@ const faqs = [
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Choose a task" title="Start with the answer you need now" description="Each page owns one player decision, so you can move from a quick check to a useful next action." />
+    <SectionHeading eyebrow="Choose a task" title="Greedy Growers codes, seeds, guides, and calculator" description="Each page owns one player decision, so you can move from a quick check to a useful next action." />
     <div class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {tasks.map((task) => <a href={task.href} class="group rounded-xl border border-line bg-ink-900 p-5 no-underline transition hover:-translate-y-1 hover:border-leaf-500/50"><span class="grid size-10 place-items-center rounded-lg border border-leaf-500/25 bg-leaf-500/[.07] text-leaf-400"><Icon name={task.icon} /></span><h2 class="mt-5 font-display text-xl font-bold text-white">{task.title}</h2><p class="mt-2 text-sm leading-6 text-sand-300">{task.description}</p><span class="mt-5 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[.14em] text-leaf-400">Open tool <span aria-hidden="true">→</span></span></a>)}
+      {tasks.map((task) => <a href={task.href} class="group rounded-xl border border-line bg-ink-900 p-5 no-underline transition hover:-translate-y-1 hover:border-leaf-500/50"><span class="grid size-10 place-items-center rounded-lg border border-leaf-500/25 bg-leaf-500/[.07] text-leaf-400"><Icon name={task.icon} /></span><h3 class="mt-5 font-display text-xl font-bold text-white">{task.title}</h3><p class="mt-2 text-sm leading-6 text-sand-300">{task.description}</p><span class="mt-5 inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-[.14em] text-leaf-400">Open tool <span aria-hidden="true">→</span></span></a>)}
     </div>
   </section>
 
   <section class="border-y border-line bg-ink-900/45">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <SectionHeading eyebrow="Codes" title="Code status before you grind" description="No guessed rewards, recycled strings, or fake active lists. The useful answer can be an honest empty state." />
+      <SectionHeading eyebrow="Codes" title="Current Greedy Growers code status" description="No guessed rewards, recycled strings, or fake active lists. The useful answer can be an honest empty state." />
       <div class="mt-8"><CodeStatus /></div>
-      <a href="/codes" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Open the full codes guide <span>→</span></a>
+      <a href="/codes/" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Read the Greedy Growers codes guide <span>→</span></a>
     </div>
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="First harvest" title="Route the confirmed game loop" description="Learn the official flow before chasing taller trees, unverified seed tiers, or longer waits." />
+    <SectionHeading eyebrow="First harvest" title="Greedy Growers first harvest route" description="Learn the official flow before chasing taller trees, unverified seed tiers, or longer waits." />
     <div class="mt-8"><RouteSteps steps={route} compact /></div>
-    <a href="/beginner-guide" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Read the beginner guide <span>→</span></a>
+    <a href="/beginner-guide/" class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-leaf-400">Read the Greedy Growers beginner guide <span>→</span></a>
   </section>
 
   <section class="border-y border-line bg-ink-900/45">
     <div class="mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[.85fr_1.15fr] lg:px-8">
-      <SectionHeading eyebrow="Claim boundaries" title="Official facts stay separate from player leads" description="Changing game values need a dated source or current in-game check. Unknowns remain unknown instead of becoming confident-looking filler." />
+      <SectionHeading eyebrow="Claim boundaries" title="Verified Greedy Growers sources" description="Changing game values need a dated source or current in-game check. Unknowns remain unknown instead of becoming confident-looking filler." />
       <SourceList items={sources.slice(0, 4)} />
     </div>
   </section>

@@ -2,17 +2,54 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Calculator from '../components/Calculator.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../lib/content';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../lib/seo';
+
+const metadata = pageSeo.calculator;
+const faqs = [
+  ['Does the calculator access my Roblox account?', 'No. Every value is entered and calculated in your browser without reading your Roblox account.'],
+  ['Why can risk-adjusted profit become negative?', 'Failed seeds add cost and time. If the successful harvest does not recover those attempts, the adjusted result becomes negative.'],
+  ['Does this calculator predict lightning?', 'No. It records failed runs that already happened; it does not estimate hidden odds or predict the next strike.'],
+];
+const schemas = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: metadata.h1,
+    description: metadata.description,
+    url: absoluteUrl(metadata.canonicalPath),
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript for live calculations',
+    isAccessibleForFree: true,
+    publisher: { '@type': 'Organization', name: site.name },
+  },
+  buildBreadcrumbSchema([
+    { name: 'Greedy Growers Hub', path: '/' },
+    { name: 'Greedy Growers Profit Calculator', path: metadata.canonicalPath },
+  ]),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="Greedy Growers Profit Calculator — Plan Every Planting Run"
-  description="Calculate profit per harvest, profit per minute, break-even value, and the cost of failed Greedy Growers planting runs."
-  canonicalPath="/calculator"
+  title={metadata.title}
+  description={metadata.description}
+  canonicalPath={metadata.canonicalPath}
+  schema={schemas}
 >
   <section class="mx-auto max-w-6xl px-5 pb-12 pt-14 sm:px-8 sm:pt-20">
     <div class="max-w-3xl">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Manual calculator</p>
-      <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">Know the return before you plant.</h1>
+      <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">{metadata.h1}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-8 text-sand-300">Enter the seed price, harvest value, wait time, and recent failed runs. The calculator updates instantly and keeps every assumption visible.</p>
     </div>
 
@@ -21,12 +58,24 @@ import SectionHeading from '../components/SectionHeading.astro';
 
   <section class="border-y border-line bg-ink-900/45">
     <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8">
-      <SectionHeading eyebrow="How it works" title="Simple arithmetic, no hidden game claims" />
+      <SectionHeading eyebrow="How it works" title="How Greedy Growers profit math works" />
       <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Successful profit</h2><p class="mt-2 text-sm leading-6 text-sand-300">Harvest value minus one seed cost.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Break-even value</h2><p class="mt-2 text-sm leading-6 text-sand-300">The harvest required to recover the successful seed plus any failed seeds.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h2 class="font-semibold">Adjusted rate</h2><p class="mt-2 text-sm leading-6 text-sand-300">Adjusted profit divided by the total time spent across all attempts.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h3 class="font-semibold">Profit per successful run formula</h3><p class="mt-2 text-sm leading-6 text-sand-300">Harvest value minus one seed cost.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h3 class="font-semibold">Failed-run break-even calculation</h3><p class="mt-2 text-sm leading-6 text-sand-300">The harvest required to recover the successful seed plus any failed seeds.</p></article>
+        <article class="rounded-2xl border border-line bg-ink-950/60 p-5"><h3 class="font-semibold">Why risk-adjusted profit turns negative</h3><p class="mt-2 text-sm leading-6 text-sand-300">The harvest value minus every successful and failed seed cost. It turns negative when those costs exceed the harvest.</p></article>
       </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+    <SectionHeading eyebrow="Next run" title="Plan your next Greedy Growers planting run" description="Use recorded values and the beginner route to keep every calculator input grounded in what you actually observed." />
+    <nav class="mt-8 flex flex-wrap gap-3" aria-label="Continue from the Greedy Growers calculator"><a href="/seeds/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Find seed costs in the comparison dashboard</a><a href="/beginner-guide/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Read the Greedy Growers beginner guide</a><a href="/codes/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Check current Greedy Growers codes</a></nav>
+  </section>
+
+  <section class="border-t border-line bg-ink-900/45">
+    <div class="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+      <SectionHeading eyebrow="Quick answers" title="Greedy Growers calculator FAQ" />
+      <div class="mt-8 grid gap-3">{faqs.map(([question, answer]) => <details class="rounded-xl border border-line bg-ink-950/60 p-5"><summary class="cursor-pointer font-semibold text-sand-100">{question}</summary><p class="mt-4 text-sm leading-6 text-sand-300">{answer}</p></details>)}</div>
     </div>
   </section>
 </BaseLayout>

@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../lib/content';
+import { normalizeCanonicalPath } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -13,7 +14,9 @@ interface Props {
 }
 
 const { title, description, canonicalPath, schema = [], noindex = false } = Astro.props;
-const canonical = new URL(canonicalPath, Astro.site ?? Astro.url.origin).toString();
+const canonical = new URL(normalizeCanonicalPath(canonicalPath), Astro.site ?? Astro.url.origin).toString();
+const socialImage = new URL('/og-image.svg', Astro.site ?? Astro.url.origin).toString();
+const socialImageAlt = 'Greedy Growers Hub player tools for codes, seeds, guides, and profit calculations';
 const schemas = Array.isArray(schema) ? schema : [schema];
 const defaultSchemas = [
   {
@@ -47,8 +50,16 @@ const defaultSchemas = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/og-image.svg', Astro.site ?? Astro.url.origin).toString()} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={socialImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
