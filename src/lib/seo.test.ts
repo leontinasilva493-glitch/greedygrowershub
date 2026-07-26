@@ -23,7 +23,7 @@ describe('canonical helpers', () => {
     expect(normalizeCanonicalPath('/')).toBe('/');
     expect(normalizeCanonicalPath('/codes')).toBe('/codes/');
     expect(normalizeCanonicalPath('/codes/')).toBe('/codes/');
-    expect(absoluteUrl('/codes')).toBe('https://greedygrowershub.com/codes/');
+    expect(absoluteUrl('/codes')).toBe('https://greedygrowerhub.wiki/codes/');
   });
 
   it('builds ordered, absolute breadcrumb items', () => {
@@ -33,8 +33,8 @@ describe('canonical helpers', () => {
     ])).toMatchObject({
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://greedygrowershub.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Codes', item: 'https://greedygrowershub.com/codes/' },
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://greedygrowerhub.wiki/' },
+        { '@type': 'ListItem', position: 2, name: 'Codes', item: 'https://greedygrowerhub.wiki/codes/' },
       ],
     });
   });

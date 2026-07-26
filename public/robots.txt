@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://greedygrowershub.com/sitemap-index.xml
+Sitemap: https://greedygrowerhub.wiki/sitemap-index.xml

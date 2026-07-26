@@ -5,7 +5,7 @@ const makeBundle = (): ContentBundle => ({
   site: {
     name: 'Greedy Growers Hub',
     description: 'Independent Greedy Growers tools and player guides.',
-    domain: 'greedygrowershub.com',
+    domain: 'greedygrowerhub.wiki',
     officialGameUrl: 'https://www.roblox.com/games/74102906764176/Greedy-Growers',
     universeId: '10440833423',
     checkedAt: '2026-07-26',

@@ -69,7 +69,7 @@ Set `package.json` scripts to:
 }
 ```
 
-Configure `astro.config.mjs` with `site: 'https://greedygrowershub.com'`, the sitemap integration, and `tailwindcss()` in Vite plugins. Add `@import "tailwindcss";` plus the approved green/ink design tokens to `src/styles/global.css`.
+Configure `astro.config.mjs` with `site: 'https://greedygrowerhub.wiki'`, the sitemap integration, and `tailwindcss()` in Vite plugins. Add `@import "tailwindcss";` plus the approved green/ink design tokens to `src/styles/global.css`.
 
 - [ ] **Step 4: Verify the empty shell**
 
