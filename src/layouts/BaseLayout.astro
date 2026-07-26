@@ -9,9 +9,10 @@ interface Props {
   description: string;
   canonicalPath: string;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  noindex?: boolean;
 }
 
-const { title, description, canonicalPath, schema = [] } = Astro.props;
+const { title, description, canonicalPath, schema = [], noindex = false } = Astro.props;
 const canonical = new URL(canonicalPath, Astro.site ?? Astro.url.origin).toString();
 const schemas = Array.isArray(schema) ? schema : [schema];
 const defaultSchemas = [
@@ -37,6 +38,7 @@ const defaultSchemas = [
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#06110e" />

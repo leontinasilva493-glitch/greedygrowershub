@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://greedygrowershub.com',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !['/privacy/', '/disclaimer/', '/contact/'].some((route) => page.endsWith(route)) })],
   vite: {
     plugins: [tailwindcss()],
   },
