@@ -9,8 +9,6 @@ export default defineConfig({
   trailingSlash: 'always',
   redirects: {
     '/calculator': '/',
-    '/seeds': '/seeds/list/',
-    '/seeds/best-seeds': '/seeds/best/',
   },
   integrations: [sitemap({ filter: (page) => !['/privacy/', '/disclaimer/', '/contact/', '/calculator/', '/seeds/', '/seeds/best-seeds/'].some((route) => page.endsWith(route)) })],
   vite: {

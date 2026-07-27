@@ -1,8 +1,25 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
+import astroConfig from '../../astro.config.mjs';
 
 const root = new URL('../../', import.meta.url);
 const readProjectFile = (path: string) => readFileSync(new URL(path, root), 'utf8');
+
+function parseCloudflareRedirects(source: string) {
+  return source
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .map((line) => {
+      const [from, to, status = '302'] = line.split(/\s+/);
+      return { from, to, status: Number(status) };
+    });
+}
+
+function normalizeAstroRedirectSource(path: string) {
+  if (astroConfig.trailingSlash !== 'always' || path === '/' || path.endsWith('/')) return path;
+  return `${path}/`;
+}
 
 describe('Seed route ownership', () => {
   test('publishes only the requested Seed List and Best Seeds page files', () => {
@@ -12,13 +29,17 @@ describe('Seed route ownership', () => {
     expect(existsSync(new URL('src/pages/seeds/best-seeds.astro', root))).toBe(false);
   });
 
-  test('defines matching Astro and Cloudflare permanent redirects', () => {
-    const astroConfig = readProjectFile('astro.config.mjs');
-    const redirects = readProjectFile('public/_redirects');
+  test('keeps each Cloudflare redirect source unique after Astro adapter output', () => {
+    const cloudflareRedirects = parseCloudflareRedirects(readProjectFile('public/_redirects'));
+    const astroRedirectSources = Object.keys(astroConfig.redirects ?? {}).map(normalizeAstroRedirectSource);
+    const combinedSources = [...cloudflareRedirects.map(({ from }) => from), ...astroRedirectSources];
 
-    expect(astroConfig).toContain("'/seeds': '/seeds/list/'");
-    expect(astroConfig).toContain("'/seeds/best-seeds': '/seeds/best/'");
-    expect(redirects).toContain('/seeds /seeds/list/ 301');
-    expect(redirects).toContain('/seeds/best-seeds /seeds/best/ 301');
+    expect(cloudflareRedirects).toEqual(expect.arrayContaining([
+      { from: '/seeds', to: '/seeds/list/', status: 301 },
+      { from: '/seeds/', to: '/seeds/list/', status: 301 },
+      { from: '/seeds/best-seeds', to: '/seeds/best/', status: 301 },
+      { from: '/seeds/best-seeds/', to: '/seeds/best/', status: 301 },
+    ]));
+    expect(combinedSources).toHaveLength(new Set(combinedSources).size);
   });
 });
