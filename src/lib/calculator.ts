@@ -17,6 +17,14 @@ export interface CalculatorResult {
   riskAdjustedProfitPerMinute: number;
 }
 
+export type CalculatorDecisionState = 'profitable' | 'break-even' | 'loss';
+
+export interface CalculatorDecision {
+  state: CalculatorDecisionState;
+  headline: string;
+  explanation: string;
+}
+
 export function validateCalculatorInput(input: CalculatorInput): void {
   for (const [label, value] of Object.entries(input)) {
     if (!Number.isFinite(value) || value < 0) {
@@ -55,5 +63,29 @@ export function calculateProfit(input: CalculatorInput): CalculatorResult {
     breakEvenHarvest,
     riskAdjustedProfit,
     riskAdjustedProfitPerMinute: riskAdjustedProfit / totalMinutes,
+  };
+}
+
+export function getCalculatorDecision(result: CalculatorResult): CalculatorDecision {
+  if (result.riskAdjustedProfit > 0) {
+    return {
+      state: 'profitable',
+      headline: 'Recorded losses are covered',
+      explanation: 'This result stays profitable after the failed attempts you entered.',
+    };
+  }
+
+  if (result.riskAdjustedProfit === 0) {
+    return {
+      state: 'break-even',
+      headline: 'This setup only breaks even',
+      explanation: 'The next successful harvest recovers the entered costs but leaves no profit.',
+    };
+  }
+
+  return {
+    state: 'loss',
+    headline: 'This setup does not recover its costs',
+    explanation: 'Lower the cost, shorten the wait, or enter a higher observed harvest before repeating it.',
   };
 }

@@ -11,64 +11,76 @@ const snapshotSource = getSource('greedygrowers-codes');
       <span class="grid size-10 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" /></span>
       <div class="min-w-0">
         <h2 id="calculator-title" class="text-xl font-semibold">Profit and Failed-Run Risk Calculator</h2>
-        <p class="text-sm text-sand-300">Choose a reported preset, then replace any value with what you see in your game.</p>
+        <p class="text-sm text-sand-300">Start with a reported preset, then edit any value you can verify in your game.</p>
       </div>
     </div>
 
-    <div class="mb-5 grid gap-4 sm:grid-cols-2">
-      <label class="grid gap-2 text-sm font-medium">
-        Seed preset
-        <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedPreset" data-seed-preset>
-          <option value="">Manual values</option>
-          {seeds.map((seed) => (
-            <option
-              value={seed.id}
-              data-cost={seed.cost ?? ''}
-              data-harvest-value={seed.harvestValue ?? ''}
-              data-wait-minutes={seed.growthMinutes ?? ''}
-            >{seed.name} · {seed.rarity}</option>
-          ))}
-        </select>
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Fertilizer
-        <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
-          <option value="" data-cost="0" data-multiplier="1">None · x1</option>
-          {fertilizers.map((fertilizer) => (
-            <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
-              {fertilizer.name} · x{fertilizer.boostMultiplier}
-            </option>
-          ))}
-        </select>
-      </label>
-    </div>
+    <fieldset>
+      <legend class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Quick setup</legend>
+      <div class="mt-3 grid gap-4 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-medium">
+          Seed preset
+          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedPreset" data-seed-preset>
+            <option value="">Manual values</option>
+            {seeds.map((seed) => (
+              <option
+                value={seed.id}
+                data-cost={seed.cost ?? ''}
+                data-harvest-value={seed.harvestValue ?? ''}
+                data-wait-minutes={seed.growthMinutes ?? ''}
+              >{seed.name} · {seed.rarity}</option>
+            ))}
+          </select>
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Fertilizer preset
+          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
+            <option value="" data-cost="0" data-multiplier="1">None · x1</option>
+            {fertilizers.map((fertilizer) => (
+              <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
+                {fertilizer.name} · x{fertilizer.boostMultiplier}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label class="grid gap-2 text-sm font-medium sm:col-span-2">
+          Failed runs before the next success
+          <span class="grid grid-cols-[1fr_auto] items-center gap-3">
+            <input class="min-w-0 rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
+            <span class="max-w-44 text-xs leading-5 text-sand-300">Count attempts already lost to lightning or another failed harvest.</span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
 
-    <div class="grid gap-4 sm:grid-cols-2">
-      <label class="grid gap-2 text-sm font-medium">
-        Seed cost
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedCost" type="number" min="0" step="any" value="100" inputmode="decimal" required />
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Harvest value
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestValue" type="number" min="0" step="any" value="160" inputmode="decimal" required />
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Wait time (minutes)
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="waitMinutes" type="number" min="0.01" step="any" value="3" inputmode="decimal" required />
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Failed runs before success
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Fertilizer cost
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" readonly />
-      </label>
-      <label class="grid gap-2 text-sm font-medium">
-        Harvest multiplier
-        <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" readonly />
-      </label>
-    </div>
+    <details class="group mt-5 rounded-2xl border border-line bg-ink-950/45" data-advanced-inputs>
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 font-semibold text-white marker:content-none">
+        <span><span class="block">Edit calculator inputs</span><span class="mt-1 block text-xs font-normal text-sand-300">Replace community presets with values from your own run.</span></span>
+        <span class="grid size-8 place-items-center rounded-lg border border-line text-leaf-400 transition group-open:rotate-45">+</span>
+      </summary>
+      <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-medium">
+          Seed cost
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedCost" type="number" min="0" step="any" value="100" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Harvest value
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestValue" type="number" min="0" step="any" value="160" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Wait time (minutes)
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="waitMinutes" type="number" min="0.01" step="any" value="3" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Fertilizer cost
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium sm:col-span-2">
+          Harvest multiplier
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" required />
+        </label>
+      </div>
+    </details>
 
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
     <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
@@ -76,39 +88,45 @@ const snapshotSource = getSource('greedygrowers-codes');
     </p>
   </form>
 
-  <div class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-7" aria-live="polite">
-    <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Live result</p>
-    <div class="mt-5 grid gap-3 sm:grid-cols-2">
-      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Cost per attempt</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="totalInvestment">100</p>
+  <div
+    class="group rounded-3xl border p-5 transition-colors data-[state=break-even]:border-amber-400/35 data-[state=break-even]:bg-amber-300/[.06] data-[state=loss]:border-rose-400/35 data-[state=loss]:bg-rose-400/[.055] data-[state=profitable]:border-leaf-500/35 data-[state=profitable]:bg-leaf-500/[.055] sm:p-7"
+    data-calculator-result
+    data-state="profitable"
+    aria-live="polite"
+  >
+    <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300">Decision after recorded losses</p>
+    <div class="mt-5 rounded-2xl border border-white/10 bg-ink-950/60 p-5 sm:p-6">
+      <p class="font-display text-2xl font-bold text-white sm:text-3xl" data-decision-headline>Recorded losses are covered</p>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-sand-300" data-decision-explanation>This result stays profitable after the failed attempts you entered.</p>
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+        <div><p class="text-sm text-sand-300">Risk-adjusted profit</p><p class="mt-1 font-display text-4xl font-bold text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300" data-output="riskAdjustedProfit">60</p></div>
+        <div class="text-right"><p class="text-sm text-sand-300">Adjusted profit / minute</p><p class="mt-1 font-mono text-2xl font-semibold text-white" data-output="riskAdjustedProfitPerMinute">20</p></div>
       </div>
-      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Boosted harvest value</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="boostedHarvestValue">160</p>
-      </div>
-      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Profit per success</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="profitPerSuccess">60</p>
-      </div>
-      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Profit per minute</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="profitPerMinute">20</p>
-      </div>
+    </div>
+
+    <div class="mt-4 grid gap-3 sm:grid-cols-2">
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4 sm:col-span-2">
         <p class="text-sm text-sand-300">Break-even harvest after failed runs</p>
         <p class="mt-2 text-2xl font-semibold" data-output="breakEvenHarvest">100</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Risk-adjusted profit</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="riskAdjustedProfit">60</p>
+        <p class="text-sm text-sand-300">Cost per attempt</p>
+        <p class="mt-2 text-xl font-semibold" data-output="totalInvestment">100</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
-        <p class="text-sm text-sand-300">Adjusted profit / minute</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="riskAdjustedProfitPerMinute">20</p>
+        <p class="text-sm text-sand-300">Boosted harvest value</p>
+        <p class="mt-2 text-xl font-semibold" data-output="boostedHarvestValue">160</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Profit per successful run</p>
+        <p class="mt-2 text-xl font-semibold" data-output="profitPerSuccess">60</p>
+      </div>
+      <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
+        <p class="text-sm text-sand-300">Successful-run profit / minute</p>
+        <p class="mt-2 text-xl font-semibold" data-output="profitPerMinute">20</p>
       </div>
     </div>
-    <p class="mt-5 text-xs leading-5 text-sand-300">This planning tool runs in your browser. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
+    <p class="mt-5 text-xs leading-5 text-sand-300">This browser-only planning tool records losses you enter. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
   </div>
 </section>
 
