@@ -25,3 +25,9 @@ pnpm-debug.log*
 
 # local reference project supplied by the user
 crazycattle3d-main/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
