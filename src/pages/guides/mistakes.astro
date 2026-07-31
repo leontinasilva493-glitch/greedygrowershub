@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
+
+const metadata = pageSeo.mistakes;
+const mistakes = [
+  {
+    title: 'Joining Through Unverified or Clone Links',
+    happens: 'A reposted video, server list, or community message sends you somewhere other than the Roblox experience owned by the listed creator.',
+    why: 'Clone pages and unofficial launch links can create account-safety risks before you even begin the seed-to-harvest loop.',
+    fix: 'Open the Roblox-owned experience page first. Use third-party guides for context, never as proof that a launch link or invite is official.',
+    href: 'https://www.roblox.com/games/74102906764176/Greedy-Growers',
+    linkLabel: 'Open the Roblox experience',
+    external: true,
+  },
+  {
+    title: 'Waiting for Maximum Height on the First Run',
+    happens: 'The first tree stays exposed while you chase an impressive height or value before learning a repeatable harvest.',
+    why: 'The official loop confirms lightning pressure, but no public evidence establishes a universal safe timer, height, or warning signal.',
+    fix: 'Complete one conservative cash-out, record the result, then extend only one wait target at a time.',
+    href: '/mechanics/when-to-harvest/',
+    linkLabel: 'Choose a harvest strategy',
+    external: false,
+  },
+  {
+    title: 'Spending Every Coin on One Attempt',
+    happens: 'One seed and fertilizer purchase consumes the balance needed to recover from a failed run.',
+    why: 'A single loss can stop progression when there is no reserve for the next planting.',
+    fix: 'Protect the cost of at least one replacement attempt before upgrading or taking a longer wait.',
+    href: '/guides/get-money-fast/',
+    linkLabel: 'Protect your starting coins',
+    external: false,
+  },
+  {
+    title: 'Trusting Unsourced Seed Rankings',
+    happens: 'A copied tier, price, growth time, or profit rate is treated as current game truth without an evidence label or checked date.',
+    why: 'Community snapshots can be useful leads, but an update or different test condition can make the comparison unreliable.',
+    fix: 'Check the source status, then replace reported values with numbers from your own current run before spending heavily.',
+    href: '/seeds/list/',
+    linkLabel: 'Review seed evidence',
+    external: false,
+  },
+  {
+    title: 'Ignoring Failed-Run Costs',
+    happens: 'Only the final successful harvest is counted, while destroyed seeds and fertilizer from earlier attempts disappear from the calculation.',
+    why: 'A successful run can look profitable by itself and still fail to recover the full sequence cost.',
+    fix: 'Count every attempt and enter the number of failed runs in the calculator before choosing another risk level.',
+    href: '/',
+    linkLabel: 'Calculate the recovery line',
+    external: false,
+  },
+];
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'Article', headline: metadata.h1, description: metadata.description, mainEntityOfPage: absoluteUrl(metadata.canonicalPath) },
+  buildBreadcrumbSchema([
+    { name: 'Greedy Growers Calculator', path: '/' },
+    { name: 'Guides', path: '/guides/' },
+    { name: 'Beginner Mistakes', path: metadata.canonicalPath },
+  ]),
+];
+---
+
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schema}>
+  <section class="border-b border-line bg-[radial-gradient(circle_at_72%_18%,rgba(245,158,11,.12),transparent_38%)]">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Fix the loss before the next seed</p>
+      <h1 class="mt-4 max-w-4xl font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1>
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-sand-300">Most beginner losses start before the first repeatable harvest. Verify the game link, protect enough coins to continue, and record every failed attempt before chasing a bigger tree.</p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="#five-mistakes" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Fix the five mistakes</a>
+        <a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Follow the first-harvest guide</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+    <aside class="grid gap-4 rounded-2xl border border-line bg-ink-900 p-5 sm:grid-cols-2 sm:p-6" aria-label="Evidence boundary">
+      <div><StatusBadge state="official"/><p class="mt-3 text-sm leading-6 text-sand-300">Roblox-owned sources support the buy, plant, grow, and harvest-before-lightning loop.</p></div>
+      <div><StatusBadge state="needs-check" label="Editorial guidance"/><p class="mt-3 text-sm leading-6 text-sand-300">Capital reserves, wait targets, and record-keeping are cautious decision rules—not hidden game mechanics or guaranteed outcomes.</p></div>
+    </aside>
+
+    <section id="five-mistakes" class="mt-16">
+      <SectionHeading eyebrow="Symptom to correction" title="Fix These Five Beginner Mistakes" description="Identify what happened, understand the cost, and take one concrete corrective step before the next planting."/>
+      <ol class="mt-8 grid gap-5 lg:grid-cols-2">
+        {mistakes.map((mistake, index) => (
+          <li class:list={['rounded-2xl border border-line bg-ink-900 p-6', index === mistakes.length - 1 && 'lg:col-span-2']}>
+            <div class="flex items-start gap-4"><span class="grid size-9 shrink-0 place-items-center rounded-md bg-leaf-500 font-mono text-sm font-bold text-ink-950">{index + 1}</span><h3 class="font-display text-xl font-bold text-white">{mistake.title}</h3></div>
+            <dl class="mt-6 grid gap-4 text-sm leading-6">
+              <div><dt class="font-mono text-[11px] font-bold uppercase tracking-[.14em] text-sand-300">What happens</dt><dd class="mt-1 text-sand-100">{mistake.happens}</dd></div>
+              <div><dt class="font-mono text-[11px] font-bold uppercase tracking-[.14em] text-amber-200">Why it hurts</dt><dd class="mt-1 text-sand-100">{mistake.why}</dd></div>
+              <div><dt class="font-mono text-[11px] font-bold uppercase tracking-[.14em] text-leaf-400">What to do instead</dt><dd class="mt-1 text-sand-100">{mistake.fix}</dd></div>
+            </dl>
+            <a href={mistake.href} target={mistake.external ? '_blank' : undefined} rel={mistake.external ? 'noopener noreferrer' : undefined} class="mt-5 inline-flex text-sm font-bold text-leaf-400">{mistake.linkLabel} →</a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="mt-16 rounded-2xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8">
+      <SectionHeading eyebrow="Safer first session" title="Use One Repeatable Loop Before You Upgrade" description="Join from Roblox, complete one conservative harvest, save the full attempt cost, and change only one input on the next run."/>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="/beginner-guide/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Start the beginner route</a>
+        <a href="/mechanics/when-to-harvest/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Choose when to harvest</a>
+        <a href="/guides/get-money-fast/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Protect your bankroll</a>
+        <a href="/seeds/list/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Check seed evidence</a>
+        <a href="/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Open the calculator</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

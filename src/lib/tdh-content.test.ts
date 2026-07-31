@@ -59,6 +59,38 @@ describe('source-visible TDH heading contracts', () => {
     ]);
   });
 
+  test('publishes a distinct five-mistake guide with corrective next steps', () => {
+    const mistakes = readSource('../pages/guides/mistakes.astro');
+    const guides = readSource('../pages/guides/index.astro');
+    const beginner = readSource('../pages/beginner-guide.astro');
+
+    expectPhrases(mistakes, [
+      'Most beginner losses start before the first repeatable harvest',
+      'Joining Through Unverified or Clone Links',
+      'Waiting for Maximum Height on the First Run',
+      'Spending Every Coin on One Attempt',
+      'Trusting Unsourced Seed Rankings',
+      'Ignoring Failed-Run Costs',
+      'What happens',
+      'Why it hurts',
+      'What to do instead',
+      "'@type': 'Article'",
+      'buildBreadcrumbSchema',
+      'href="/mechanics/when-to-harvest/"',
+      'href="/guides/get-money-fast/"',
+      'href="/seeds/list/"',
+      'href="/beginner-guide/"',
+    ]);
+    expectPhrases(guides, [
+      'Beginner Mistakes — 5 Traps to Avoid',
+      "href: '/guides/mistakes/'",
+    ]);
+    expectPhrases(beginner, [
+      'Read all 5 beginner mistakes',
+      'href="/guides/mistakes/"',
+    ]);
+  });
+
   test('aligns beginner, money, progression, and Tickets headings to long-tail intent', () => {
     const beginner = readSource('../pages/beginner-guide.astro');
     const money = readSource('../pages/guides/get-money-fast.astro');

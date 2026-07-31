@@ -43,6 +43,12 @@ const expectedMetadata = {
     canonicalPath: '/guides/',
     h1: 'Greedy Growers Guides',
   },
+  mistakes: {
+    title: 'Greedy Growers Beginner Mistakes: 5 Traps to Avoid',
+    description: 'Learn five common Greedy Growers beginner mistakes, how to protect coins, choose safer harvest timing, check seed claims, and recover after lightning losses.',
+    canonicalPath: '/guides/mistakes/',
+    h1: '5 Greedy Growers Beginner Mistakes to Avoid',
+  },
   getMoneyFast: {
     title: 'Greedy Growers Money Guide: How to Get Money Fast (2026)',
     description: 'Learn how to make money fast in Greedy Growers. Protect your coins, compare seed profit rates, prioritize upgrades, and recover after lightning losses.',
@@ -120,6 +126,7 @@ describe('indexable page metadata', () => {
       'seeds',
       'bestSeeds',
       'guides',
+      'mistakes',
       'getMoneyFast',
       'progression',
       'tickets',

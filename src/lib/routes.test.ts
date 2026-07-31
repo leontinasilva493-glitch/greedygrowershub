@@ -43,3 +43,9 @@ describe('Seed route ownership', () => {
     expect(combinedSources).toHaveLength(new Set(combinedSources).size);
   });
 });
+
+describe('Guide route ownership', () => {
+  test('publishes the beginner mistakes guide at its canonical route', () => {
+    expect(existsSync(new URL('src/pages/guides/mistakes.astro', root))).toBe(true);
+  });
+});
