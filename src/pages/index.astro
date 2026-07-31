@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Calculator from '../components/Calculator.astro';
+import CalculatorSeedPreview from '../components/CalculatorSeedPreview.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../lib/content';
@@ -55,6 +56,7 @@ const schemas = [
 
   <section id="calculator" class="mx-auto max-w-7xl scroll-mt-24 px-4 py-14 sm:px-6 lg:px-8">
     <Calculator />
+    <CalculatorSeedPreview />
   </section>
 
   <section class="border-y border-line bg-ink-900/45">
@@ -75,10 +77,11 @@ const schemas = [
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Profit per success</h3><code class="mt-3 block text-sm text-leaf-400">boosted value − cost</code></article>
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Failed-run break-even</h3><code class="mt-3 block text-sm text-leaf-400">cost × total attempts</code></article>
     </div>
-    <nav class="mt-9 grid gap-4 sm:grid-cols-3" aria-label="Continue from the Calculator">
-      <a href="/seeds/list/" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">See all seeds with profit data</span><span class="mt-2 block text-sm text-sand-300">Browse the sortable Seed List →</span></a>
-      <a href="/mechanics/when-to-harvest/" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Learn when to harvest</span><span class="mt-2 block text-sm text-sand-300">Compare capital-first and risky timing →</span></a>
-      <a href="/codes/" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Check active code status</span><span class="mt-2 block text-sm text-sand-300">Review current verification notes →</span></a>
+    <nav class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Continue from the Calculator">
+      <a href="/seeds/list/" data-event="calculator_continue_click" data-event-label="seed-list" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Compare all reported seeds</span><span class="mt-2 block text-sm text-sand-300">Filter cost, growth time, pace, and evidence →</span></a>
+      <a href="/mechanics/when-to-harvest/" data-event="calculator_continue_click" data-event-label="harvest-timing" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Plan when to harvest</span><span class="mt-2 block text-sm text-sand-300">Compare capital-first and risky timing →</span></a>
+      <a href="/guides/get-money-fast/" data-event="calculator_continue_click" data-event-label="money-guide" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Protect the next planting</span><span class="mt-2 block text-sm text-sand-300">Build a safer spending and recovery route →</span></a>
+      <a href="/updates/" data-event="calculator_continue_click" data-event-label="updates" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Check data freshness</span><span class="mt-2 block text-sm text-sand-300">See which presets still need a recheck →</span></a>
     </nav>
   </section>
 
