@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SourceList from '../../components/SourceList.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { mutations, site, sources } from '../../lib/content';
+import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
+
+const metadata = pageSeo.mutations;
+const weatherMutations = mutations.filter((mutation) => mutation.reportedChance.includes('%'));
+const lightningMutations = mutations.filter((mutation) => mutation.reportedChance.startsWith('Condition-based'));
+const faqs = [
+  { question: 'What is the best mutation in Greedy Growers?', answer: 'Cosmic has the highest reported single-mutation value multiplier at 100x. Both current guides tie it to the Meteor Shower Weather Event and report a 2.5% chance.' },
+  { question: 'Do Greedy Growers mutations stack?', answer: 'Pro Game Guides reports that a mutated plant can gain another mutation and pass its mutations to fruit. MrGuider does not document a stacking formula, so the exact combined-value math still needs a controlled in-game test.' },
+  { question: 'Can seeds get mutations?', answer: 'Both current guides report that mutated seeds grow into mutated plants and that some weather events can affect seeds. Shocked and Charged are described as lightning conditions on trees.' },
+  { question: 'Are these mutation multipliers official?', answer: 'No. The six names and multiplier values match two current third-party guides for Update 1.2, but we found no developer-published mutation table. Verify expensive decisions in the live game.' },
+];
+const schemas = [
+  { '@context': 'https://schema.org', '@type': 'Article', headline: metadata.h1, description: metadata.description, mainEntityOfPage: absoluteUrl(metadata.canonicalPath), dateModified: site.checkedAt },
+  buildBreadcrumbSchema([{ name: 'Greedy Growers Hub', path: '/' }, { name: 'Mechanics', path: '/mechanics/' }, { name: 'Mutations', path: metadata.canonicalPath }]),
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) },
+];
+---
+
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
+  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+    <header class="max-w-4xl">
+      <div class="flex flex-wrap items-center gap-3"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Update 1.2 report · two sources matched</p><StatusBadge state="community-lead" label="Not developer-confirmed" /></div>
+      <h1 class="mt-5 text-4xl font-bold tracking-[-.04em] sm:text-6xl">All 6 Greedy Growers Mutations Reported for Update 1.2</h1>
+      <p class="mt-6 text-lg leading-8 text-sand-300">Mutations are reported to change the sale value of seeds, plants, or fruit. This guide compares all six current names, reported multipliers, weather or lightning conditions, and the evidence gaps you should know before planning a high-value run.</p>
+      <div class="mt-7 flex flex-wrap gap-3"><a href="#mutation-table" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Compare all multipliers</a><a href="/seeds/list/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Open the 20-seed list</a></div>
+    </header>
+
+    <section class="mt-10 grid gap-4 sm:grid-cols-3" aria-label="Mutation guide summary">
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">6</p><p class="mt-2 text-sm text-sand-300">matching mutation names across current guides</p></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">2x–100x</p><p class="mt-2 text-sm text-sand-300">reported single-mutation value range</p></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">{site.checkedAt}</p><p class="mt-2 text-sm text-sand-300">Last checked against both cited publications</p></article>
+    </section>
+
+    <aside class="mt-8 rounded-2xl border border-amber-400/30 bg-amber-300/[.06] p-5 text-sm leading-7 text-amber-100"><strong>Evidence boundary:</strong> Pro Game Guides and MrGuider agree on the six names, individual multipliers, and primary triggers. Neither is the developer. Stacking math, event timing, visual identifiers, and whether every trigger behaves identically across servers remain below our gameplay-verification threshold.</aside>
+
+    <section id="mutation-table" class="mt-16 scroll-mt-24" aria-labelledby="mutation-table-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Current reported values</p>
+      <h2 id="mutation-table-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutation Multiplier Table</h2>
+      <p class="mt-4 max-w-3xl leading-7 text-sand-300">Treat each row as a matched community report. The table does not assume that multiple mutation multipliers multiply together.</p>
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-line"><table class="w-full min-w-[820px] text-left text-sm"><thead class="bg-ink-900 font-mono text-xs uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Mutation</th><th class="px-5 py-4">Reported value</th><th class="px-5 py-4">Reported trigger</th><th class="px-5 py-4">Chance / condition</th><th class="px-5 py-4">Applies to</th><th class="px-5 py-4">Evidence</th></tr></thead><tbody>{mutations.map((mutation) => <tr class="border-t border-line bg-ink-950/40"><td class="px-5 py-4 font-bold">{mutation.name}</td><td class="px-5 py-4 font-mono text-lg font-bold text-leaf-400">{mutation.valueMultiplier}x</td><td class="max-w-xs px-5 py-4">{mutation.reportedTrigger}</td><td class="px-5 py-4 text-sand-300">{mutation.reportedChance}</td><td class="px-5 py-4 text-sand-300">{mutation.appliesTo.join(', ')}</td><td class="px-5 py-4"><StatusBadge state={mutation.verification} label="2 reports agree" /></td></tr>)}</tbody></table></div>
+    </section>
+
+    <section class="mt-16" aria-labelledby="get-mutations-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Trigger map</p>
+      <h2 id="get-mutations-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">How to Get Mutations from Weather and Lightning</h2>
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8"><h3 class="text-xl font-bold">Weather-reported mutations</h3><div class="mt-5 grid gap-4">{weatherMutations.map((mutation) => <div class="rounded-xl border border-line bg-ink-950/55 p-4"><div class="flex items-center justify-between gap-3"><strong>{mutation.name}</strong><span class="font-mono font-bold text-leaf-400">{mutation.valueMultiplier}x</span></div><p class="mt-2 text-sm leading-6 text-sand-300">{mutation.reportedTrigger} · reported {mutation.reportedChance} chance.</p></div>)}</div></article>
+        <article class="rounded-3xl border border-amber-400/25 bg-amber-300/[.045] p-6 sm:p-8"><h3 class="text-xl font-bold">Lightning-reported mutations</h3><div class="mt-5 grid gap-4">{lightningMutations.map((mutation) => <div class="rounded-xl border border-amber-400/20 bg-ink-950/45 p-4"><div class="flex items-center justify-between gap-3"><strong>{mutation.name}</strong><span class="font-mono font-bold text-amber-200">{mutation.valueMultiplier}x</span></div><p class="mt-2 text-sm leading-6 text-sand-300">{mutation.reportedTrigger}.</p></div>)}</div><p class="mt-5 text-sm leading-6 text-sand-300">Waiting for lightning still exposes the run to loss. Read the <a href="/mechanics/lightning/" class="font-bold text-leaf-400">lightning evidence guide</a> before treating these conditions as a guaranteed route.</p></article>
+      </div>
+    </section>
+
+    <section class="mt-16 grid gap-6 lg:grid-cols-2">
+      <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8"><h2 class="text-2xl font-bold">Do Greedy Growers Mutations Stack?</h2><p class="mt-4 leading-7 text-sand-300">One current source reports that a mutated plant can receive another mutation and pass those mutations to its fruit. That supports possible stacking as a research lead. It does <strong class="text-sand-100">not</strong> establish whether values add, multiply, replace one another, or follow a special formula.</p><p class="mt-4 leading-7 text-sand-300">Until a controlled comparison proves the calculation, enter the final observed harvest value into the calculator instead of multiplying reported values together.</p></article>
+      <article class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8"><h2 class="text-2xl font-bold">How to Verify a Mutation in Your Server</h2><ol class="mt-5 grid gap-3 text-sm leading-6 text-sand-300"><li><strong class="text-sand-100">1.</strong> Record the seed, current plant multiplier, and unmutated comparison value.</li><li><strong class="text-sand-100">2.</strong> Capture the weather or lightning event from before the trigger through the result.</li><li><strong class="text-sand-100">3.</strong> Save the mutation label and final plant or fruit sale value.</li><li><strong class="text-sand-100">4.</strong> Repeat on the same update and change only one variable.</li><li><strong class="text-sand-100">5.</strong> Test stacked mutations separately from single-mutation results.</li></ol></article>
+    </section>
+
+    <section class="mt-16" aria-labelledby="mutation-faq-title"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Quick answers</p><h2 id="mutation-faq-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutations FAQ</h2><div class="mt-7 grid gap-4">{faqs.map((faq) => <details class="rounded-2xl border border-line bg-ink-900 p-5 sm:p-6"><summary class="cursor-pointer list-none font-semibold">{faq.question}</summary><p class="mt-3 max-w-4xl leading-7 text-sand-300">{faq.answer}</p></details>)}</div></section>
+
+    <nav class="mt-16 rounded-3xl border border-line bg-ink-900 p-6 sm:p-8" aria-label="Continue from mutations"><h2 class="text-2xl font-bold">Turn the guide into an observed result</h2><p class="mt-3 max-w-3xl leading-7 text-sand-300">Choose a seed, understand the lightning tradeoff, then calculate using the outcome from your server—not an assumed stacking formula.</p><div class="mt-6 flex flex-wrap gap-3"><a href="/seeds/list/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Choose from all 20 seeds</a><a href="/mechanics/lightning/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Review lightning risk</a><a href="/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Open the calculator</a></div></nav>
+
+    <div class="mt-10"><SourceList items={sources.filter((source) => ['pro-game-guides-mutations', 'mrguider-mutations'].includes(source.id))} title="Sources checked for mutation values" /></div>
+  </section>
+</BaseLayout>

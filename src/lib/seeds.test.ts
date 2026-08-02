@@ -3,9 +3,9 @@ import type { SeedRecord } from './content';
 import { compareSeeds, filterSeeds, groupSeedsByTier, sortSeeds } from './seeds';
 
 const fixtures: SeedRecord[] = [
-  { id: 'alpha', name: 'Alpha', type: 'Seed', rarity: 'Common', sourceId: 'source', unlock: 'River', cost: 40, harvestValue: 75, growthMinutes: 2, multiHarvest: false, reportedProfitPerMinute: 17.5, tier: 'C', bestUse: 'Starter sample', stage: 'starter', verification: 'verified', verifiedAt: '2026-07-26', notes: '' },
-  { id: 'beta', name: 'Beta', type: 'Plant', rarity: 'Rare', sourceId: 'source', unlock: 'Quest', cost: null, harvestValue: null, growthMinutes: null, multiHarvest: false, reportedProfitPerMinute: null, tier: null, bestUse: 'Unknown sample', stage: 'all', verification: 'community-lead', verifiedAt: '2026-07-26', notes: '' },
-  { id: 'gamma', name: 'Gamma', type: 'Tree', rarity: 'Epic', sourceId: 'source', unlock: 'Shop', cost: 120, harvestValue: 210, growthMinutes: 5, multiHarvest: true, reportedProfitPerMinute: 18, tier: 'S', bestUse: 'Late sample', stage: 'late', verification: 'needs-check', verifiedAt: '2026-07-26', notes: '' },
+  { id: 'alpha', name: 'Alpha', type: 'Seed', rarity: 'Common', sourceId: 'source', sourceIds: ['source'], unlock: 'River', cost: 40, costDisplay: '$40', costSortValue: 40, spawnOneIn: 5, harvestValue: 75, growthMinutes: 2, multiHarvest: false, reportedProfitPerMinute: 17.5, tier: 'C', bestUse: 'Starter sample', stage: 'starter', verification: 'verified', verifiedAt: '2026-07-26', gameVersionClaim: 'Test', availability: 'Available', notes: '' },
+  { id: 'beta', name: 'Beta', type: 'Plant', rarity: 'Rare', sourceId: 'source', sourceIds: ['source'], unlock: 'Quest', cost: null, costDisplay: 'Not verified', costSortValue: null, spawnOneIn: null, harvestValue: null, growthMinutes: null, multiHarvest: null, reportedProfitPerMinute: null, tier: null, bestUse: 'Unknown sample', stage: 'all', verification: 'community-lead', verifiedAt: '2026-07-26', gameVersionClaim: 'Test', availability: 'Unknown', notes: '' },
+  { id: 'gamma', name: 'Gamma', type: 'Tree', rarity: 'Epic', sourceId: 'source', sourceIds: ['source'], unlock: 'Shop', cost: 120, costDisplay: '$120', costSortValue: 120, spawnOneIn: 15, harvestValue: 210, growthMinutes: 5, multiHarvest: true, reportedProfitPerMinute: 18, tier: 'S', bestUse: 'Late sample', stage: 'late', verification: 'needs-check', verifiedAt: '2026-07-26', gameVersionClaim: 'Test', availability: 'Available', notes: '' },
 ];
 
 describe('filterSeeds', () => {
@@ -15,6 +15,10 @@ describe('filterSeeds', () => {
 
   it('includes universal records in a stage filter', () => {
     expect(filterSeeds(fixtures, { verification: 'all', stage: 'starter' }).map((seed) => seed.id)).toEqual(['alpha', 'beta']);
+  });
+
+  it('filters the current catalog by rarity', () => {
+    expect(filterSeeds(fixtures, { verification: 'all', stage: 'all', rarity: 'Rare' }).map((seed) => seed.id)).toEqual(['beta']);
   });
 });
 
@@ -28,6 +32,11 @@ describe('sortSeeds', () => {
   it('sorts numeric values and always places unknown values last', () => {
     expect(sortSeeds(fixtures, 'cost', 'asc').map((seed) => seed.id)).toEqual(['alpha', 'gamma', 'beta']);
     expect(sortSeeds(fixtures, 'cost', 'desc').map((seed) => seed.id)).toEqual(['gamma', 'alpha', 'beta']);
+  });
+
+  it('sorts display-safe catalog prices and reported spawn denominators', () => {
+    expect(sortSeeds(fixtures, 'costSortValue', 'desc').map((seed) => seed.id)).toEqual(['gamma', 'alpha', 'beta']);
+    expect(sortSeeds(fixtures, 'spawnOneIn', 'asc').map((seed) => seed.id)).toEqual(['alpha', 'gamma', 'beta']);
   });
 });
 

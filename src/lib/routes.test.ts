@@ -26,6 +26,7 @@ describe('Seed route ownership', () => {
     expect(existsSync(new URL('src/pages/seeds/list.astro', root))).toBe(true);
     expect(existsSync(new URL('src/pages/seeds/best.astro', root))).toBe(true);
     expect(existsSync(new URL('src/pages/seeds.astro', root))).toBe(false);
+    expect(existsSync(new URL('src/pages/seeds/index.astro', root))).toBe(false);
     expect(existsSync(new URL('src/pages/seeds/best-seeds.astro', root))).toBe(false);
   });
 
@@ -35,6 +36,7 @@ describe('Seed route ownership', () => {
     const combinedSources = [...cloudflareRedirects.map(({ from }) => from), ...astroRedirectSources];
 
     expect(cloudflareRedirects).toEqual(expect.arrayContaining([
+      { from: '/sitemap.xml', to: '/sitemap-index.xml', status: 301 },
       { from: '/seeds', to: '/seeds/list/', status: 301 },
       { from: '/seeds/', to: '/seeds/list/', status: 301 },
       { from: '/seeds/best-seeds', to: '/seeds/best/', status: 301 },
@@ -47,5 +49,11 @@ describe('Seed route ownership', () => {
 describe('Guide route ownership', () => {
   test('publishes the beginner mistakes guide at its canonical route', () => {
     expect(existsSync(new URL('src/pages/guides/mistakes.astro', root))).toBe(true);
+  });
+});
+
+describe('Mechanics route ownership', () => {
+  test('publishes the mutation guide at its canonical route', () => {
+    expect(existsSync(new URL('src/pages/mechanics/mutations.astro', root))).toBe(true);
   });
 });

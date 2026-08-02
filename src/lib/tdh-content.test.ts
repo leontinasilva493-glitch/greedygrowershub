@@ -31,19 +31,42 @@ describe('source-visible TDH heading contracts', () => {
     const bestSeeds = readSource('../pages/seeds/best.astro');
 
     expectPhrases(`${seedList}\n${seedExplorer}`, [
-      'Greedy Growers Seed Table — Sort and Filter',
+      'Current Greedy Growers Seed Table',
       'Compare Two Greedy Growers Seeds',
-      'How to Read Seed Data and Verification Status',
+      'How We Check Greedy Growers Seed Data',
     ]);
     expectPhrases(bestSeeds, [
-      'Early Game — Best Budget Seeds',
-      'Fast Money — Best Reported Profit Seeds',
-      'High Risk — High-Reward Seed Picks',
-      'How We Rank Seeds and Use Community Tiers',
+      'Best Budget Seeds for Learning the Current Loop',
+      'Rarest Reported Seeds to Watch in the River',
+      'How to Find Your Best Seed',
+      'No profit ranking yet',
     ]);
   });
 
-  test('uses four guide intents and two mechanics intents on directory pages', () => {
+  test('answers the current all-seeds intent with price, rarity, spawn chance, and source context', () => {
+    const seedList = readSource('../pages/seeds/list.astro');
+    const seedExplorer = readSource('../components/SeedExplorer.astro');
+    const seedData = readSource('../data/seeds.json');
+
+    expectPhrases(`${seedList}\n${seedExplorer}`, [
+      '20 Greedy Growers Seeds Reported for Update 1.2',
+      'Current Greedy Growers Seed Table',
+      'Spawn chance',
+      'Why This List Differs From Older Seed Guides',
+      'How We Check Greedy Growers Seed Data',
+      'Frequently Asked Questions About Greedy Growers Seeds',
+      'href="/mechanics/mutations/"',
+    ]);
+    expectPhrases(seedData, [
+      '"oak-seed"',
+      '"void-seed"',
+      '"spawnOneIn": 1000',
+      '"costDisplay": "$1.75Qi"',
+      '"gameVersionClaim": "Update 1.2"',
+    ]);
+  });
+
+  test('uses four guide intents and three mechanics intents on directory pages', () => {
     const guides = readSource('../pages/guides/index.astro');
     const mechanics = readSource('../pages/mechanics/index.astro');
 
@@ -56,6 +79,22 @@ describe('source-visible TDH heading contracts', () => {
     expectPhrases(mechanics, [
       'When to Harvest — Strategy and Break-Even Timing',
       'Lightning — Confirmed Facts and Risk Signals',
+      'Mutations — Multipliers, Weather, and Evidence',
+    ]);
+  });
+
+  test('publishes a source-matched mutation guide without hiding evidence limits', () => {
+    const mutations = readSource('../pages/mechanics/mutations.astro');
+    expectPhrases(mutations, [
+      'All 6 Greedy Growers Mutations Reported for Update 1.2',
+      'Greedy Growers Mutation Multiplier Table',
+      'How to Get Mutations from Weather and Lightning',
+      'Do Greedy Growers Mutations Stack?',
+      'How to Verify a Mutation in Your Server',
+      'href="/seeds/list/"',
+      'href="/mechanics/lightning/"',
+      'href="/"',
+      "'@type': 'FAQPage'",
     ]);
   });
 
@@ -154,10 +193,15 @@ describe('source-visible TDH heading contracts', () => {
       'Codes FAQ and Verification Method',
     ]);
     expectPhrases(updates, [
-      'Latest Greedy Growers Updates and Site Changes',
+      'Latest Greedy Growers Game and Data Updates',
+      'Site Data Revision History',
       'Codes Status After Game Updates',
       'Official Sources for Greedy Growers Updates',
       'What We Recheck After Every Patch',
+      "href: '/seeds/list/'",
+      "href: '/seeds/best/'",
+      "href: '/mechanics/mutations/'",
+      "href: '/mechanics/lightning/'",
     ]);
   });
 
@@ -175,9 +219,9 @@ describe('source-visible TDH heading contracts', () => {
     expectPhrases(money, [
       'Money Route by Player Stage',
       'Reported Seed Pace Is Not Guaranteed Profit',
-      "'basic-seed', 'blueberry-seed', 'pumpkin-seed'",
+      "'oak-seed', 'pine-seed', 'apple-seed'",
     ]);
-    expectPhrases(seedData, ['"basic-seed"', '"blueberry-seed"', '"pumpkin-seed"']);
+    expectPhrases(seedData, ['"oak-seed"', '"pine-seed"', '"apple-seed"']);
     expectPhrases(lightning, [
       'Confirmed',
       'Not Verified',

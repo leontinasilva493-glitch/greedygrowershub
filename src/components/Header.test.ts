@@ -53,6 +53,7 @@ describe('global navigation order', () => {
     expectLabelsInOrder(mechanicLinks ?? '', [
       "label: 'When to Harvest'",
       "label: 'Lightning'",
+      "label: 'Mutations'",
     ]);
     expectLabelsInOrder(footerSource, ['>Tools & data<', '>Guides<']);
     expectLabelsInOrder(footerSource, [
@@ -65,6 +66,7 @@ describe('global navigation order', () => {
     expectLabelsInOrder(footerSource, [
       '>When to Harvest<',
       '>Lightning<',
+      '>Mutations<',
     ]);
   });
 

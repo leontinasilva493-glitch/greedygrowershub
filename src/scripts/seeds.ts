@@ -4,10 +4,12 @@ const pushEvent = (event: string, details: Record<string, unknown>) => {
 };
 
 document.querySelectorAll<HTMLElement>('[data-seed-explorer]').forEach((explorer) => {
+  const search = explorer.querySelector<HTMLInputElement>('[data-seed-search]');
+  const rarity = explorer.querySelector<HTMLSelectElement>('[data-seed-filter="rarity"]');
   const verification = explorer.querySelector<HTMLSelectElement>('[data-seed-filter="verification"]');
-  const stage = explorer.querySelector<HTMLSelectElement>('[data-seed-filter="stage"]');
   const sort = explorer.querySelector<HTMLSelectElement>('[data-seed-sort]');
   const empty = explorer.querySelector<HTMLElement>('[data-seed-empty]');
+  const resultCount = explorer.querySelector<HTMLElement>('[data-seed-result-count]');
   const count = explorer.querySelector<HTMLElement>('[data-compare-count]');
   const placeholder = explorer.querySelector<HTMLElement>('[data-compare-placeholder]');
 
@@ -26,12 +28,14 @@ document.querySelectorAll<HTMLElement>('[data-seed-explorer]').forEach((explorer
 
   const updateList = () => {
     const [sortKey, direction] = (sort?.value ?? 'name:asc').split(':');
+    const query = search?.value.trim().toLocaleLowerCase() ?? '';
     let visible = 0;
+
     groups.forEach((group) => {
       const items = [...group.querySelectorAll<HTMLElement>('[data-seed-item]')];
       items.sort((a, b) => {
-        const aRaw = a.dataset[sortKey === 'growthMinutes' ? 'growthMinutes' : sortKey === 'harvestValue' ? 'harvestValue' : sortKey] ?? '';
-        const bRaw = b.dataset[sortKey === 'growthMinutes' ? 'growthMinutes' : sortKey === 'harvestValue' ? 'harvestValue' : sortKey] ?? '';
+        const aRaw = a.dataset[sortKey] ?? '';
+        const bRaw = b.dataset[sortKey] ?? '';
         if (!aRaw && !bRaw) return 0;
         if (!aRaw) return 1;
         if (!bRaw) return -1;
@@ -40,13 +44,17 @@ document.querySelectorAll<HTMLElement>('[data-seed-explorer]').forEach((explorer
       }).forEach((item) => group.append(item));
 
       items.forEach((item) => {
+        const matchesSearch = !query || (item.dataset.name ?? '').toLocaleLowerCase().includes(query);
+        const matchesRarity = rarity?.value === 'all' || item.dataset.rarity === rarity?.value;
         const matchesVerification = verification?.value === 'all' || item.dataset.verification === verification?.value;
-        const matchesStage = stage?.value === 'all' || item.dataset.stage === 'all' || item.dataset.stage === stage?.value;
-        item.classList.toggle('hidden', !(matchesVerification && matchesStage));
-        if (group === groups[0] && matchesVerification && matchesStage) visible += 1;
+        const matches = matchesSearch && matchesRarity && matchesVerification;
+        item.classList.toggle('hidden', !matches);
+        if (group === groups[0] && matches) visible += 1;
       });
     });
+
     empty?.classList.toggle('hidden', visible > 0);
+    if (resultCount) resultCount.textContent = String(visible);
   };
 
   explorer.addEventListener('change', (event) => {
@@ -64,6 +72,7 @@ document.querySelectorAll<HTMLElement>('[data-seed-explorer]').forEach((explorer
     pushEvent('seed_filter_change', { filter: target.dataset.seedFilter ?? 'sort', value: target.value });
   });
 
+  search?.addEventListener('input', updateList);
   updateList();
   syncSelections();
 });

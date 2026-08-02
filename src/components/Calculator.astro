@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { fertilizers, getSource, seeds } from '../lib/content';
 
-const snapshotSource = getSource('greedygrowers-codes');
+const fertilizerSource = getSource('greedygrowers-codes');
 ---
 
 <section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
@@ -11,7 +11,7 @@ const snapshotSource = getSource('greedygrowers-codes');
       <span class="grid size-10 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" /></span>
       <div class="min-w-0">
         <h2 id="calculator-title" class="text-xl font-semibold">Profit and Failed-Run Risk Calculator</h2>
-        <p class="text-sm text-sand-300">Start with a reported preset, then edit any value you can verify in your game.</p>
+        <p class="text-sm text-sand-300">Choose a current seed label, then enter the cost and result you observed in game.</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@ const snapshotSource = getSource('greedygrowers-codes');
       <legend class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Quick setup</legend>
       <div class="mt-3 grid gap-4 sm:grid-cols-2">
         <label class="grid gap-2 text-sm font-medium">
-          Seed preset
+          Seed reference
           <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedPreset" data-seed-preset>
             <option value="">Manual values</option>
             {seeds.map((seed) => (
@@ -55,7 +55,7 @@ const snapshotSource = getSource('greedygrowers-codes');
 
     <details class="group mt-5 rounded-2xl border border-line bg-ink-950/45" data-advanced-inputs>
       <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 font-semibold text-white marker:content-none">
-        <span><span class="block">Edit calculator inputs</span><span class="mt-1 block text-xs font-normal text-sand-300">Replace community presets with values from your own run.</span></span>
+        <span><span class="block">Enter calculator inputs</span><span class="mt-1 block text-xs font-normal text-sand-300">Use values from your own run; current seed economics are intentionally not auto-filled.</span></span>
         <span class="grid size-8 place-items-center rounded-lg border border-line text-leaf-400 transition group-open:rotate-45">+</span>
       </summary>
       <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
@@ -84,7 +84,7 @@ const snapshotSource = getSource('greedygrowers-codes');
 
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
     <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
-      Presets are a community snapshot from <a class="font-semibold underline" href={snapshotSource.url} target="_blank" rel="noopener noreferrer">{snapshotSource.name}</a>, checked {seeds[0]?.verifiedAt}. They are not official game values and still need an in-game recheck.
+      Seed names follow the source-matched Update 1.2 catalog checked {seeds[0]?.verifiedAt}, but selecting one does not fill unverified harvest economics. Fertilizer presets remain a legacy community snapshot from <a class="font-semibold underline" href={fertilizerSource.url} target="_blank" rel="noopener noreferrer">{fertilizerSource.name}</a> and still need an in-game recheck.
     </p>
   </form>
 
