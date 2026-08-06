@@ -1,8 +1,10 @@
 ---
 import Icon from './Icon.astro';
 import { fertilizers, getSource, seeds } from '../lib/content';
+import { buildCalculatorContext, getMutationPreset, mutationPresets } from '../lib/calculator-context';
 
 const fertilizerSource = getSource('greedygrowers-codes');
+const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
 ---
 
 <section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
@@ -15,6 +17,20 @@ const fertilizerSource = getSource('greedygrowers-codes');
       </div>
     </div>
 
+    <aside class="mb-6 overflow-hidden rounded-2xl border border-leaf-500/25 bg-leaf-500/[.045]" data-calculator-context aria-label="Selected calculator context" aria-live="polite">
+      <div class="border-b border-leaf-500/15 px-4 py-3">
+        <p class="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">20 Seeds + 6 Mutations context</p>
+      </div>
+      <dl class="grid grid-cols-2 gap-px bg-line text-xs sm:grid-cols-4">
+        <div class="bg-ink-950/85 p-3"><dt class="text-sand-300">Selected</dt><dd class="mt-1 font-semibold text-white" data-context="selectedSeed">{initialContext.selectedSeed}</dd></div>
+        <div class="bg-ink-950/85 p-3"><dt class="text-sand-300">Reported cost</dt><dd class="mt-1 font-semibold text-white" data-context="reportedCost">{initialContext.reportedCost}</dd></div>
+        <div class="bg-ink-950/85 p-3"><dt class="text-sand-300">Rarity</dt><dd class="mt-1 font-semibold text-white" data-context="rarity">{initialContext.rarity}</dd></div>
+        <div class="bg-ink-950/85 p-3"><dt class="text-sand-300">River spawn</dt><dd class="mt-1 font-semibold text-white" data-context="riverSpawn">{initialContext.riverSpawn}</dd></div>
+        <div class="col-span-2 bg-ink-950/85 p-3 sm:col-span-2"><dt class="text-sand-300">Mutation preset</dt><dd class="mt-1 font-semibold text-leaf-400" data-context="mutationPreset">{initialContext.mutationPreset}</dd></div>
+        <div class="col-span-2 bg-ink-950/85 p-3 sm:col-span-2"><dt class="text-sand-300">Evidence</dt><dd class="mt-1 font-semibold text-amber-200" data-context="evidence">{initialContext.evidence}</dd></div>
+      </dl>
+    </aside>
+
     <fieldset>
       <legend class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Quick setup</legend>
       <div class="mt-3 grid gap-4 sm:grid-cols-2">
@@ -25,9 +41,10 @@ const fertilizerSource = getSource('greedygrowers-codes');
             {seeds.map((seed) => (
               <option
                 value={seed.id}
-                data-cost={seed.cost ?? ''}
-                data-harvest-value={seed.harvestValue ?? ''}
-                data-wait-minutes={seed.growthMinutes ?? ''}
+                data-seed-name={seed.name}
+                data-cost-display={seed.costDisplay}
+                data-rarity={seed.rarity}
+                data-spawn-one-in={seed.spawnOneIn ?? ''}
               >{seed.name} · {seed.rarity}</option>
             ))}
           </select>
@@ -75,10 +92,27 @@ const fertilizerSource = getSource('greedygrowers-codes');
           Fertilizer cost
           <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" required />
         </label>
-        <label class="grid gap-2 text-sm font-medium sm:col-span-2">
-          Harvest multiplier
-          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" required />
-        </label>
+        <div class="grid gap-3 sm:col-span-2">
+          <label class="grid gap-2 text-sm font-medium">
+            Harvest multiplier
+            <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" required />
+          </label>
+          <fieldset class="rounded-2xl border border-leaf-500/20 bg-leaf-500/[.035] p-4">
+            <legend class="px-1 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Update 1.2 matched community report</legend>
+            <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4" data-mutation-presets>
+              {mutationPresets.map((preset) => (
+                <button
+                  type="button"
+                  class="rounded-xl border border-line bg-ink-950 px-3 py-2.5 text-left text-xs text-sand-300 transition hover:border-leaf-500/50 hover:text-white data-[state=active]:border-leaf-500 data-[state=active]:bg-leaf-500/10 data-[state=active]:text-white"
+                  data-mutation-preset={preset.id}
+                  data-state={preset.id === 'base' ? 'active' : 'idle'}
+                  aria-pressed={preset.id === 'base' ? 'true' : 'false'}
+                ><strong class="block font-mono text-sm text-leaf-400">{preset.multiplier}x</strong>{preset.name}</button>
+              ))}
+            </div>
+            <p class="mt-3 text-xs leading-5 text-sand-300">A preset only replaces the multiplier input. It does not calculate mutation chance or combine multiple mutations. <a href="/mechanics/mutations/" class="font-semibold text-leaf-400">Read the evidence guide →</a></p>
+          </fieldset>
+        </div>
       </div>
     </details>
 
