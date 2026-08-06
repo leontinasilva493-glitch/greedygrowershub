@@ -1,5 +1,6 @@
 /calculator / 301
 /calculator/* / 301
+/sitemap.xml /sitemap-index.xml 301
 /seeds /seeds/list/ 301
 /seeds/ /seeds/list/ 301
 /seeds/best-seeds /seeds/best/ 301

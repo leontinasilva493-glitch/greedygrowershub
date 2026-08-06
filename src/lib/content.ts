@@ -1,6 +1,7 @@
 import siteData from '../data/site.json';
 import codeData from '../data/codes.json';
 import seedData from '../data/seeds.json';
+import mutationData from '../data/mutations.json';
 import fertilizerData from '../data/fertilizers.json';
 import rebirthData from '../data/rebirths.json';
 import sourceData from '../data/sources.json';
@@ -41,17 +42,23 @@ export interface SeedRecord {
   type: string;
   rarity: string;
   sourceId: string;
+  sourceIds: string[];
   unlock: string;
   cost: number | null;
+  costDisplay: string;
+  costSortValue: number | null;
+  spawnOneIn: number | null;
   harvestValue: number | null;
   growthMinutes: number | null;
-  multiHarvest: boolean;
+  multiHarvest: boolean | null;
   reportedProfitPerMinute: number | null;
   tier: SeedTier | null;
   bestUse: string;
   stage: PlayerStage;
   verification: VerificationState;
   verifiedAt: string;
+  gameVersionClaim: string;
+  availability: string;
   notes: string;
 }
 
@@ -63,6 +70,20 @@ export interface FertilizerRecord {
   sourceId: string;
   verification: VerificationState;
   verifiedAt: string;
+  notes: string;
+}
+
+export interface MutationRecord {
+  id: string;
+  name: string;
+  valueMultiplier: number;
+  reportedTrigger: string;
+  reportedChance: string;
+  appliesTo: string[];
+  sourceIds: string[];
+  verification: VerificationState;
+  verifiedAt: string;
+  gameVersionClaim: string;
   notes: string;
 }
 
@@ -80,6 +101,7 @@ export interface ContentBundle {
   sources: SourceRecord[];
   codes: CodeRecord[];
   seeds: SeedRecord[];
+  mutations: MutationRecord[];
   fertilizers: FertilizerRecord[];
   rebirths: RebirthRecord[];
 }
@@ -126,6 +148,21 @@ export function validateContent(input: ContentBundle): void {
     if (!playerStages.has(seed.stage)) throw new Error(`Unsupported player stage: ${seed.stage}`);
     if (seed.tier !== null && !seedTiers.has(seed.tier)) throw new Error(`Unsupported seed tier: ${seed.tier}`);
     if (!sourceIds.has(seed.sourceId)) throw new Error(`Unknown source: ${seed.sourceId}`);
+    if (!seed.sourceIds.length) throw new Error(`Seed ${seed.id} needs at least one source`);
+    for (const sourceId of seed.sourceIds) {
+      if (!sourceIds.has(sourceId)) throw new Error(`Unknown source: ${sourceId}`);
+    }
+    if (!seed.sourceIds.includes(seed.sourceId)) throw new Error(`Seed ${seed.id} primary source must be traceable`);
+    if (seed.spawnOneIn !== null && (!Number.isInteger(seed.spawnOneIn) || seed.spawnOneIn < 1)) {
+      throw new Error('Seed spawn denominator must be a positive whole number');
+    }
+    if (!seed.costDisplay.trim()) throw new Error(`Seed ${seed.id} needs a display price`);
+    if (seed.costSortValue !== null && (!Number.isFinite(seed.costSortValue) || seed.costSortValue < 0)) {
+      throw new Error('Seed cost sort value must be non-negative');
+    }
+    if (!seed.gameVersionClaim.trim() || !seed.availability.trim()) {
+      throw new Error(`Seed ${seed.id} needs version and availability context`);
+    }
     for (const [label, value] of [
       ['cost', seed.cost],
       ['harvest value', seed.harvestValue],
@@ -139,6 +176,21 @@ export function validateContent(input: ContentBundle): void {
   }
 
   const fertilizerIds = new Set<string>();
+  const mutationIds = new Set<string>();
+  for (const mutation of input.mutations) {
+    if (mutationIds.has(mutation.id)) throw new Error(`Duplicate mutation: ${mutation.id}`);
+    mutationIds.add(mutation.id);
+    if (!Number.isFinite(mutation.valueMultiplier) || mutation.valueMultiplier <= 1) throw new Error('Mutation multiplier must be greater than 1');
+    if (!verificationStates.has(mutation.verification)) throw new Error('Unsupported verification state');
+    if (!mutation.sourceIds.length) throw new Error(`Mutation ${mutation.id} needs at least one source`);
+    for (const sourceId of mutation.sourceIds) {
+      if (!sourceIds.has(sourceId)) throw new Error(`Unknown source: ${sourceId}`);
+    }
+    if (!mutation.reportedTrigger.trim() || !mutation.reportedChance.trim() || !mutation.appliesTo.length || !mutation.gameVersionClaim.trim()) {
+      throw new Error(`Mutation ${mutation.id} needs complete report context`);
+    }
+  }
+
   for (const fertilizer of input.fertilizers) {
     if (fertilizerIds.has(fertilizer.id)) throw new Error(`Duplicate fertilizer: ${fertilizer.id}`);
     fertilizerIds.add(fertilizer.id);
@@ -166,13 +218,14 @@ export const content: ContentBundle = {
   sources: sourceData as SourceRecord[],
   codes: codeData as CodeRecord[],
   seeds: seedData as SeedRecord[],
+  mutations: mutationData as MutationRecord[],
   fertilizers: fertilizerData as FertilizerRecord[],
   rebirths: rebirthData as RebirthRecord[],
 };
 
 validateContent(content);
 
-export const { site, sources, codes, seeds, fertilizers, rebirths } = content;
+export const { site, sources, codes, seeds, mutations, fertilizers, rebirths } = content;
 
 export function getSource(sourceId: string): SourceRecord {
   const source = sources.find((item) => item.id === sourceId);

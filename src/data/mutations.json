@@ -1,0 +1,80 @@
+[
+  {
+    "id": "dewy",
+    "name": "Dewy",
+    "valueMultiplier": 2,
+    "reportedTrigger": "Misty Weather Event",
+    "reportedChance": "50%",
+    "appliesTo": ["Seeds", "Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "Both current guides report a 2x value multiplier and 50% event chance."
+  },
+  {
+    "id": "shocked",
+    "name": "Shocked",
+    "valueMultiplier": 2.5,
+    "reportedTrigger": "Lightning strikes within 1.0x of the last harvest while the tree multiplier is below 25x",
+    "reportedChance": "Condition-based; no percentage reported",
+    "appliesTo": ["Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "The lightning window and below-25x condition match across both current guides; not independently reproduced."
+  },
+  {
+    "id": "radioactive",
+    "name": "Radioactive",
+    "valueMultiplier": 5,
+    "reportedTrigger": "Acid Rain Weather Event",
+    "reportedChance": "20%",
+    "appliesTo": ["Seeds", "Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "Both current guides report a 5x value multiplier and 20% event chance."
+  },
+  {
+    "id": "charged",
+    "name": "Charged",
+    "valueMultiplier": 7.5,
+    "reportedTrigger": "Lightning strikes within 1.0x of the last harvest while the tree multiplier is above 25x",
+    "reportedChance": "Condition-based; no percentage reported",
+    "appliesTo": ["Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "The lightning window and above-25x condition match across both current guides; not independently reproduced."
+  },
+  {
+    "id": "golden",
+    "name": "Golden",
+    "valueMultiplier": 25,
+    "reportedTrigger": "Rainbow Weather Event",
+    "reportedChance": "7.5%",
+    "appliesTo": ["Seeds", "Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "Both current guides report a 25x value multiplier and 7.5% event chance."
+  },
+  {
+    "id": "cosmic",
+    "name": "Cosmic",
+    "valueMultiplier": 100,
+    "reportedTrigger": "Meteor Shower Weather Event",
+    "reportedChance": "2.5%",
+    "appliesTo": ["Seeds", "Plants", "Fruits"],
+    "sourceIds": ["pro-game-guides-mutations", "mrguider-mutations"],
+    "verification": "community-lead",
+    "verifiedAt": "2026-08-01",
+    "gameVersionClaim": "Update 1.2",
+    "notes": "Both current guides report a 100x value multiplier and 2.5% event chance."
+  }
+]

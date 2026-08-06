@@ -9,7 +9,7 @@ import { absoluteUrl, pageSeo } from '../lib/seo';
 
 const metadata = pageSeo.home;
 const faqs = [
-  ['Are the seed and fertilizer presets official?', 'No. They are copied from a community calculator snapshot and marked for an in-game recheck. You can replace every seed value with numbers from your own run.'],
+  ['Are the seed references and fertilizer presets official?', 'No. Current seed names come from two matching guide reports, while fertilizer presets remain a legacy community snapshot. Enter the economics observed in your own run.'],
   ['Does this calculator predict lightning?', 'No. It records failed runs that already happened and shows their cost. It does not know hidden odds or predict the next strike.'],
   ['How is profit per minute calculated?', 'The calculator subtracts seed and fertilizer cost from the boosted harvest value, then divides one successful run by the entered wait time.'],
   ['Why can risk-adjusted profit be negative?', 'Every failed run adds another seed and fertilizer investment. A later harvest can be profitable by itself but still fail to recover the earlier losses.'],
@@ -44,7 +44,7 @@ const schemas = [
       <div class="max-w-4xl">
         <div class="inline-flex items-center gap-2 rounded-full border border-leaf-500/25 bg-leaf-500/[.07] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400"><Icon name="calculator" size={13}/> Free player-run calculator</div>
         <h1 class="mt-6 font-display text-5xl font-bold leading-[.96] tracking-[-.055em] text-white sm:text-6xl lg:text-7xl">{metadata.h1}</h1>
-        <p class="mt-6 max-w-3xl text-lg leading-8 text-sand-300">Calculate profit per minute, recover failed-run costs, and test reported seed and fertilizer presets before risking another tree to lightning.</p>
+        <p class="mt-6 max-w-3xl text-lg leading-8 text-sand-300">Calculate profit per minute, recover failed-run costs, and test your observed seed inputs before risking another tree to lightning.</p>
         <div class="mt-7 flex flex-wrap gap-3 text-sm">
           <a href="#calculator" class="rounded-md bg-leaf-500 px-5 py-3 font-bold text-ink-950 no-underline">Start calculating</a>
           <a href="/mechanics/when-to-harvest/" class="rounded-md border border-line bg-ink-900 px-5 py-3 font-bold text-white no-underline">Plan when to harvest</a>
@@ -78,7 +78,7 @@ const schemas = [
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold text-white">Failed-run break-even</h3><code class="mt-3 block text-sm text-leaf-400">cost × total attempts</code></article>
     </div>
     <nav class="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Continue from the Calculator">
-      <a href="/seeds/list/" data-event="calculator_continue_click" data-event-label="seed-list" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Compare all reported seeds</span><span class="mt-2 block text-sm text-sand-300">Filter cost, growth time, pace, and evidence →</span></a>
+      <a href="/seeds/list/" data-event="calculator_continue_click" data-event-label="seed-list" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Compare all reported seeds</span><span class="mt-2 block text-sm text-sand-300">Filter price, rarity, spawn chance, and evidence →</span></a>
       <a href="/mechanics/when-to-harvest/" data-event="calculator_continue_click" data-event-label="harvest-timing" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Plan when to harvest</span><span class="mt-2 block text-sm text-sand-300">Compare capital-first and risky timing →</span></a>
       <a href="/guides/get-money-fast/" data-event="calculator_continue_click" data-event-label="money-guide" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Protect the next planting</span><span class="mt-2 block text-sm text-sand-300">Build a safer spending and recovery route →</span></a>
       <a href="/updates/" data-event="calculator_continue_click" data-event-label="updates" class="rounded-2xl border border-line bg-ink-900 p-5 no-underline hover:border-leaf-500/50"><span class="font-bold text-white">Check data freshness</span><span class="mt-2 block text-sm text-sand-300">See which presets still need a recheck →</span></a>

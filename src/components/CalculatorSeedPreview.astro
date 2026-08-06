@@ -4,66 +4,30 @@ import { seeds, site } from '../lib/content';
 import { getReportedSeedPreview } from '../lib/calculator-seeds';
 
 const preview = getReportedSeedPreview(seeds);
-const format = (value: number | null) => value === null ? 'Needs check' : value.toLocaleString('en-US');
-const formatGrowth = (minutes: number | null) => {
-  if (minutes === null) return 'Needs check';
-  return minutes < 1 ? `${Math.round(minutes * 60)} sec` : `${minutes} min`;
-};
+const formatSpawnChance = (value: number | null) => value === null ? 'Not reported' : `1 in ${value.toLocaleString('en-US')}`;
 ---
 
 <aside class="mt-8 overflow-hidden rounded-3xl border border-line bg-ink-900/70" aria-labelledby="reported-seed-preview-title">
   <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line px-5 py-6 sm:px-7">
     <div>
-      <p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-amber-300">Community-reported snapshot</p>
-      <h3 id="reported-seed-preview-title" class="mt-2 font-display text-2xl font-bold text-white">Compare reported seed pace before choosing a preset</h3>
-      <p class="mt-2 max-w-3xl text-sm leading-6 text-sand-300">Sorted by reported clean-run profit per minute. These values exclude unknown lightning odds and still need an in-game recheck.</p>
+      <p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-amber-300">Current reported catalog</p>
+      <h3 id="reported-seed-preview-title" class="mt-2 font-display text-2xl font-bold text-white">Check lower-cost seeds before entering your own run</h3>
+      <p class="mt-2 max-w-3xl text-sm leading-6 text-sand-300">These are the five lowest reported buy-ins in the Update 1.2 catalog. They are a shop reference—not profit presets—because current harvest values and growth times still need gameplay verification.</p>
     </div>
-    <a href="/seeds/list/" data-event="calculator_continue_click" data-event-label="seed-list" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open the full Seed List →</a>
+    <a href="/seeds/list/" data-event="calculator_continue_click" data-event-label="seed-list" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open all 20 seeds →</a>
   </div>
 
   <div class="hidden overflow-x-auto md:block">
     <table class="w-full text-left text-sm">
-      <caption class="sr-only">Five Greedy Growers seeds ordered by community-reported profit per minute</caption>
-      <thead class="bg-ink-950/55 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300">
-        <tr>
-          <th class="px-5 py-4">Seed</th>
-          <th class="px-5 py-4">Growth</th>
-          <th class="px-5 py-4">Initial cost</th>
-          <th class="px-5 py-4">Harvest type</th>
-          <th class="px-5 py-4">Reported profit/min</th>
-          <th class="px-5 py-4">Evidence</th>
-        </tr>
-      </thead>
-      <tbody>
-        {preview.map((seed) => (
-          <tr class="border-t border-line/80 bg-ink-900/35">
-            <td class="px-5 py-4 font-bold text-white">{seed.name}<span class="mt-1 block font-mono text-[10px] font-normal uppercase tracking-[.1em] text-sand-300">{seed.rarity}</span></td>
-            <td class="px-5 py-4">{formatGrowth(seed.growthMinutes)}</td>
-            <td class="px-5 py-4">{format(seed.cost)}</td>
-            <td class="px-5 py-4">{seed.multiHarvest ? 'Multi-harvest' : 'Single harvest'}</td>
-            <td class="px-5 py-4 font-mono font-semibold text-leaf-400">{format(seed.reportedProfitPerMinute)}</td>
-            <td class="px-5 py-4"><StatusBadge state={seed.verification} /></td>
-          </tr>
-        ))}
-      </tbody>
+      <caption class="sr-only">Five Greedy Growers seeds ordered by reported shop price</caption>
+      <thead class="bg-ink-950/55 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Seed</th><th class="px-5 py-4">Rarity</th><th class="px-5 py-4">Reported price</th><th class="px-5 py-4">Spawn chance</th><th class="px-5 py-4">Version</th><th class="px-5 py-4">Evidence</th></tr></thead>
+      <tbody>{preview.map((seed) => <tr class="border-t border-line/80 bg-ink-900/35"><td class="px-5 py-4 font-bold text-white">{seed.name}</td><td class="px-5 py-4">{seed.rarity}</td><td class="px-5 py-4 font-mono">{seed.costDisplay}</td><td class="px-5 py-4">{formatSpawnChance(seed.spawnOneIn)}</td><td class="px-5 py-4">{seed.gameVersionClaim}</td><td class="px-5 py-4"><StatusBadge state={seed.verification} /></td></tr>)}</tbody>
     </table>
   </div>
 
   <div class="grid gap-3 p-4 md:hidden">
-    {preview.map((seed) => (
-      <article class="rounded-2xl border border-line bg-ink-950/55 p-4">
-        <div class="flex items-start justify-between gap-3">
-          <div><h4 class="font-bold text-white">{seed.name}</h4><p class="mt-1 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300">{seed.rarity} · {seed.multiHarvest ? 'Multi-harvest' : 'Single harvest'}</p></div>
-          <StatusBadge state={seed.verification} />
-        </div>
-        <dl class="mt-4 grid grid-cols-3 gap-2 text-xs">
-          <div><dt class="text-sand-300">Growth</dt><dd class="mt-1 font-semibold text-white">{formatGrowth(seed.growthMinutes)}</dd></div>
-          <div><dt class="text-sand-300">Cost</dt><dd class="mt-1 font-semibold text-white">{format(seed.cost)}</dd></div>
-          <div><dt class="text-sand-300">Profit/min</dt><dd class="mt-1 font-semibold text-leaf-400">{format(seed.reportedProfitPerMinute)}</dd></div>
-        </dl>
-      </article>
-    ))}
+    {preview.map((seed) => <article class="rounded-2xl border border-line bg-ink-950/55 p-4"><div class="flex items-start justify-between gap-3"><div><h4 class="font-bold text-white">{seed.name}</h4><p class="mt-1 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300">{seed.rarity} · {seed.gameVersionClaim}</p></div><StatusBadge state={seed.verification} /></div><dl class="mt-4 grid grid-cols-2 gap-2 text-xs"><div><dt class="text-sand-300">Reported price</dt><dd class="mt-1 font-semibold text-white">{seed.costDisplay}</dd></div><div><dt class="text-sand-300">Spawn chance</dt><dd class="mt-1 font-semibold text-leaf-400">{formatSpawnChance(seed.spawnOneIn)}</dd></div></dl></article>)}
   </div>
 
-  <p class="border-t border-line px-5 py-4 text-xs leading-5 text-sand-300 sm:px-7">Snapshot checked {site.checkedAt}. Use a preset to start quickly, then replace it with values observed in your current game version.</p>
+  <p class="border-t border-line px-5 py-4 text-xs leading-5 text-sand-300 sm:px-7">Catalog checked {site.checkedAt}. Type the cost, harvest result, wait time, and failed-run count you actually observed into the calculator.</p>
 </aside>

@@ -2,11 +2,21 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SeedExplorer from '../../components/SeedExplorer.astro';
 import SourceList from '../../components/SourceList.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
 import { seeds, site, sources } from '../../lib/content';
 import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
 
 const metadata = pageSeo.seeds;
+const rarityCount = new Set(seeds.map((seed) => seed.rarity)).size;
+const rarestSeed = [...seeds].sort((a, b) => (b.spawnOneIn ?? 0) - (a.spawnOneIn ?? 0))[0];
+const faqs = [
+  { question: 'How many seeds are in Greedy Growers?', answer: 'Two independent guide publications list 20 seeds for Update 1.2. We treat that as a matched public report, not an official total, until the catalog can be checked in the live game.' },
+  { question: 'What is the rarest Greedy Growers seed?', answer: 'Diamond and Void are both reported at a 1 in 1,000 spawn chance. Void has the highest reported shop price at $1.75Qi.' },
+  { question: 'Why do some Greedy Growers seed lists show only 12 seeds?', answer: 'Older guides appear to reflect an earlier catalog and use different names and prices. This page keeps the newer 20-seed Update 1.2 report separate so incompatible values are not combined.' },
+  { question: 'Are the seed prices and spawn chances official?', answer: 'No. The values match across Pro Game Guides and MrGuider, but neither is the developer. Use them as a shopping reference and recheck expensive decisions in game.' },
+  { question: 'Does a rarer seed always make more money?', answer: 'Not necessarily. Rarity, price, harvest value, growth time, mutation results, and failed-run risk all affect profit. We do not publish a profit ranking without current gameplay evidence.' },
+];
+
 const schemas = [
   {
     '@context': 'https://schema.org',
@@ -23,7 +33,7 @@ const schemas = [
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Greedy Growers seed records',
+    name: '20 Greedy Growers seeds reported for Update 1.2',
     numberOfItems: seeds.length,
     itemListElement: seeds.map((seed, index) => ({
       '@type': 'ListItem',
@@ -31,41 +41,101 @@ const schemas = [
       item: {
         '@type': 'Thing',
         name: seed.name,
-        description: seed.notes,
+        description: `${seed.rarity} seed; reported price ${seed.costDisplay}; reported spawn chance 1 in ${seed.spawnOneIn}.`,
       },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
     })),
   },
 ];
 ---
 
-<BaseLayout
-  title={metadata.title}
-  description={metadata.description}
-  canonicalPath={metadata.canonicalPath}
-  schema={schemas}
->
-  <section class="mx-auto max-w-6xl px-5 pb-16 pt-14 sm:px-8 sm:pt-20">
-    <div class="max-w-3xl">
-      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Community snapshot database</p>
-      <h1 class="mt-4 text-4xl font-bold tracking-[-.04em] sm:text-6xl">{metadata.h1}</h1>
-      <p class="mt-5 text-lg leading-8 text-sand-300">Filter 12 community-reported seed records by stage, cost, growth time, and profit pace. These values are useful starting points, not official game data.</p>
-      <div class="mt-6 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-sm leading-6 text-amber-100">Last checked {site.checkedAt}. Every copied value is marked as a community lead and still needs an in-game recheck.</div>
-    </div>
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
+  <section class="mx-auto max-w-6xl px-5 pb-20 pt-14 sm:px-8 sm:pt-20">
+    <header class="max-w-4xl">
+      <div class="flex flex-wrap items-center gap-3">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Current catalog · source matched</p>
+        <StatusBadge state="community-lead" label="Two reports agree" />
+      </div>
+      <h1 class="mt-5 text-4xl font-bold tracking-[-.04em] sm:text-6xl">20 Greedy Growers Seeds Reported for Update 1.2</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-sand-300">Looking for every Greedy Growers seed? This index puts the current reported names, rarities, shop prices, and spawn chances in one searchable table. It is built for a quick in-game shop check—not presented as official developer data.</p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="#current-seed-table" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Search all 20 seeds</a>
+        <a href="/mechanics/mutations/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Learn how mutations affect value</a>
+      </div>
+    </header>
 
-    <section class="mt-10" aria-labelledby="seed-records-title">
-      <div id="seed-records-title"><SectionHeading eyebrow="Reported records" title="Greedy Growers Seed Table — Sort and Filter" description="Sort the copied snapshot, then replace a preset with your own observed values before making a high-cost decision." /></div>
+    <section class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Seed catalog summary">
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{seeds.length}</p><p class="mt-2 text-sm text-sand-300">seeds in the matched Update 1.2 reports</p></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{rarityCount}</p><p class="mt-2 text-sm text-sand-300">reported rarity groups, Common through Divine</p></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">1 in {rarestSeed.spawnOneIn?.toLocaleString()}</p><p class="mt-2 text-sm text-sand-300">rarest reported spawn denominator</p></article>
+      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{site.checkedAt}</p><p class="mt-2 text-sm text-sand-300">Last checked against the cited publications</p></article>
+    </section>
+
+    <aside class="mt-8 rounded-2xl border border-amber-400/30 bg-amber-300/[.06] p-5 text-sm leading-7 text-amber-100">
+      <strong>Evidence note:</strong> Pro Game Guides and MrGuider independently publish the same 20 names, prices, rarities, and spawn denominators. Agreement makes the list useful, but it does not turn third-party reporting into official confirmation. Prices can change after an update, so verify the shop before committing late-game currency.
+    </aside>
+
+    <section id="current-seed-table" class="mt-16 scroll-mt-24" aria-labelledby="current-seed-table-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Search, filter, compare</p>
+      <h2 id="current-seed-table-title" class="mt-3 text-3xl font-bold tracking-[-.03em] sm:text-4xl">Current Greedy Growers Seed Table</h2>
+      <p class="mt-4 max-w-3xl leading-7 text-sand-300">Filter by rarity or type a seed name, then sort by reported price or spawn chance. Larger “1 in N” denominators mean a rarer reported shop appearance.</p>
       <div class="mt-8"><SeedExplorer items={seeds} /></div>
     </section>
 
-    <section class="mt-14">
-      <SectionHeading eyebrow="Read the numbers" title="Seed Data Dictionary — How to Read Seed Data and Verification Status" description="Use the same definitions and evidence labels for every recorded run before comparing one Greedy Growers seed with another." />
-      <div class="mt-8 grid gap-4 md:grid-cols-3">
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">What Each Seed Column Means</h3><p class="mt-3 text-sm leading-6 text-sand-300">Read cost, harvest value, growth time, stage, tier, and evidence status together instead of judging a seed by one number.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Profit per Minute vs Total Profit</h3><p class="mt-3 text-sm leading-6 text-sand-300">Subtract seed cost from harvest value, then divide by wait time. A large total return can still have a slower reported pace.</p></article>
-        <article class="rounded-2xl border border-line bg-ink-900 p-5"><h3 class="font-semibold">Why Verification Status Matters</h3><p class="mt-3 text-sm leading-6 text-sand-300">Community figures may change after updates. Recheck expensive choices in game and record failed runs before relying on a ranking.</p></article>
-      </div>
-      <nav class="mt-8 flex flex-wrap gap-3" aria-label="Continue planning with seed data"><a href="/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Plug seed data into the profit calculator</a><a href="/seeds/best/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Compare best seeds by goal</a><a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Follow the first-harvest guide</a></nav>
+    <section class="mt-16 grid gap-6 lg:grid-cols-[1.2fr_.8fr]" aria-labelledby="older-list-title">
+      <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-amber-300">Version conflict</p>
+        <h2 id="older-list-title" class="mt-3 text-2xl font-bold sm:text-3xl">Why This List Differs From Older Seed Guides</h2>
+        <p class="mt-4 leading-7 text-sand-300">An older 12-record list used names such as Basic Seed, Blueberry Seed, and Pumpkin Seed. The newer Update 1.2 reports list 20 entries beginning with Oak and Pine and ending with Diamond and Void. Only a few plant names overlap, while their reported prices do not.</p>
+        <p class="mt-4 leading-7 text-sand-300">That is a version boundary, not a reason to average the numbers. We retired the old economics from rankings and the calculator so a legacy price cannot be paired with a current seed name. If the live game contradicts this page, the game wins and the affected record returns to “needs check.”</p>
+      </article>
+      <article class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8">
+        <h2 class="text-2xl font-bold">Seed Data Dictionary</h2>
+        <dl class="mt-5 grid gap-4 text-sm">
+          <div><dt class="font-semibold text-sand-100">Reported price</dt><dd class="mt-1 leading-6 text-sand-300">The shop price printed by both current sources, preserved in K, M, B, T, and Qi notation.</dd></div>
+          <div><dt class="font-semibold text-sand-100">Spawn chance</dt><dd class="mt-1 leading-6 text-sand-300">A reported shop-appearance denominator. “1 in 1,000” is rarer than “1 in 5.”</dd></div>
+          <div><dt class="font-semibold text-sand-100">Matched public reports</dt><dd class="mt-1 leading-6 text-sand-300">Two third-party sources agree. This remains below gameplay-verified or official evidence.</dd></div>
+        </dl>
+      </article>
     </section>
-    <div class="mt-10"><SourceList items={sources.filter((source) => ['roblox-official', 'greedygrowers-codes'].includes(source.id))} title="Sources used for seed records" /></div>
+
+    <section class="mt-16" aria-labelledby="method-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Editorial method</p>
+      <h2 id="method-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">How We Check Greedy Growers Seed Data</h2>
+      <ol class="mt-7 grid gap-4 md:grid-cols-3">
+        <li class="rounded-2xl border border-line bg-ink-900 p-5"><span class="font-mono text-sm text-leaf-400">01</span><h3 class="mt-3 font-semibold">Match independent lists</h3><p class="mt-2 text-sm leading-6 text-sand-300">A value enters the current catalog only when the two cited Update 1.2 guides agree.</p></li>
+        <li class="rounded-2xl border border-line bg-ink-900 p-5"><span class="font-mono text-sm text-leaf-400">02</span><h3 class="mt-3 font-semibold">Keep unknowns unknown</h3><p class="mt-2 text-sm leading-6 text-sand-300">We do not invent growth times, harvest returns, mutation multipliers, or profit tiers that the sources do not establish.</p></li>
+        <li class="rounded-2xl border border-line bg-ink-900 p-5"><span class="font-mono text-sm text-leaf-400">03</span><h3 class="mt-3 font-semibold">Recheck after patches</h3><p class="mt-2 text-sm leading-6 text-sand-300">Conflicting values are separated by version and demoted until they can be observed in the current game.</p></li>
+      </ol>
+    </section>
+
+    <section class="mt-16" aria-labelledby="seed-faq-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Quick answers</p>
+      <h2 id="seed-faq-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Frequently Asked Questions About Greedy Growers Seeds</h2>
+      <div class="mt-7 grid gap-4">
+        {faqs.map((faq) => (
+          <details class="group rounded-2xl border border-line bg-ink-900 p-5 sm:p-6">
+            <summary class="cursor-pointer list-none font-semibold">{faq.question}</summary>
+            <p class="mt-3 max-w-4xl leading-7 text-sand-300">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <nav class="mt-16 rounded-3xl border border-line bg-ink-900 p-6 sm:p-8" aria-label="Continue from the seed list">
+      <h2 class="text-2xl font-bold">Use the catalog without guessing profit</h2>
+      <p class="mt-3 max-w-3xl leading-7 text-sand-300">Start with the current list, learn the mechanics that change a harvest, then enter values you actually observed into the calculator.</p>
+      <div class="mt-6 flex flex-wrap gap-3"><a href="/mechanics/mutations/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Read the mutations guide</a><a href="/mechanics/when-to-harvest/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Plan harvest timing</a><a href="/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Open the profit calculator</a></div>
+    </nav>
+
+    <div class="mt-10"><SourceList items={sources.filter((source) => ['roblox-official', 'pro-game-guides', 'mrguider'].includes(source.id))} title="Sources checked for the current seed catalog" /></div>
   </section>
 </BaseLayout>

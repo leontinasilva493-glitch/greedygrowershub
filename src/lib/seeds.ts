@@ -3,9 +3,10 @@ import type { PlayerStage, SeedRecord, SeedTier, VerificationState } from './con
 export interface SeedFilters {
   verification: VerificationState | 'all';
   stage: PlayerStage | 'all';
+  rarity?: string | 'all';
 }
 
-export type SeedSortKey = 'name' | 'cost' | 'harvestValue' | 'growthMinutes' | 'reportedProfitPerMinute';
+export type SeedSortKey = 'name' | 'rarity' | 'cost' | 'costSortValue' | 'spawnOneIn' | 'harvestValue' | 'growthMinutes' | 'reportedProfitPerMinute';
 export type SortDirection = 'asc' | 'desc';
 
 export interface SeedTierGroup {
@@ -17,7 +18,8 @@ export function filterSeeds(records: SeedRecord[], filters: SeedFilters): SeedRe
   return records.filter((seed) => {
     const verificationMatches = filters.verification === 'all' || seed.verification === filters.verification;
     const stageMatches = filters.stage === 'all' || seed.stage === 'all' || seed.stage === filters.stage;
-    return verificationMatches && stageMatches;
+    const rarityMatches = !filters.rarity || filters.rarity === 'all' || seed.rarity === filters.rarity;
+    return verificationMatches && stageMatches && rarityMatches;
   });
 }
 

@@ -28,5 +28,29 @@
     "name": "greedygrowers.codes calculator and tier list snapshot",
     "url": "https://greedygrowers.codes/calculator/",
     "trust": "community"
+  },
+  {
+    "id": "pro-game-guides",
+    "name": "Pro Game Guides Update 1.2 seed index",
+    "url": "https://progameguides.com/roblox/all-greedy-growers-seeds-costs-rarities-spawn-chances/",
+    "trust": "reported"
+  },
+  {
+    "id": "mrguider",
+    "name": "MrGuider current seeds, cost, and spawn-rate guide",
+    "url": "https://www.mrguider.org/guides/greedy-growers-seeds-list-cost-and-spawn-rate/",
+    "trust": "reported"
+  },
+  {
+    "id": "pro-game-guides-mutations",
+    "name": "Pro Game Guides Update 1.2 mutation guide",
+    "url": "https://progameguides.com/roblox/greedy-growers-mutations-multipliers-how-to-get/",
+    "trust": "reported"
+  },
+  {
+    "id": "mrguider-mutations",
+    "name": "MrGuider mutation and multiplier guide",
+    "url": "https://www.mrguider.org/guides/greedy-growers-mutations-list-multiplier-values/",
+    "trust": "reported"
   }
 ]

@@ -9,7 +9,7 @@ import {
 const expectedMetadata = {
   home: {
     title: 'Greedy Growers Calculator: Profit, ROI & Lightning Risk',
-    description: 'Calculate Greedy Growers profit per minute with seed and fertilizer presets. Compare ROI, break-even value, failed-run cost, and risk-adjusted returns for free.',
+    description: 'Calculate Greedy Growers profit per minute with observed seed and fertilizer inputs. Compare ROI, break-even value, failed-run cost, and risk-adjusted returns.',
     canonicalPath: '/',
     h1: 'Greedy Growers Calculator',
   },
@@ -26,16 +26,16 @@ const expectedMetadata = {
     h1: 'Greedy Growers Beginner Guide: How to Play & First Harvest',
   },
   seeds: {
-    title: 'Greedy Growers Seed List: Costs, Growth & Profit Data',
-    description: 'Explore the Greedy Growers seed list with reported costs, growth times, harvest values, profit per minute, tiers, and verification status for current seeds.',
+    title: 'Greedy Growers Seed List: All 20 Costs & Spawn Rates',
+    description: 'Explore all 20 Greedy Growers seeds reported for Update 1.2. Compare rarity, shop price, spawn chance, version notes, source agreement, and evidence status.',
     canonicalPath: '/seeds/list/',
-    h1: 'Greedy Growers Seed List — All Seeds Compared',
+    h1: 'Greedy Growers Seed List: All 20 Seeds',
   },
   bestSeeds: {
-    title: 'Greedy Growers Best Seeds by Stage, Profit & Risk Guide',
-    description: 'Find the best Greedy Growers seeds by game stage, reported profit per minute, investment cost, and risk. Compare community-ranked picks before spending coins.',
+    title: 'Greedy Growers Best Seeds: Budget & Rarity Guide (2026)',
+    description: 'Find the best Greedy Growers seeds by reported buy-in, rarity, and spawn chance. Compare budget and rare picks without relying on unverified profit rankings.',
     canonicalPath: '/seeds/best/',
-    h1: 'Best Greedy Growers Seeds by Stage & Risk',
+    h1: 'Best Greedy Growers Seeds by Budget & Rarity',
   },
   guides: {
     title: 'Greedy Growers Guides: Beginner, Money, Rebirth & Tickets',
@@ -51,7 +51,7 @@ const expectedMetadata = {
   },
   getMoneyFast: {
     title: 'Greedy Growers Money Guide: How to Get Money Fast (2026)',
-    description: 'Learn how to make money fast in Greedy Growers. Protect your coins, compare seed profit rates, prioritize upgrades, and recover after lightning losses.',
+    description: 'Learn how to make money fast in Greedy Growers using capital reserves, low-buy-in seeds, repeatable harvest tests, upgrade priorities, and lightning recovery.',
     canonicalPath: '/guides/get-money-fast/',
     h1: 'Greedy Growers Money Guide: How to Get Money Fast',
   },
@@ -68,8 +68,8 @@ const expectedMetadata = {
     h1: 'Greedy Growers Tickets Guide',
   },
   mechanics: {
-    title: 'Greedy Growers Mechanics: Lightning & Harvest Timing',
-    description: 'Explore Greedy Growers mechanics for lightning and harvest timing. Compare confirmed facts, failed-run recovery, risk strategies, and community-tested claims.',
+    title: 'Greedy Growers Mechanics: Mutations, Lightning & Harvest',
+    description: 'Explore Greedy Growers mutations, lightning, and harvest timing. Compare reported multipliers, weather triggers, decisions, evidence limits, and test methods.',
     canonicalPath: '/mechanics/',
     h1: 'Greedy Growers Game Mechanics',
   },
@@ -84,6 +84,12 @@ const expectedMetadata = {
     description: 'Learn when to harvest in Greedy Growers using conservative, balanced, and high-risk strategies, failed-run break-even math, capital protection, and tests.',
     canonicalPath: '/mechanics/when-to-harvest/',
     h1: 'Greedy Growers Harvest Timing Guide',
+  },
+  mutations: {
+    title: 'Greedy Growers Mutations: Multipliers & Weather Guide',
+    description: 'Explore all six Greedy Growers mutations reported for Update 1.2, with multipliers, weather or lightning triggers, stacking notes, sources, and test steps.',
+    canonicalPath: '/mechanics/mutations/',
+    h1: 'Greedy Growers Mutations Guide',
   },
   updates: {
     title: 'Greedy Growers Updates: Codes, Game Changes & Site Log',
@@ -133,6 +139,7 @@ describe('indexable page metadata', () => {
       'mechanics',
       'lightning',
       'whenToHarvest',
+      'mutations',
       'updates',
     ];
 
