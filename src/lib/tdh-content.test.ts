@@ -25,6 +25,18 @@ describe('source-visible TDH heading contracts', () => {
     expect(homepage).not.toContain('Continue with Greedy Growers guides and data');
   });
 
+  test('answers Update 1.2 directly on the homepage without inventing mechanics', () => {
+    const homepage = readSource('../pages/index.astro');
+
+    expectPhrases(homepage, [
+      'What Changed in Greedy Growers Update 1.2?',
+      '20 reported seeds',
+      '6 reported mutations',
+      'href="/seeds/list/"',
+      'href="/mechanics/mutations/"',
+    ]);
+  });
+
   test('gives Seeds pages distinct comparison and ranking headings', () => {
     const seedList = readSource('../pages/seeds/list.astro');
     const seedExplorer = readSource('../components/SeedExplorer.astro');
@@ -202,6 +214,56 @@ describe('source-visible TDH heading contracts', () => {
       "href: '/seeds/best/'",
       "href: '/mechanics/mutations/'",
       "href: '/mechanics/lightning/'",
+    ]);
+  });
+
+  test('separates code claims into three auditable verification layers', () => {
+    const codes = readSource('../pages/codes.astro');
+    const codeStatus = readSource('../components/CodeStatus.astro');
+
+    expectPhrases(`${codes}\n${codeStatus}`, [
+      'Three-Step Code Status',
+      'Confirmed by a current source',
+      'Single-source report',
+      'Verified in game',
+    ]);
+  });
+
+  test('connects the Updates page to an official Roblox updated-time snapshot', () => {
+    const updates = readSource('../pages/updates.astro');
+    const gameStatus = readSource('../data/game-status.json');
+
+    expectPhrases(updates, [
+      "import gameStatus from '../data/game-status.json'",
+      'Roblox official updated time',
+      'Pages affected by the latest Roblox update signal',
+    ]);
+    expectPhrases(gameStatus, [
+      '"source": "Roblox Games API"',
+      '"updated": "2026-08-05T05:19:27.8636033Z"',
+      '"checkedAt": "2026-08-06"',
+    ]);
+  });
+
+  test('adds budget, interpretation, and conflict decisions to the Seed List', () => {
+    const seedList = readSource('../pages/seeds/list.astro');
+
+    expectPhrases(seedList, [
+      'Choose a Seed Budget Stage',
+      'Rarity Is a Label; Spawn Chance Is a Reported Denominator',
+      'How Source Conflicts Change This Table',
+    ]);
+  });
+
+  test('maps weather through mutation value to a risk decision', () => {
+    const mutations = readSource('../pages/mechanics/mutations.astro');
+
+    expectPhrases(mutations, [
+      'Weather → Mutation → Multiplier → Risk Decision',
+      'Event signal',
+      'Reported mutation',
+      'Reported value',
+      'Risk decision',
     ]);
   });
 

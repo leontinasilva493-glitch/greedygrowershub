@@ -3,27 +3,56 @@ import Icon from './Icon.astro';
 import { codes, getSource } from '../lib/content';
 
 const activeCodes = codes.filter((code) => code.status === 'active');
+const reportedCodes = codes.filter((code) => code.status === 'reported');
 const expiredCodes = codes.filter((code) => code.status === 'expired');
+const inGameVerifiedCodes: typeof codes = [];
+const verificationLanes = [
+  {
+    step: '01',
+    label: 'Confirmed by a current source',
+    count: activeCodes.length,
+    detail: 'A current creator-owned post or two independent trackers must name the same exact code and reward.',
+    tone: 'leaf',
+  },
+  {
+    step: '02',
+    label: 'Single-source report',
+    count: reportedCodes.length,
+    detail: 'A candidate seen on only one secondary source stays here and is never labeled active.',
+    tone: 'amber',
+  },
+  {
+    step: '03',
+    label: 'Verified in game',
+    count: inGameVerifiedCodes.length,
+    detail: 'The game accepted the exact string and the reward appeared in a recorded current-version session.',
+    tone: 'leaf',
+  },
+];
 ---
 
-<div class="grid gap-4 lg:grid-cols-2">
-  <section class="rounded-xl border border-leaf-500/25 bg-leaf-500/[.055] p-5 sm:p-6">
-    <div class="flex items-start justify-between gap-4">
-      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Active codes</p><h3 class="mt-2 font-display text-2xl font-bold text-white">{activeCodes.length ? `${activeCodes.length} verified code${activeCodes.length === 1 ? '' : 's'}` : 'No verified active Greedy Growers codes'}</h3></div>
-      <span class="grid size-10 place-items-center rounded-lg border border-leaf-500/30 bg-leaf-500/10 text-leaf-400"><Icon name={activeCodes.length ? 'check' : 'ticket'} /></span>
-    </div>
-    {activeCodes.length ? (
-      <ul class="mt-5 grid gap-3">{activeCodes.map((code) => <li class="rounded-lg border border-leaf-500/20 bg-ink-950/50 p-4"><code class="font-mono font-bold text-leaf-400">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p><p class="mt-3 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300/70">{getSource(code.sourceId).name} · {code.verifiedAt}</p></li>)}</ul>
-    ) : <p class="mt-5 text-sm leading-6 text-sand-300">The latest checked sources do not provide a reproducible active code. An empty list is more useful than copied rewards with no proof.</p>}
-  </section>
+<div>
+  <div class="grid gap-4 lg:grid-cols-3" aria-label="Three-step code evidence status">
+    {verificationLanes.map((lane) => (
+      <section class:list={["rounded-xl border p-5 sm:p-6", lane.tone === 'amber' ? 'border-amber-400/25 bg-amber-300/[.045]' : 'border-leaf-500/25 bg-leaf-500/[.055]']}>
+        <div class="flex items-start justify-between gap-4">
+          <span class="font-mono text-xs font-bold text-sand-300">{lane.step}</span>
+          <span class:list={["grid size-9 place-items-center rounded-lg border", lane.tone === 'amber' ? 'border-amber-400/30 text-amber-200' : 'border-leaf-500/30 text-leaf-400']}><Icon name={lane.count ? 'check' : 'clock'} size={16} /></span>
+        </div>
+        <h3 class="mt-4 font-display text-xl font-bold text-white">{lane.label}</h3>
+        <p class="mt-3 font-mono text-2xl font-bold text-leaf-400">{lane.count} current</p>
+        <p class="mt-3 text-sm leading-6 text-sand-300">{lane.detail}</p>
+      </section>
+    ))}
+  </div>
 
-  <section class="rounded-xl border border-line bg-ink-900 p-5 sm:p-6">
+  <section class="mt-4 rounded-xl border border-line bg-ink-900 p-5 sm:p-6">
     <div class="flex items-start justify-between gap-4">
-      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Expired codes</p><h3 class="mt-2 font-display text-2xl font-bold text-white">{expiredCodes.length ? `${expiredCodes.length} recorded` : 'No verified expired-code history yet'}</h3></div>
-      <span class="grid size-10 place-items-center rounded-lg border border-line bg-white/5 text-sand-300"><Icon name="clock" /></span>
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Current answer</p><h3 class="mt-2 font-display text-2xl font-bold text-white">No active Greedy Growers code passes all three gates</h3></div>
+      <span class="grid size-10 place-items-center rounded-lg border border-line bg-white/5 text-sand-300"><Icon name="ticket" /></span>
     </div>
-    {expiredCodes.length ? (
-      <ul class="mt-5 grid gap-3">{expiredCodes.map((code) => <li class="rounded-lg border border-line bg-ink-950/50 p-4"><code class="font-mono font-bold text-sand-300 line-through">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p></li>)}</ul>
-    ) : <p class="mt-5 text-sm leading-6 text-sand-300">No previously working code has been verified as expired. Future records need the original reward, source, and check date.</p>}
+    <p class="mt-4 text-sm leading-6 text-sand-300">The two current trackers checked for this page both report zero active codes. No single-source candidate or recorded in-game redemption is being promoted into the verified list.</p>
+    {activeCodes.length ? <ul class="mt-5 grid gap-3">{activeCodes.map((code) => <li class="rounded-lg border border-leaf-500/20 bg-ink-950/50 p-4"><code class="font-mono font-bold text-leaf-400">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p><p class="mt-3 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300/70">{getSource(code.sourceId).name} · {code.verifiedAt}</p></li>)}</ul> : null}
+    <p class="mt-4 border-t border-line pt-4 text-xs leading-5 text-sand-300">Expired history: {expiredCodes.length ? `${expiredCodes.length} source-traceable record(s).` : 'No previously working code has been verified as expired.'}</p>
   </section>
 </div>

@@ -8,6 +8,12 @@ import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
 const metadata = pageSeo.mutations;
 const weatherMutations = mutations.filter((mutation) => mutation.reportedChance.includes('%'));
 const lightningMutations = mutations.filter((mutation) => mutation.reportedChance.startsWith('Condition-based'));
+const riskDecisionByMutation: Record<string, string> = {
+  dewy: 'Use lower-cost plants to learn whether the event report matches your server before scaling up.',
+  radioactive: 'Keep replacement capital; a reported 20% event chance still means most event checks may not mutate the target.',
+  golden: 'Treat the 25x value as upside, not a plan. Do not buy expensive stock only because Rainbow Weather appears.',
+  cosmic: 'A reported 2.5% event chance makes this a rare bonus. Protect the base harvest instead of waiting indefinitely.',
+};
 const faqs = [
   { question: 'What is the best mutation in Greedy Growers?', answer: 'Cosmic has the highest reported single-mutation value multiplier at 100x. Both current guides tie it to the Meteor Shower Weather Event and report a 2.5% chance.' },
   { question: 'Do Greedy Growers mutations stack?', answer: 'Pro Game Guides reports that a mutated plant can gain another mutation and pass its mutations to fruit. MrGuider does not document a stacking formula, so the exact combined-value math still needs a controlled in-game test.' },
@@ -43,6 +49,25 @@ const schemas = [
       <h2 id="mutation-table-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutation Multiplier Table</h2>
       <p class="mt-4 max-w-3xl leading-7 text-sand-300">Treat each row as a matched community report. The table does not assume that multiple mutation multipliers multiply together.</p>
       <div class="mt-8 overflow-x-auto rounded-2xl border border-line"><table class="w-full min-w-[820px] text-left text-sm"><thead class="bg-ink-900 font-mono text-xs uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Mutation</th><th class="px-5 py-4">Reported value</th><th class="px-5 py-4">Reported trigger</th><th class="px-5 py-4">Chance / condition</th><th class="px-5 py-4">Applies to</th><th class="px-5 py-4">Evidence</th></tr></thead><tbody>{mutations.map((mutation) => <tr class="border-t border-line bg-ink-950/40"><td class="px-5 py-4 font-bold">{mutation.name}</td><td class="px-5 py-4 font-mono text-lg font-bold text-leaf-400">{mutation.valueMultiplier}x</td><td class="max-w-xs px-5 py-4">{mutation.reportedTrigger}</td><td class="px-5 py-4 text-sand-300">{mutation.reportedChance}</td><td class="px-5 py-4 text-sand-300">{mutation.appliesTo.join(', ')}</td><td class="px-5 py-4"><StatusBadge state={mutation.verification} label="2 reports agree" /></td></tr>)}</tbody></table></div>
+    </section>
+
+    <section class="mt-16" aria-labelledby="weather-decision-title">
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Decision flow</p>
+      <h2 id="weather-decision-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Weather → Mutation → Multiplier → Risk Decision</h2>
+      <p class="mt-4 max-w-3xl leading-7 text-sand-300">Follow the report from left to right. The multiplier is potential upside, while the last column tells you what not to risk before the trigger is reproduced in your current server.</p>
+      <div class="mt-8 grid gap-4">
+        {weatherMutations.map((mutation) => (
+          <article class="grid gap-3 rounded-2xl border border-line bg-ink-900 p-5 lg:grid-cols-[1.1fr_auto_.8fr_auto_.7fr_auto_1.5fr] lg:items-center">
+            <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-sand-300">Event signal</p><p class="mt-2 font-semibold text-white">{mutation.reportedTrigger.replace(' Weather Event', '')}</p><p class="mt-1 text-xs text-sand-300">Reported {mutation.reportedChance}</p></div>
+            <span class="hidden text-leaf-400 lg:block" aria-hidden="true">→</span>
+            <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-sand-300">Reported mutation</p><p class="mt-2 font-semibold text-white">{mutation.name}</p></div>
+            <span class="hidden text-leaf-400 lg:block" aria-hidden="true">→</span>
+            <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-sand-300">Reported value</p><p class="mt-2 font-mono text-2xl font-bold text-leaf-400">{mutation.valueMultiplier}x</p></div>
+            <span class="hidden text-leaf-400 lg:block" aria-hidden="true">→</span>
+            <div class="rounded-xl border border-amber-400/20 bg-amber-300/[.045] p-4"><p class="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-amber-200">Risk decision</p><p class="mt-2 text-sm leading-6 text-sand-300">{riskDecisionByMutation[mutation.id]}</p></div>
+          </article>
+        ))}
+      </div>
     </section>
 
     <section class="mt-16" aria-labelledby="get-mutations-title">
