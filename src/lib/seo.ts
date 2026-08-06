@@ -121,3 +121,24 @@ export function buildBreadcrumbSchema(items: Array<{ name: string; path: string 
     })),
   };
 }
+
+export function buildItemListSchema(
+  name: string,
+  items: Array<{ name: string; description: string }>,
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Thing',
+        name: item.name,
+        description: item.description,
+      },
+    })),
+  };
+}

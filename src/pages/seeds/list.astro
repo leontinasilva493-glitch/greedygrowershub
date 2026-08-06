@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import OnThisPage from '../../components/OnThisPage.astro';
 import SeedExplorer from '../../components/SeedExplorer.astro';
 import SourceList from '../../components/SourceList.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { seeds, site, sources } from '../../lib/content';
-import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
+import { absoluteUrl, buildBreadcrumbSchema, buildItemListSchema, pageSeo } from '../../lib/seo';
 
 const metadata = pageSeo.seeds;
 const rarityCount = new Set(seeds.map((seed) => seed.rarity)).size;
@@ -36,21 +37,10 @@ const schemas = [
     { name: 'Greedy Growers Hub', path: '/' },
     { name: 'Greedy Growers Seeds', path: metadata.canonicalPath },
   ]),
-  {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: '20 Greedy Growers seeds reported for Update 1.2',
-    numberOfItems: seeds.length,
-    itemListElement: seeds.map((seed, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Thing',
-        name: seed.name,
-        description: `${seed.rarity} seed; reported price ${seed.costDisplay}; reported spawn chance 1 in ${seed.spawnOneIn}.`,
-      },
-    })),
-  },
+  buildItemListSchema('20 Greedy Growers seeds reported for Update 1.2', seeds.map((seed) => ({
+    name: seed.name,
+    description: `${seed.rarity} seed; reported price ${seed.costDisplay}; reported spawn chance 1 in ${seed.spawnOneIn}.`,
+  }))),
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -78,7 +68,16 @@ const schemas = [
       </div>
     </header>
 
-    <section class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Seed catalog summary">
+    <OnThisPage items={[
+      { label: 'Quick answer', href: '#quick-answer' },
+      { label: 'Budget / multiplier table', href: '#budget-table' },
+      { label: 'How to interpret', href: '#how-to-interpret' },
+      { label: 'Evidence conflicts', href: '#evidence-conflicts' },
+      { label: 'Verification steps', href: '#verification-steps' },
+      { label: 'FAQ', href: '#faq' },
+    ]} />
+
+    <section id="quick-answer" class="mt-10 grid scroll-mt-24 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Seed catalog summary">
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{seeds.length}</p><p class="mt-2 text-sm text-sand-300">seeds in the matched Update 1.2 reports</p></article>
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{rarityCount}</p><p class="mt-2 text-sm text-sand-300">reported rarity groups, Common through Divine</p></article>
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">1 in {rarestSeed.spawnOneIn?.toLocaleString()}</p><p class="mt-2 text-sm text-sand-300">rarest reported spawn denominator</p></article>
@@ -89,7 +88,7 @@ const schemas = [
       <strong>Evidence note:</strong> Pro Game Guides and MrGuider independently publish the same 20 names, prices, rarities, and spawn denominators. Agreement makes the list useful, but it does not turn third-party reporting into official confirmation. Prices can change after an update, so verify the shop before committing late-game currency.
     </aside>
 
-    <section class="mt-16" aria-labelledby="budget-stage-title">
+    <section id="budget-table" class="mt-16 scroll-mt-24" aria-labelledby="budget-stage-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Bankroll-first comparison</p>
       <h2 id="budget-stage-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Choose a Seed Budget Stage</h2>
       <p class="mt-4 max-w-3xl leading-7 text-sand-300">These bands group the reported shop prices; they are not profit tiers. Choose the band your reserve can survive, then verify the current river price before planting.</p>
@@ -104,7 +103,7 @@ const schemas = [
       </div>
     </section>
 
-    <section class="mt-16 rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8" aria-labelledby="rarity-spawn-title">
+    <section id="how-to-interpret" class="mt-16 scroll-mt-24 rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8" aria-labelledby="rarity-spawn-title">
       <h2 id="rarity-spawn-title" class="text-2xl font-bold sm:text-3xl">Rarity Is a Label; Spawn Chance Is a Reported Denominator</h2>
       <div class="mt-5 grid gap-5 text-sm leading-6 text-sand-300 md:grid-cols-3">
         <p><strong class="text-sand-100">Rarity</strong> groups seeds from Common through Divine. It does not establish harvest value, growth speed, or profit.</p>
@@ -120,7 +119,7 @@ const schemas = [
       <div class="mt-8"><SeedExplorer items={seeds} /></div>
     </section>
 
-    <section class="mt-16 grid gap-6 lg:grid-cols-[1.2fr_.8fr]" aria-labelledby="older-list-title">
+    <section id="evidence-conflicts" class="mt-16 grid scroll-mt-24 gap-6 lg:grid-cols-[1.2fr_.8fr]" aria-labelledby="older-list-title">
       <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8">
         <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-amber-300">Version conflict · Why This List Differs From Older Seed Guides</p>
         <h2 id="older-list-title" class="mt-3 text-2xl font-bold sm:text-3xl">How Source Conflicts Change This Table</h2>
@@ -137,7 +136,7 @@ const schemas = [
       </article>
     </section>
 
-    <section class="mt-16" aria-labelledby="method-title">
+    <section id="verification-steps" class="mt-16 scroll-mt-24" aria-labelledby="method-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Editorial method</p>
       <h2 id="method-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">How We Check Greedy Growers Seed Data</h2>
       <ol class="mt-7 grid gap-4 md:grid-cols-3">
@@ -147,7 +146,7 @@ const schemas = [
       </ol>
     </section>
 
-    <section class="mt-16" aria-labelledby="seed-faq-title">
+    <section id="faq" class="mt-16 scroll-mt-24" aria-labelledby="seed-faq-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Quick answers</p>
       <h2 id="seed-faq-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Frequently Asked Questions About Greedy Growers Seeds</h2>
       <div class="mt-7 grid gap-4">

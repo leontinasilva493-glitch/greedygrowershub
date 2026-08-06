@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   absoluteUrl,
   buildBreadcrumbSchema,
+  buildItemListSchema,
   normalizeCanonicalPath,
   pageSeo,
 } from './seo';
@@ -167,5 +168,32 @@ describe('canonical helpers', () => {
         { '@type': 'ListItem', position: 2, name: 'Codes', item: 'https://greedygrowerhub.wiki/codes/' },
       ],
     });
+  });
+
+  it('builds a Thing-based ItemList without commerce or rating claims', () => {
+    const schema = buildItemListSchema('Reported mutations', [
+      { name: 'Dewy', description: 'Reported 2x value multiplier.' },
+      { name: 'Cosmic', description: 'Reported 100x value multiplier.' },
+    ]);
+
+    expect(schema).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'Reported mutations',
+      numberOfItems: 2,
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          item: { '@type': 'Thing', name: 'Dewy', description: 'Reported 2x value multiplier.' },
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          item: { '@type': 'Thing', name: 'Cosmic', description: 'Reported 100x value multiplier.' },
+        },
+      ],
+    });
+    expect(JSON.stringify(schema)).not.toMatch(/Product|Offer|AggregateRating/);
   });
 });
