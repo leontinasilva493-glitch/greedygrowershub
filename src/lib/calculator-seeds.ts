@@ -1,5 +1,15 @@
 import type { SeedRecord } from './content';
 
+/**
+ * Only the reported numeric river price is safe to prefill from the current
+ * catalog. Harvest value and wait time remain player observations.
+ */
+export function getCalculatorSeedCost(seed: Pick<SeedRecord, 'costSortValue'>): number | null {
+  return seed.costSortValue !== null && Number.isSafeInteger(seed.costSortValue)
+    ? seed.costSortValue
+    : null;
+}
+
 export function getReportedSeedPreview(records: SeedRecord[], limit = 5): SeedRecord[] {
   return [...records]
     .sort((left, right) => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SeedRecord } from './content';
-import { getReportedSeedPreview } from './calculator-seeds';
+import { getCalculatorSeedCost, getReportedSeedPreview } from './calculator-seeds';
 
 function makeRecord(overrides: Partial<SeedRecord> & Pick<SeedRecord, 'id' | 'name'>): SeedRecord {
   const { id, name, ...rest } = overrides;
@@ -53,5 +53,19 @@ describe('getReportedSeedPreview', () => {
     const originalOrder = records.map((seed) => seed.id);
     expect(getReportedSeedPreview(records, 2).map((seed) => seed.id)).toEqual(['gamma-seed', 'alpha-seed']);
     expect(records.map((seed) => seed.id)).toEqual(originalOrder);
+  });
+});
+
+describe('getCalculatorSeedCost', () => {
+  it('returns the reported numeric buy-in so selecting a seed can immediately refresh the scenario', () => {
+    expect(getCalculatorSeedCost(records[1])).toBe(200);
+  });
+
+  it('does not invent a buy-in when the catalog has no numeric price', () => {
+    expect(getCalculatorSeedCost(records[0])).toBeNull();
+  });
+
+  it('does not silently round an amount beyond safe JavaScript integer precision', () => {
+    expect(getCalculatorSeedCost(makeRecord({ id: 'huge-seed', name: 'Huge Seed', costSortValue: Number.MAX_SAFE_INTEGER + 1 }))).toBeNull();
   });
 });

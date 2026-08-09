@@ -25,6 +25,28 @@ describe('source-visible TDH heading contracts', () => {
     expect(homepage).not.toContain('Continue with Greedy Growers guides and data');
   });
 
+  test('keeps live calculator inputs visible and exposes the economy leaderboard columns', () => {
+    const calculator = readSource('../components/Calculator.astro');
+
+    expectPhrases(calculator, [
+      'Current run record',
+      'Your observed harvest inputs',
+      'data-session-output="profitPerMinute"',
+      'data-session-output="sessionProfit"',
+      'data-session-output="roi"',
+      'data-session-output="sessionRevenue"',
+      'data-session-label="profitPerMinute"',
+      'data-session-suffix="roi"',
+      'data-scenario-notice',
+      'Mobile live result preview',
+      'Seed economy leaderboard',
+      'Sell value',
+      'Profit/min',
+      'data-leaderboard-seed',
+    ]);
+    expect(calculator).not.toContain('Enter calculator inputs');
+  });
+
   test('answers Update 1.2 directly on the homepage without inventing mechanics', () => {
     const homepage = readSource('../pages/index.astro');
 

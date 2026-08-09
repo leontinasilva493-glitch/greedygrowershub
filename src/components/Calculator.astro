@@ -1,10 +1,14 @@
 ---
 import Icon from './Icon.astro';
+import StatusBadge from './StatusBadge.astro';
 import { fertilizers, getSource, seeds } from '../lib/content';
 import { buildCalculatorContext, getMutationPreset, mutationPresets } from '../lib/calculator-context';
+import { buildSeedComparison } from '../lib/calculator-ranking';
+import { getCalculatorSeedCost } from '../lib/calculator-seeds';
 
 const fertilizerSource = getSource('greedygrowers-codes');
 const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
+const seedComparison = buildSeedComparison(seeds, 20);
 ---
 
 <section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
@@ -43,6 +47,7 @@ const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
                 value={seed.id}
                 data-seed-name={seed.name}
                 data-cost-display={seed.costDisplay}
+                data-seed-cost={getCalculatorSeedCost(seed) ?? ''}
                 data-rarity={seed.rarity}
                 data-spawn-one-in={seed.spawnOneIn ?? ''}
               >{seed.name} · {seed.rarity}</option>
@@ -60,6 +65,14 @@ const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
             ))}
           </select>
         </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Garden plots <span class="font-mono text-leaf-400" data-range-label="plots">5 plots</span>
+          <input class="accent-leaf-500" name="plots" type="range" min="1" max="12" step="1" value="5" />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Session time <span class="font-mono text-leaf-400" data-range-label="sessionMinutes">60 min</span>
+          <input class="accent-leaf-500" name="sessionMinutes" type="range" min="10" max="240" step="10" value="60" />
+        </label>
         <label class="grid gap-2 text-sm font-medium sm:col-span-2">
           Failed runs before the next success
           <span class="grid grid-cols-[1fr_auto] items-center gap-3">
@@ -70,12 +83,23 @@ const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
       </div>
     </fieldset>
 
-    <details class="group mt-5 rounded-2xl border border-line bg-ink-950/45" data-advanced-inputs>
-      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4 font-semibold text-white marker:content-none">
-        <span><span class="block">Enter calculator inputs</span><span class="mt-1 block text-xs font-normal text-sand-300">Use values from your own run; current seed economics are intentionally not auto-filled.</span></span>
-        <span class="grid size-8 place-items-center rounded-lg border border-line text-leaf-400 transition group-open:rotate-45">+</span>
-      </summary>
-      <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+    <section class="mt-5 rounded-2xl border border-white/10 bg-ink-950/55 p-4 lg:hidden" aria-label="Mobile live result preview">
+      <p class="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Mobile live result preview</p>
+      <div class="mt-3 grid grid-cols-2 gap-2">
+        <div class="min-w-0 overflow-hidden rounded-xl border border-leaf-500/35 bg-leaf-500/[.12] p-3"><p class="text-[11px] text-leaf-200" data-session-label="profitPerMinute">Profit / min</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-leaf-400" data-session-output="profitPerMinute">100</p></div>
+        <div class="min-w-0 overflow-hidden rounded-xl border border-orange-400/35 bg-orange-400/[.09] p-3"><p class="text-[11px] text-orange-200" data-session-label="sessionProfit">Total profit</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-orange-300" data-session-output="sessionProfit">6,000</p></div>
+        <div class="min-w-0 overflow-hidden rounded-xl border border-sky-400/35 bg-sky-400/[.09] p-3"><p class="text-[11px] text-sky-200" data-session-label="roi">ROI</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-sky-300"><span data-session-output="roi">60</span><span data-session-suffix="roi">%</span></p></div>
+        <div class="min-w-0 overflow-hidden rounded-xl border border-violet-400/35 bg-violet-400/[.09] p-3"><p class="text-[11px] text-violet-200" data-session-label="sessionRevenue">Revenue</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-violet-300" data-session-output="sessionRevenue">16,000</p></div>
+      </div>
+    </section>
+
+    <section class="mt-5 rounded-2xl border border-line bg-ink-950/45" aria-labelledby="run-record-title">
+      <div class="border-b border-line px-4 py-4">
+        <p class="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Current run record</p>
+        <h3 id="run-record-title" class="mt-2 font-semibold text-white">Your observed harvest inputs</h3>
+        <p class="mt-1 text-xs leading-5 text-sand-300" data-observation-status>Selecting a current seed pre-fills its reported buy-in where available. Harvest value and wait time remain your recorded run values.</p>
+      </div>
+      <div class="grid gap-4 p-4 sm:grid-cols-2">
         <label class="grid gap-2 text-sm font-medium">
           Seed cost
           <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedCost" type="number" min="0" step="any" value="100" inputmode="decimal" required />
@@ -114,54 +138,87 @@ const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
           </fieldset>
         </div>
       </div>
-    </details>
+    </section>
 
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
     <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
-      Seed names follow the source-matched Update 1.2 catalog checked {seeds[0]?.verifiedAt}, but selecting one does not fill unverified harvest economics. Fertilizer presets remain a legacy community snapshot from <a class="font-semibold underline" href={fertilizerSource.url} target="_blank" rel="noopener noreferrer">{fertilizerSource.name}</a> and still need an in-game recheck.
+      Seed names and buy-in prices follow the source-matched Update 1.2 catalog checked {seeds[0]?.verifiedAt}. A selected seed immediately refreshes this scenario with its reported price; harvest value and wait time are always labelled as your own observation. Fertilizer presets remain a legacy community snapshot from <a class="font-semibold underline" href={fertilizerSource.url} target="_blank" rel="noopener noreferrer">{fertilizerSource.name}</a> and still need an in-game recheck.
     </p>
   </form>
 
   <div
-    class="group rounded-3xl border p-5 transition-colors data-[state=break-even]:border-amber-400/35 data-[state=break-even]:bg-amber-300/[.06] data-[state=loss]:border-rose-400/35 data-[state=loss]:bg-rose-400/[.055] data-[state=profitable]:border-leaf-500/35 data-[state=profitable]:bg-leaf-500/[.055] sm:p-7"
+    class="group rounded-3xl border p-5 transition-colors data-[state=break-even]:border-amber-400/35 data-[state=break-even]:bg-amber-300/[.06] data-[state=loss]:border-rose-400/35 data-[state=loss]:bg-rose-400/[.055] data-[state=needs-data]:border-amber-400/35 data-[state=needs-data]:bg-amber-300/[.045] data-[state=profitable]:border-leaf-500/35 data-[state=profitable]:bg-leaf-500/[.055] sm:p-7"
     data-calculator-result
     data-state="profitable"
     aria-live="polite"
   >
-    <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300">Decision after recorded losses</p>
+    <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300 group-data-[state=needs-data]:text-amber-300">Decision after recorded losses</p>
+    <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div class="min-w-0 overflow-hidden rounded-2xl border border-leaf-500/35 bg-leaf-500/[.12] p-4 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)]"><p class="text-xs font-semibold text-leaf-200" data-session-label="profitPerMinute">Profit / min</p><p class="mt-2 break-all font-display text-[clamp(1.15rem,2vw,1.8rem)] font-bold leading-[.9] tracking-tight text-leaf-400" data-session-output="profitPerMinute">100</p></div>
+      <div class="min-w-0 overflow-hidden rounded-2xl border border-orange-400/35 bg-orange-400/[.09] p-4 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)]"><p class="text-xs font-semibold text-orange-200" data-session-label="sessionProfit">Total profit</p><p class="mt-2 break-all font-display text-[clamp(1.15rem,2vw,1.8rem)] font-bold leading-[.9] tracking-tight text-orange-300" data-session-output="sessionProfit">6,000</p></div>
+      <div class="min-w-0 overflow-hidden rounded-2xl border border-sky-400/35 bg-sky-400/[.09] p-4 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)]"><p class="text-xs font-semibold text-sky-200" data-session-label="roi">ROI</p><p class="mt-2 break-all font-display text-[clamp(1.15rem,2vw,1.8rem)] font-bold leading-[.9] tracking-tight text-sky-300"><span data-session-output="roi">60</span><span data-session-suffix="roi">%</span></p></div>
+      <div class="min-w-0 overflow-hidden rounded-2xl border border-violet-400/35 bg-violet-400/[.09] p-4 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.04)]"><p class="text-xs font-semibold text-violet-200" data-session-label="sessionRevenue">Revenue</p><p class="mt-2 break-all font-display text-[clamp(1.15rem,2vw,1.8rem)] font-bold leading-[.9] tracking-tight text-violet-300" data-session-output="sessionRevenue">16,000</p></div>
+    </div>
+    <p class="mt-3 text-xs leading-5 text-sand-300" data-result-summary><span data-session-output="completedCycles">20</span> complete cycles across <span data-session-output="plots">5</span> plots. This is a repeatable scenario from the values you entered, not a forecast.</p>
+    <p class="mt-3 rounded-xl border border-amber-400/20 bg-amber-300/[.045] px-3 py-2 text-xs leading-5 text-amber-100" data-scenario-notice>Calculated from the current inputs and recorded run values.</p>
     <div class="mt-5 rounded-2xl border border-white/10 bg-ink-950/60 p-5 sm:p-6">
-      <p class="font-display text-2xl font-bold text-white sm:text-3xl" data-decision-headline>Recorded losses are covered</p>
+      <p class="break-words font-display text-2xl font-bold leading-tight text-white sm:text-3xl" data-decision-headline>Recorded losses are covered</p>
       <p class="mt-3 max-w-2xl text-sm leading-6 text-sand-300" data-decision-explanation>This result stays profitable after the failed attempts you entered.</p>
       <div class="mt-6 flex flex-wrap items-end justify-between gap-4">
-        <div><p class="text-sm text-sand-300">Risk-adjusted profit</p><p class="mt-1 font-display text-4xl font-bold text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300" data-output="riskAdjustedProfit">60</p></div>
-        <div class="text-right"><p class="text-sm text-sand-300">Adjusted profit / minute</p><p class="mt-1 font-mono text-2xl font-semibold text-white" data-output="riskAdjustedProfitPerMinute">20</p></div>
+        <div class="min-w-0"><p class="text-sm text-sand-300">Risk-adjusted profit</p><p class="mt-1 break-all font-display text-[clamp(1.8rem,4vw,3rem)] font-bold leading-[.9] tracking-tight text-leaf-400 group-data-[state=break-even]:text-amber-300 group-data-[state=loss]:text-rose-300" data-output="riskAdjustedProfit">60</p></div>
+        <div class="min-w-0 text-right"><p class="text-sm text-sand-300">Adjusted profit / minute</p><p class="mt-1 break-all font-mono text-[clamp(1.25rem,2.5vw,2rem)] font-semibold leading-none tracking-tight text-white" data-output="riskAdjustedProfitPerMinute">20</p></div>
       </div>
     </div>
 
     <div class="mt-4 grid gap-3 sm:grid-cols-2">
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4 sm:col-span-2">
         <p class="text-sm text-sand-300">Break-even harvest after failed runs</p>
-        <p class="mt-2 text-2xl font-semibold" data-output="breakEvenHarvest">100</p>
+        <p class="mt-2 break-all text-[clamp(1.25rem,2.5vw,1.8rem)] font-semibold leading-tight tracking-tight" data-output="breakEvenHarvest">100</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
         <p class="text-sm text-sand-300">Cost per attempt</p>
-        <p class="mt-2 text-xl font-semibold" data-output="totalInvestment">100</p>
+        <p class="mt-2 break-all text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-tight tracking-tight" data-output="totalInvestment">100</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
         <p class="text-sm text-sand-300">Boosted harvest value</p>
-        <p class="mt-2 text-xl font-semibold" data-output="boostedHarvestValue">160</p>
+        <p class="mt-2 break-all text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-tight tracking-tight" data-output="boostedHarvestValue">160</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
         <p class="text-sm text-sand-300">Profit per successful run</p>
-        <p class="mt-2 text-xl font-semibold" data-output="profitPerSuccess">60</p>
+        <p class="mt-2 break-all text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-tight tracking-tight" data-output="profitPerSuccess">60</p>
       </div>
       <div class="rounded-2xl border border-line bg-ink-950/70 p-4">
         <p class="text-sm text-sand-300">Successful-run profit / minute</p>
-        <p class="mt-2 text-xl font-semibold" data-output="profitPerMinute">20</p>
+        <p class="mt-2 break-all text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-tight tracking-tight" data-output="profitPerMinute">20</p>
       </div>
     </div>
     <p class="mt-5 text-xs leading-5 text-sand-300">This browser-only planning tool records losses you enter. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
   </div>
+
+  <aside class="overflow-hidden rounded-3xl border border-line bg-ink-900/70 lg:col-span-2" aria-labelledby="seed-comparison-title">
+    <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line px-5 py-6 sm:px-7">
+      <div>
+        <p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-amber-300">Evidence-aware comparison</p>
+        <h3 id="seed-comparison-title" class="mt-2 font-display text-2xl font-bold text-white">Seed economy leaderboard</h3>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-sand-300">The board reads from the same seed record used by the calculator. A seed ranks only when cost, sell value, and harvest time are all recorded for the same game version; click a seed to load its reported buy-in into the calculator.</p>
+      </div>
+      <a href="/seeds/list/" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open the reported seed catalog →</a>
+    </div>
+    <div class="hidden overflow-x-auto md:block">
+      <table class="w-full text-left text-sm">
+        <caption class="sr-only">Evidence-aware Greedy Growers seed comparison</caption>
+        <thead class="bg-ink-950/55 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Rank</th><th class="px-5 py-4">Seed</th><th class="px-5 py-4">Rarity</th><th class="px-5 py-4">Cost</th><th class="px-5 py-4">Sell value</th><th class="px-5 py-4">Time</th><th class="px-5 py-4 text-right">Profit/min</th><th class="px-5 py-4">Record state</th></tr></thead>
+        <tbody>
+          {seedComparison.ranked.map((seed) => <tr class="border-t border-line/80 bg-ink-900/35 transition-colors hover:bg-ink-950/55"><td class="px-5 py-4 font-mono text-leaf-400">#{seed.rank}</td><td class="px-5 py-4"><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>{seed.name}</button></td><td class="px-5 py-4">{seed.rarity}</td><td class="px-5 py-4 font-mono">{seed.cost.toLocaleString('en-US')}</td><td class="px-5 py-4 font-mono">{seed.harvestValue.toLocaleString('en-US')}</td><td class="px-5 py-4 font-mono">{seed.growthMinutes}m</td><td class="px-5 py-4 text-right font-mono font-bold text-leaf-400">{seed.profitPerMinute.toLocaleString('en-US', { maximumFractionDigits: 2 })}</td><td class="px-5 py-4"><StatusBadge state={seed.verification} /></td></tr>)}
+          {seedComparison.unrankable.map((seed) => <tr class="border-t border-line/80 bg-ink-900/35 transition-colors hover:bg-ink-950/55"><td class="px-5 py-4 text-sand-300">—</td><td class="px-5 py-4"><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>{seed.name}</button></td><td class="px-5 py-4">{seed.rarity}</td><td class="px-5 py-4 font-mono">{seed.costDisplay}</td><td class="px-5 py-4 text-sand-300">—</td><td class="px-5 py-4 text-sand-300">—</td><td class="px-5 py-4 text-right text-sand-300">—</td><td class="px-5 py-4"><span class="block text-xs text-amber-300">Needs: {seed.missing.join(', ')}</span><StatusBadge state={seed.verification} /></td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <div class="grid gap-3 p-4 md:hidden">
+      {seedComparison.ranked.map((seed) => <article class="rounded-2xl border border-line bg-ink-950/55 p-4"><div class="flex items-start justify-between gap-3"><div><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>#{seed.rank} · {seed.name}</button><p class="mt-1 text-xs text-sand-300">{seed.rarity} · Cost {seed.cost.toLocaleString('en-US')} · Sell {seed.harvestValue.toLocaleString('en-US')} · {seed.growthMinutes}m</p><p class="mt-3 font-mono text-lg font-bold text-leaf-400">{seed.profitPerMinute.toLocaleString('en-US', { maximumFractionDigits: 2 })} / min</p></div><StatusBadge state={seed.verification} /></div></article>)}
+      {seedComparison.unrankable.map((seed) => <article class="rounded-2xl border border-amber-400/25 bg-amber-300/[.04] p-4"><div class="flex items-start justify-between gap-3"><div><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>{seed.name}</button><p class="mt-1 text-xs text-sand-300">{seed.rarity} · Cost {seed.costDisplay}</p><p class="mt-2 text-xs leading-5 text-amber-100">Needs: {seed.missing.join(', ')}.</p></div><StatusBadge state={seed.verification} /></div></article>)}
+    </div>
+  </aside>
 </section>
 
 <script>import '../scripts/calculator';</script>

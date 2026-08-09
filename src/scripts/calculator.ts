@@ -1,4 +1,6 @@
 import { calculateProfit, getCalculatorDecision } from '../lib/calculator';
+import { calculateSessionScenario } from '../lib/calculator-session';
+import { formatCalculatorMetric } from '../lib/calculator-display';
 import { createCalculatorAnalyticsEvent, type CalculatorAnalyticsEventName } from '../lib/calculator-analytics';
 import { buildCalculatorContext, getMutationPreset, type MutationPreset } from '../lib/calculator-context';
 
@@ -9,12 +11,14 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
   const error = form.querySelector<HTMLElement>('[data-calculator-error]');
   const seedPreset = form.querySelector<HTMLSelectElement>('[data-seed-preset]');
   const fertilizerPreset = form.querySelector<HTMLSelectElement>('[data-fertilizer-preset]');
-  const advancedInputs = form.querySelector<HTMLDetailsElement>('[data-advanced-inputs]');
+  const observationStatus = form.querySelector<HTMLElement>('[data-observation-status]');
   const multiplierInput = form.elements.namedItem('harvestMultiplier');
   const mutationButtons = Array.from(form.querySelectorAll<HTMLButtonElement>('[data-mutation-preset]'));
   const resultPanel = scope?.querySelector<HTMLElement>('[data-calculator-result]');
   const decisionHeadline = scope?.querySelector<HTMLElement>('[data-decision-headline]');
   const decisionExplanation = scope?.querySelector<HTMLElement>('[data-decision-explanation]');
+  const resultSummary = scope?.querySelector<HTMLElement>('[data-result-summary]');
+  const scenarioNotice = scope?.querySelector<HTMLElement>('[data-scenario-notice]');
   let activeMutation: MutationPreset = getMutationPreset('base');
 
   const track = (event: CalculatorAnalyticsEventName, label: string) => {
@@ -24,7 +28,7 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
 
   const setNumberInput = (name: string, value: string | undefined) => {
     const input = form.elements.namedItem(name);
-    if (input instanceof HTMLInputElement && value !== undefined && value !== '') input.value = value;
+    if (input instanceof HTMLInputElement && value !== undefined) input.value = value;
   };
 
   const updateContext = () => {
@@ -53,8 +57,31 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
     updateContext();
   };
 
+  const updateObservationStatus = () => {
+    if (!observationStatus) return;
+    const option = seedPreset?.selectedOptions[0];
+    if (!seedPreset?.value) {
+      observationStatus.textContent = 'Enter the values observed in one clean run. Results update immediately as you type.';
+      return;
+    }
+    if (option?.dataset.seedCost) {
+      observationStatus.textContent = `Reported buy-in was loaded for ${option.dataset.seedName ?? 'this seed'}. Record harvest value and wait time from your run; results update immediately.`;
+      return;
+    }
+    observationStatus.textContent = 'This seed has a display price but no browser-safe numeric buy-in. Enter the amount shown in your current server, then record harvest value and wait time.';
+  };
+
   const update = () => {
     const data = new FormData(form);
+    const plots = Number(data.get('plots'));
+    const sessionMinutes = Number(data.get('sessionMinutes'));
+    const setRangeLabel = (name: string, value: string) => {
+      const label = form.querySelector<HTMLElement>(`[data-range-label="${name}"]`);
+      if (label) label.textContent = value;
+    };
+
+    setRangeLabel('plots', `${plots} ${plots === 1 ? 'plot' : 'plots'}`);
+    setRangeLabel('sessionMinutes', `${sessionMinutes} min`);
 
     try {
       const result = calculateProfit({
@@ -68,12 +95,40 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
 
       Object.entries(result).forEach(([key, value]) => {
         const output = scope?.querySelector<HTMLElement>(`[data-output="${key}"]`);
-        if (output) output.textContent = numberFormatter.format(value);
+        if (output) {
+          output.textContent = formatCalculatorMetric(value);
+          output.title = numberFormatter.format(value);
+        }
       });
       const decision = getCalculatorDecision(result);
       if (resultPanel) resultPanel.dataset.state = decision.state;
       if (decisionHeadline) decisionHeadline.textContent = decision.headline;
       if (decisionExplanation) decisionExplanation.textContent = decision.explanation;
+      if (scenarioNotice) {
+        const seedName = seedPreset?.selectedOptions[0]?.dataset.seedName;
+        const inputMismatch = result.totalInvestment > result.boostedHarvestValue
+          ? ' Input mismatch: the current buy-in is above the boosted harvest value, so this scenario is a loss.'
+          : '';
+        scenarioNotice.textContent = seedName
+          ? `Calculated from the current inputs for ${seedName}. Reported cost is loaded; sell value and wait time remain your scenario inputs until they are verified in game.${inputMismatch}`
+          : 'Calculated from the current inputs and recorded run values.';
+      }
+
+      const session = calculateSessionScenario({
+        result,
+        waitMinutes: Number(data.get('waitMinutes')),
+        plots,
+        sessionMinutes,
+      });
+      Object.entries({ ...session, plots }).forEach(([key, value]) => {
+        scope?.querySelectorAll<HTMLElement>(`[data-session-output="${key}"]`).forEach((output) => {
+          output.textContent = formatCalculatorMetric(value);
+          output.title = numberFormatter.format(value);
+        });
+      });
+      if (resultSummary) {
+        resultSummary.textContent = `${formatCalculatorMetric(session.completedCycles)} complete cycles across ${formatCalculatorMetric(plots)} plots. This is a repeatable scenario from the values you entered, not a forecast.`;
+      }
       if (error) error.textContent = '';
     } catch (caught) {
       if (error) error.textContent = caught instanceof Error ? caught.message : 'Check the entered values.';
@@ -81,8 +136,11 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
   };
 
   seedPreset?.addEventListener('change', () => {
+    const option = seedPreset.selectedOptions[0];
+    setNumberInput('seedCost', option?.dataset.seedCost);
     track('calculator_seed_selected', seedPreset.value || 'manual-values');
     updateContext();
+    updateObservationStatus();
     update();
   });
 
@@ -106,10 +164,6 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
     });
   }
 
-  advancedInputs?.addEventListener('toggle', () => {
-    if (advancedInputs.open) track('calculator_advanced_opened', 'advanced-inputs');
-  });
-
   form.addEventListener('input', (event) => {
     if (event.target === multiplierInput && multiplierInput instanceof HTMLInputElement) {
       setActiveMutation({ id: 'manual', name: 'Manual', multiplier: Number(multiplierInput.value) || 1 });
@@ -117,5 +171,15 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
     update();
   });
   updateContext();
+  updateObservationStatus();
   update();
+
+  document.querySelectorAll<HTMLButtonElement>('[data-leaderboard-seed]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!seedPreset || !button.dataset.leaderboardSeed) return;
+      seedPreset.value = button.dataset.leaderboardSeed;
+      seedPreset.dispatchEvent(new Event('change', { bubbles: true }));
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 });
