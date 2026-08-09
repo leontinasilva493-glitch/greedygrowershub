@@ -39,6 +39,17 @@ describe('calculateProfit', () => {
       riskAdjustedProfitPerMinute: 15,
     });
   });
+
+  it('keeps calculating a cost-dominant input scenario instead of treating a loss as missing data', () => {
+    expect(calculateProfit({
+      seedCost: 20_000,
+      harvestValue: 160,
+      waitMinutes: 3,
+      failedRuns: 0,
+      fertilizerCost: 100,
+      harvestMultiplier: 1.25,
+    }).profitPerMinute).toBeLessThan(0);
+  });
 });
 
 describe('validateCalculatorInput', () => {
