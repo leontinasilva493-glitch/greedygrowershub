@@ -27,10 +27,10 @@ const expectedMetadata = {
     h1: 'Greedy Growers Beginner Guide: How to Play & First Harvest',
   },
   seeds: {
-    title: 'Greedy Growers Seed List: All 20 Costs & Spawn Rates',
+    title: 'All Greedy Growers Seeds (Update 1.2): Prices & Rarity',
     description: 'Explore all 20 Greedy Growers seeds reported for Update 1.2. Compare rarity, shop price, spawn chance, version notes, source agreement, and evidence status.',
     canonicalPath: '/seeds/list/',
-    h1: 'Greedy Growers Seed List: All 20 Seeds',
+    h1: 'All 20 Greedy Growers Seeds Reported for Update 1.2',
   },
   bestSeeds: {
     title: 'Greedy Growers Best Seeds: Budget & Rarity Guide (2026)',
@@ -87,10 +87,10 @@ const expectedMetadata = {
     h1: 'Greedy Growers Harvest Timing Guide',
   },
   mutations: {
-    title: 'Greedy Growers Mutations: Multipliers & Weather Guide',
-    description: 'Explore all six Greedy Growers mutations reported for Update 1.2, with multipliers, weather or lightning triggers, stacking notes, sources, and test steps.',
+    title: 'All Greedy Growers Mutations: Multipliers & How to Get',
+    description: 'Compare all six Greedy Growers mutations reported for Update 1.2, 2x–100x multipliers, how to get them from weather or lightning, stacking notes, and sources.',
     canonicalPath: '/mechanics/mutations/',
-    h1: 'Greedy Growers Mutations Guide',
+    h1: 'All 6 Greedy Growers Mutations Reported for Update 1.2',
   },
   updates: {
     title: 'Greedy Growers Updates: Codes, Game Changes & Site Log',
@@ -104,7 +104,7 @@ describe('indexable page metadata', () => {
   it.each(Object.entries(pageSeo))('%s has concise, keyword-first metadata', (_key, metadata) => {
     expect(metadata.title.length).toBeGreaterThanOrEqual(50);
     expect(metadata.title.length).toBeLessThanOrEqual(60);
-    expect(metadata.title.startsWith('Greedy Growers')).toBe(true);
+    expect(metadata.title).toMatch(/^(?:All )?Greedy Growers/);
     expect(metadata.description.length).toBeGreaterThanOrEqual(150);
     expect(metadata.description.length).toBeLessThanOrEqual(160);
     expect(metadata.description).toMatch(/^(Explore|Check|Follow|Browse|Calculate|Learn|Choose|Track|Compare|Find)\b/);

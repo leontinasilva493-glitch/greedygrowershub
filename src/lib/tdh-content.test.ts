@@ -83,7 +83,6 @@ describe('source-visible TDH heading contracts', () => {
     const seedData = readSource('../data/seeds.json');
 
     expectPhrases(`${seedList}\n${seedExplorer}`, [
-      '20 Greedy Growers Seeds Reported for Update 1.2',
       'Current Greedy Growers Seed Table',
       'Spawn chance',
       'Why This List Differs From Older Seed Guides',
@@ -120,7 +119,6 @@ describe('source-visible TDH heading contracts', () => {
   test('publishes a source-matched mutation guide without hiding evidence limits', () => {
     const mutations = readSource('../pages/mechanics/mutations.astro');
     expectPhrases(mutations, [
-      'All 6 Greedy Growers Mutations Reported for Update 1.2',
       'Greedy Growers Mutation Multiplier Table',
       'How to Get Mutations from Weather and Lightning',
       'Do Greedy Growers Mutations Stack?',
