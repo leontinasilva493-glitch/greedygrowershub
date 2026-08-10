@@ -202,9 +202,17 @@ const seedComparison = buildSeedComparison(seeds, 20);
         <h3 id="seed-comparison-title" class="mt-2 font-display text-2xl font-bold text-white">Seed economy leaderboard</h3>
         <p class="mt-2 max-w-3xl text-sm leading-6 text-sand-300">The board reads from the same seed record used by the calculator. A seed ranks only when cost, sell value, and harvest time are all recorded for the same game version; click a seed to load its reported buy-in into the calculator.</p>
       </div>
-      <a href="/seeds/list/" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open the reported seed catalog →</a>
+      <a href="/seeds/list/" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open the full Seed List →</a>
     </div>
-    <div class="hidden overflow-x-auto md:block">
+    <details class="group" data-seed-economy-leaderboard>
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 bg-ink-950/35 px-5 py-4 transition hover:bg-ink-950/60 sm:px-7">
+        <span>
+          <strong class="block text-sm text-white"><span class="group-open:hidden">Show the full 20-seed leaderboard</span><span class="hidden group-open:inline">Hide the full 20-seed leaderboard</span></strong>
+          <span class="mt-1 block text-xs leading-5 text-sand-300">Expand only when you need every incomplete economy record.</span>
+        </span>
+        <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line font-mono text-lg text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+    <div class="hidden overflow-x-auto border-t border-line md:block">
       <table class="w-full text-left text-sm">
         <caption class="sr-only">Evidence-aware Greedy Growers seed comparison</caption>
         <thead class="bg-ink-950/55 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Rank</th><th class="px-5 py-4">Seed</th><th class="px-5 py-4">Rarity</th><th class="px-5 py-4">Cost</th><th class="px-5 py-4">Sell value</th><th class="px-5 py-4">Time</th><th class="px-5 py-4 text-right">Profit/min</th><th class="px-5 py-4">Record state</th></tr></thead>
@@ -218,6 +226,7 @@ const seedComparison = buildSeedComparison(seeds, 20);
       {seedComparison.ranked.map((seed) => <article class="rounded-2xl border border-line bg-ink-950/55 p-4"><div class="flex items-start justify-between gap-3"><div><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>#{seed.rank} · {seed.name}</button><p class="mt-1 text-xs text-sand-300">{seed.rarity} · Cost {seed.cost.toLocaleString('en-US')} · Sell {seed.harvestValue.toLocaleString('en-US')} · {seed.growthMinutes}m</p><p class="mt-3 font-mono text-lg font-bold text-leaf-400">{seed.profitPerMinute.toLocaleString('en-US', { maximumFractionDigits: 2 })} / min</p></div><StatusBadge state={seed.verification} /></div></article>)}
       {seedComparison.unrankable.map((seed) => <article class="rounded-2xl border border-amber-400/25 bg-amber-300/[.04] p-4"><div class="flex items-start justify-between gap-3"><div><button type="button" class="font-bold text-white hover:text-leaf-300" data-leaderboard-seed={seed.id}>{seed.name}</button><p class="mt-1 text-xs text-sand-300">{seed.rarity} · Cost {seed.costDisplay}</p><p class="mt-2 text-xs leading-5 text-amber-100">Needs: {seed.missing.join(', ')}.</p></div><StatusBadge state={seed.verification} /></div></article>)}
     </div>
+    </details>
   </aside>
 </section>
 
