@@ -2,8 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Calculator from '../components/Calculator.astro';
 import CalculatorSeedPreview from '../components/CalculatorSeedPreview.astro';
+import EvidenceBar from '../components/EvidenceBar.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
+import { evidenceByPage } from '../data/evidence';
 import { site } from '../lib/content';
 import { absoluteUrl, pageSeo } from '../lib/seo';
 
@@ -50,6 +52,7 @@ const schemas = [
           <a href="/mechanics/when-to-harvest/" class="rounded-md border border-line bg-ink-900 px-5 py-3 font-bold text-white no-underline">Plan when to harvest</a>
           <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 font-bold text-white no-underline">Play on Roblox <Icon name="external" size={15}/></a>
         </div>
+        <EvidenceBar {...evidenceByPage.home} tone="subtle" />
       </div>
     </div>
   </section>

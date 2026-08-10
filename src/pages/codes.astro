@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CodeStatus from '../components/CodeStatus.astro';
+import EvidenceBar from '../components/EvidenceBar.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SourceList from '../components/SourceList.astro';
 import Icon from '../components/Icon.astro';
+import { evidenceByPage } from '../data/evidence';
 import { site, sources } from '../lib/content';
 import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../lib/seo';
 
@@ -52,7 +54,7 @@ const schemas = [
 ---
 
 <BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
-  <section class="border-b border-line bg-ink-900/60"><div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8"><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Roblox codes guide</p><h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1><p class="mt-5 max-w-3xl text-lg leading-8 text-sand-300">Check the current answer before you paste anything. This page keeps active, expired, reported, and unverified claims separate.</p><div class="mt-7 flex flex-wrap gap-3"><a href="#current-status" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Check code status</a><a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Open Roblox <Icon name="external" size={15}/></a></div></div></section>
+  <section class="border-b border-line bg-ink-900/60"><div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8"><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Roblox codes guide</p><h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1><p class="mt-5 max-w-3xl text-lg leading-8 text-sand-300">Check the current answer before you paste anything. This page keeps active, expired, reported, and unverified claims separate.</p><EvidenceBar {...evidenceByPage.codes} /><div class="mt-7 flex flex-wrap gap-3"><a href="#current-status" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Check code status</a><a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Open Roblox <Icon name="external" size={15}/></a></div></div></section>
   <div class="mx-auto max-w-7xl space-y-16 px-4 py-16 sm:px-6 lg:px-8">
     <section id="current-status"><SectionHeading eyebrow="Current answer" title="Active Codes — Current Verified Status" description={`Last checked ${site.checkedAt}. The safe answer is an empty verified list until a creator-owned source or repeatable in-game result provides a working code.`}/><div class="mt-8"><h2 class="sr-only">Three-Step Code Status</h2><CodeStatus /></div></section>
     <section><SectionHeading eyebrow="Redeem route" title="How to Redeem Codes in Greedy Growers" description="These are reported check steps, not proof that an active code currently exists."/><ol class="mt-8 grid gap-4 md:grid-cols-2">{redeemSteps.map(([title, description], index) => <li class="rounded-xl border border-line bg-ink-900 p-5"><div class="flex items-center gap-3"><span class="grid size-8 place-items-center rounded-md bg-leaf-500 font-mono text-xs font-bold text-ink-950">{index + 1}</span><h3 class="font-display font-bold text-white">{title}</h3></div><p class="mt-4 text-sm leading-6 text-sand-300">{description}</p></li>)}</ol></section>

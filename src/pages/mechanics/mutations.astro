@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceBar from '../../components/EvidenceBar.astro';
 import OnThisPage from '../../components/OnThisPage.astro';
 import SourceList from '../../components/SourceList.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import { evidenceByPage } from '../../data/evidence';
 import { mutations, site, sources } from '../../lib/content';
 import { absoluteUrl, buildBreadcrumbSchema, buildItemListSchema, pageSeo } from '../../lib/seo';
 
@@ -39,6 +41,7 @@ const schemas = [
       <h1 class="mt-5 text-4xl font-bold tracking-[-.04em] sm:text-6xl">{metadata.h1}</h1>
       <p class="mt-6 text-lg leading-8 text-sand-300">Mutations are reported to change the sale value of seeds, plants, or fruit. This guide compares all six current names, reported multipliers, weather or lightning conditions, and the evidence gaps you should know before planning a high-value run.</p>
       <div class="mt-7 flex flex-wrap gap-3"><a href="#mutation-table" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Compare all multipliers</a><a href="/seeds/list/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Open the 20-seed list</a></div>
+      <EvidenceBar {...evidenceByPage.mutations} />
     </header>
 
     <OnThisPage items={[
