@@ -21,6 +21,7 @@ describe('global navigation order', () => {
     expectLabelsInOrder(desktopNavigation ?? '', [
       '>Calculator<',
       '>Seeds ',
+      '>Mutations<',
       '>Guides ',
       '>Mechanics ',
       '>Codes<',
@@ -36,6 +37,7 @@ describe('global navigation order', () => {
     expectLabelsInOrder(mobileNavigation, [
       '>Calculator<',
       '>Seeds<',
+      '>Mutations<',
       '>Guides<',
       '>Mechanics<',
       '>Codes<',
@@ -53,8 +55,8 @@ describe('global navigation order', () => {
     expectLabelsInOrder(mechanicLinks ?? '', [
       "label: 'When to Harvest'",
       "label: 'Lightning'",
-      "label: 'Mutations'",
     ]);
+    expect(mechanicLinks).not.toContain("label: 'Mutations'");
     expectLabelsInOrder(footerSource, ['>Tools & data<', '>Guides<']);
     expectLabelsInOrder(footerSource, [
       '>Profit Calculator<',
@@ -68,6 +70,10 @@ describe('global navigation order', () => {
       '>Lightning<',
       '>Mutations<',
     ]);
+  });
+
+  test('marks the current primary navigation item for assistive technology', () => {
+    expect(headerSource).toContain("aria-current={isActive('/mechanics/mutations/') ? 'page' : undefined}");
   });
 
   test('links only to the canonical Seed List and Best Seeds routes', () => {

@@ -1,0 +1,53 @@
+---
+import type { ClaimStrength } from '../data/evidence';
+
+interface Props {
+  version: string;
+  sourceCount: number;
+  claimStrength: ClaimStrength;
+  lastChecked: string;
+  knownGaps?: string[];
+  tone?: 'default' | 'subtle';
+}
+
+const { version, sourceCount, claimStrength, lastChecked, knownGaps = [], tone = 'default' } = Astro.props;
+
+const strengthMeta: Record<ClaimStrength, { label: string; cls: string }> = {
+  verified: { label: 'Verified', cls: 'text-[#38d47a] border-[#38d47a]/40 bg-[#38d47a]/10' },
+  'community-reported': { label: 'Community-reported', cls: 'text-[#55ddf0] border-[#55ddf0]/40 bg-[#55ddf0]/10' },
+  unverified: { label: 'Unverified', cls: 'text-[#f3f7ee]/60 border-white/15 bg-white/5' },
+  conflict: { label: 'Conflict', cls: 'text-[#ffd338] border-[#ffd338]/40 bg-[#ffd338]/10' },
+};
+
+const meta = strengthMeta[claimStrength];
+const checkedDate = new Date(`${lastChecked}T00:00:00Z`).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const isSubtle = tone === 'subtle';
+---
+
+<div
+  role="note"
+  aria-label="Page evidence status"
+  class:list={[
+    'flex flex-col leading-relaxed',
+    isSubtle
+      ? 'mt-5 gap-1 border-t border-white/[.08] pt-3 text-[12px]'
+      : 'mt-4 gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-[13px]',
+  ]}
+>
+  <div class:list={['flex flex-wrap items-center gap-y-1.5 text-[#f3f7ee]/70', isSubtle ? 'gap-x-4' : 'gap-x-5']}>
+    <span><strong class="font-semibold text-[#f3f7ee]/90">Version:</strong> {version}</span>
+    <span><strong class="font-semibold text-[#f3f7ee]/90">Sources:</strong> {sourceCount}</span>
+    <span class:list={['rounded border px-2 py-0.5 text-[12px] font-medium', meta.cls]}>{meta.label}</span>
+    <span><strong class="font-semibold text-[#f3f7ee]/90">Last checked:</strong> {checkedDate}</span>
+  </div>
+  {knownGaps.length > 0 && (
+    <p class:list={[isSubtle ? 'text-[11px]' : 'text-[12px]', 'text-[#f3f7ee]/50']}>
+      <strong class="font-semibold text-[#f3f7ee]/70">Known gaps:</strong> {knownGaps.join(' · ')}
+    </p>
+  )}
+</div>
