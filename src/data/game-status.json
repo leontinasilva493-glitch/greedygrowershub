@@ -2,6 +2,9 @@
   "source": "Roblox Games API",
   "sourceUrl": "https://games.roblox.com/v1/games?universeIds=10440833423",
   "universeId": "10440833423",
-  "updated": "2026-08-05T05:19:27.8636033Z",
-  "checkedAt": "2026-08-06"
+  "playing": 14076,
+  "visits": 12912448,
+  "maxPlayers": 4,
+  "updated": "2026-08-10T22:22:01.3136194Z",
+  "checkedAt": "2026-08-11T12:35:25+08:00"
 }

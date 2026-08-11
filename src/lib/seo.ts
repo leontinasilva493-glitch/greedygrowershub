@@ -15,8 +15,8 @@ export const pageSeo = {
     h1: 'Greedy Growers Calculator',
   },
   codes: {
-    title: 'Greedy Growers Codes: Active Status & Redeem Guide',
-    description: 'Check Greedy Growers codes, active and expired status, trusted sources, redeem steps, verification notes, and common fixes before trying any reported code.',
+    title: 'Greedy Growers Codes (August 2026): Any Working Codes?',
+    description: 'No active Greedy Growers codes are verified as of August 11, 2026. Check active and expired codes, redemption steps, invalid-code fixes, and official sources.',
     canonicalPath: '/codes/',
     h1: 'Greedy Growers Codes',
   },
@@ -100,6 +100,15 @@ export const pageSeo = {
   },
 } as const satisfies Record<string, PageMetadata>;
 
+export const localizedPageSeo = {
+  viCodes: {
+    title: 'Code Greedy Growers mới nhất (Tháng 8/2026)',
+    description: 'Kiểm tra code Greedy Growers mới nhất trong tháng 8/2026: code đang hoạt động, code hết hạn, cách nhập code, lỗi thường gặp và nguồn chính thức.',
+    canonicalPath: '/vi/codes/',
+    h1: 'Code Greedy Growers mới nhất',
+  },
+} as const satisfies Record<string, PageMetadata>;
+
 export function normalizeCanonicalPath(path: string): string {
   if (path === '/' || path === '') return '/';
   return `/${path.replace(/^\/+|\/+$/g, '')}/`;
@@ -108,6 +117,12 @@ export function normalizeCanonicalPath(path: string): string {
 export function absoluteUrl(path: string): string {
   return new URL(normalizeCanonicalPath(path), `https://${site.domain}`).toString();
 }
+
+export const codeLanguageAlternates = [
+  { hreflang: 'en', href: absoluteUrl('/codes/') },
+  { hreflang: 'vi', href: absoluteUrl('/vi/codes/') },
+  { hreflang: 'x-default', href: absoluteUrl('/codes/') },
+];
 
 export function buildBreadcrumbSchema(items: Array<{ name: string; path: string }>) {
   return {

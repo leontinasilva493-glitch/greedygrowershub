@@ -44,6 +44,7 @@ describe('page evidence summary', () => {
     expect(config).toMatch(/seeds:\s*{[\s\S]*?sourceCount:\s*3/);
     expect(config).toMatch(/mutations:\s*{[\s\S]*?sourceCount:\s*2/);
     expect(config).toMatch(/codes:\s*{[\s\S]*?sourceCount:\s*3/);
+    expect(config).toMatch(/codes:\s*{[\s\S]*?lastChecked:\s*'2026-08-11'/);
     expect(config).toMatch(/beginner:\s*{[\s\S]*?sourceCount:\s*3/);
   });
 

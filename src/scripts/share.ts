@@ -15,12 +15,13 @@ document.querySelectorAll<HTMLElement>('[data-share-actions]').forEach((scope) =
   const path = scope.dataset.sharePath ?? window.location.pathname;
   const url = new URL(path, window.location.origin).toString();
   const status = scope.querySelector<HTMLElement>('[data-share-status]');
+  const canUseNativeShare = typeof navigator.share === 'function';
 
   scope.querySelector<HTMLButtonElement>('[data-share-page]')?.addEventListener('click', async () => {
     try {
-      if (navigator.share) await navigator.share({ title, url });
+      if (canUseNativeShare) await navigator.share({ title, url });
       else await copyText(url);
-      if (status) status.textContent = navigator.share ? 'Share opened' : 'Link copied';
+      if (status) status.textContent = canUseNativeShare ? 'Share opened' : 'Link copied';
     } catch (error) {
       if ((error as DOMException).name !== 'AbortError' && status) status.textContent = 'Unable to share';
     }

@@ -3,6 +3,8 @@ import {
   absoluteUrl,
   buildBreadcrumbSchema,
   buildItemListSchema,
+  codeLanguageAlternates,
+  localizedPageSeo,
   normalizeCanonicalPath,
   pageSeo,
 } from './seo';
@@ -15,8 +17,8 @@ const expectedMetadata = {
     h1: 'Greedy Growers Calculator',
   },
   codes: {
-    title: 'Greedy Growers Codes: Active Status & Redeem Guide',
-    description: 'Check Greedy Growers codes, active and expired status, trusted sources, redeem steps, verification notes, and common fixes before trying any reported code.',
+    title: 'Greedy Growers Codes (August 2026): Any Working Codes?',
+    description: 'No active Greedy Growers codes are verified as of August 11, 2026. Check active and expired codes, redemption steps, invalid-code fixes, and official sources.',
     canonicalPath: '/codes/',
     h1: 'Greedy Growers Codes',
   },
@@ -107,7 +109,7 @@ describe('indexable page metadata', () => {
     expect(metadata.title).toMatch(/^(?:All )?Greedy Growers/);
     expect(metadata.description.length).toBeGreaterThanOrEqual(150);
     expect(metadata.description.length).toBeLessThanOrEqual(160);
-    expect(metadata.description).toMatch(/^(Explore|Check|Follow|Browse|Calculate|Learn|Choose|Track|Compare|Find)\b/);
+    expect(metadata.description).toMatch(/^(Explore|Check|Follow|Browse|Calculate|Learn|Choose|Track|Compare|Find|No)\b/);
     expect(metadata.h1).toContain('Greedy Growers');
   });
 
@@ -155,6 +157,20 @@ describe('canonical helpers', () => {
     expect(normalizeCanonicalPath('/codes')).toBe('/codes/');
     expect(normalizeCanonicalPath('/codes/')).toBe('/codes/');
     expect(absoluteUrl('/codes')).toBe('https://greedygrowerhub.wiki/codes/');
+  });
+
+  it('defines a self-canonical Vietnamese Codes page and reciprocal language URLs', () => {
+    expect(localizedPageSeo.viCodes).toEqual({
+      title: 'Code Greedy Growers mới nhất (Tháng 8/2026)',
+      description: 'Kiểm tra code Greedy Growers mới nhất trong tháng 8/2026: code đang hoạt động, code hết hạn, cách nhập code, lỗi thường gặp và nguồn chính thức.',
+      canonicalPath: '/vi/codes/',
+      h1: 'Code Greedy Growers mới nhất',
+    });
+    expect(codeLanguageAlternates).toEqual([
+      { hreflang: 'en', href: 'https://greedygrowerhub.wiki/codes/' },
+      { hreflang: 'vi', href: 'https://greedygrowerhub.wiki/vi/codes/' },
+      { hreflang: 'x-default', href: 'https://greedygrowerhub.wiki/codes/' },
+    ]);
   });
 
   it('builds ordered, absolute breadcrumb items', () => {

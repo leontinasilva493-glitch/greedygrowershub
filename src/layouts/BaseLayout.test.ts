@@ -35,4 +35,14 @@ describe('site-wide accessibility shell', () => {
     expect(layout).toContain('tabindex="-1"');
     expect(layout).toContain('width=device-width, initial-scale=1');
   });
+
+  test('supports localized document language and reciprocal hreflang links', () => {
+    const layout = readSource('./BaseLayout.astro');
+
+    expect(layout).toContain("lang?: 'en' | 'vi'");
+    expect(layout).toContain('alternates?: Array<{ hreflang: string; href: string }>');
+    expect(layout).toContain('<html lang={lang}>');
+    expect(layout).toContain('rel="alternate"');
+    expect(layout).toContain('hreflang={alternate.hreflang}');
+  });
 });

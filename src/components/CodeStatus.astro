@@ -2,6 +2,47 @@
 import Icon from './Icon.astro';
 import { codes, getSource } from '../lib/content';
 
+interface Props {
+  locale?: 'en' | 'vi';
+}
+
+const { locale = 'en' } = Astro.props;
+const copyByLocale = {
+  en: {
+    ariaLabel: 'Three-step code evidence status',
+    confirmed: 'Confirmed by a current source',
+    confirmedDetail: 'A current creator-owned post or two independent trackers must name the same exact code and reward.',
+    reported: 'Single-source report',
+    reportedDetail: 'A candidate seen on only one secondary source stays here and is never labeled active.',
+    inGame: 'Verified in game',
+    inGameDetail: 'The game accepted the exact string and the reward appeared in a recorded current-version session.',
+    currentSuffix: 'current',
+    answerLabel: 'Current answer',
+    answer: 'No active Greedy Growers code passes all three gates',
+    answerDetail: 'The two current trackers checked for this page both report zero active codes. No single-source candidate or recorded in-game redemption is being promoted into the verified list.',
+    expiredLabel: 'Expired history',
+    expiredCount: (count: number) => `${count} source-traceable record(s).`,
+    noExpired: 'No previously working code has been verified as expired.',
+  },
+  vi: {
+    ariaLabel: 'Trạng thái kiểm chứng code qua ba bước',
+    confirmed: 'Đã xác nhận qua nguồn hiện tại',
+    confirmedDetail: 'Một bài đăng hiện tại do nhà phát triển sở hữu hoặc hai nguồn theo dõi độc lập phải nêu cùng một code và phần thưởng.',
+    reported: 'Chỉ có một nguồn báo cáo',
+    reportedDetail: 'Code chỉ xuất hiện ở một nguồn thứ cấp sẽ nằm ở đây và không được ghi là đang hoạt động.',
+    inGame: 'Đã kiểm chứng trong game',
+    inGameDetail: 'Game chấp nhận đúng chuỗi code và phần thưởng xuất hiện trong một phiên chơi thuộc phiên bản hiện tại.',
+    currentSuffix: 'hiện tại',
+    answerLabel: 'Kết luận hiện tại',
+    answer: 'Chưa có code Greedy Growers nào vượt qua cả ba bước kiểm chứng',
+    answerDetail: 'Hai nguồn theo dõi hiện tại đều báo cáo không có code đang hoạt động. Trang này không nâng một tin đơn nguồn hoặc lần nhập chưa được ghi lại thành code đã xác minh.',
+    expiredLabel: 'Lịch sử hết hạn',
+    expiredCount: (count: number) => `${count} bản ghi có nguồn truy xuất.`,
+    noExpired: 'Chưa có code từng hoạt động nào được xác minh là đã hết hạn.',
+  },
+} as const;
+const copy = copyByLocale[locale];
+
 const activeCodes = codes.filter((code) => code.status === 'active');
 const reportedCodes = codes.filter((code) => code.status === 'reported');
 const expiredCodes = codes.filter((code) => code.status === 'expired');
@@ -9,30 +50,30 @@ const inGameVerifiedCodes: typeof codes = [];
 const verificationLanes = [
   {
     step: '01',
-    label: 'Confirmed by a current source',
+    label: copy.confirmed,
     count: activeCodes.length,
-    detail: 'A current creator-owned post or two independent trackers must name the same exact code and reward.',
+    detail: copy.confirmedDetail,
     tone: 'leaf',
   },
   {
     step: '02',
-    label: 'Single-source report',
+    label: copy.reported,
     count: reportedCodes.length,
-    detail: 'A candidate seen on only one secondary source stays here and is never labeled active.',
+    detail: copy.reportedDetail,
     tone: 'amber',
   },
   {
     step: '03',
-    label: 'Verified in game',
+    label: copy.inGame,
     count: inGameVerifiedCodes.length,
-    detail: 'The game accepted the exact string and the reward appeared in a recorded current-version session.',
+    detail: copy.inGameDetail,
     tone: 'leaf',
   },
 ];
 ---
 
 <div>
-  <div class="grid gap-4 lg:grid-cols-3" aria-label="Three-step code evidence status">
+  <div class="grid gap-4 lg:grid-cols-3" aria-label={copy.ariaLabel}>
     {verificationLanes.map((lane) => (
       <section class:list={["rounded-xl border p-5 sm:p-6", lane.tone === 'amber' ? 'border-amber-400/25 bg-amber-300/[.045]' : 'border-leaf-500/25 bg-leaf-500/[.055]']}>
         <div class="flex items-start justify-between gap-4">
@@ -40,7 +81,7 @@ const verificationLanes = [
           <span class:list={["grid size-9 place-items-center rounded-lg border", lane.tone === 'amber' ? 'border-amber-400/30 text-amber-200' : 'border-leaf-500/30 text-leaf-400']}><Icon name={lane.count ? 'check' : 'clock'} size={16} /></span>
         </div>
         <h3 class="mt-4 font-display text-xl font-bold text-white">{lane.label}</h3>
-        <p class="mt-3 font-mono text-2xl font-bold text-leaf-400">{lane.count} current</p>
+        <p class="mt-3 font-mono text-2xl font-bold text-leaf-400">{lane.count} {copy.currentSuffix}</p>
         <p class="mt-3 text-sm leading-6 text-sand-300">{lane.detail}</p>
       </section>
     ))}
@@ -48,11 +89,11 @@ const verificationLanes = [
 
   <section class="mt-4 rounded-xl border border-line bg-ink-900 p-5 sm:p-6">
     <div class="flex items-start justify-between gap-4">
-      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">Current answer</p><h3 class="mt-2 font-display text-2xl font-bold text-white">No active Greedy Growers code passes all three gates</h3></div>
+      <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-sand-300">{copy.answerLabel}</p><h3 class="mt-2 font-display text-2xl font-bold text-white">{copy.answer}</h3></div>
       <span class="grid size-10 place-items-center rounded-lg border border-line bg-white/5 text-sand-300"><Icon name="ticket" /></span>
     </div>
-    <p class="mt-4 text-sm leading-6 text-sand-300">The two current trackers checked for this page both report zero active codes. No single-source candidate or recorded in-game redemption is being promoted into the verified list.</p>
+    <p class="mt-4 text-sm leading-6 text-sand-300">{copy.answerDetail}</p>
     {activeCodes.length ? <ul class="mt-5 grid gap-3">{activeCodes.map((code) => <li class="rounded-lg border border-leaf-500/20 bg-ink-950/50 p-4"><code class="font-mono font-bold text-leaf-400">{code.code}</code><p class="mt-2 text-sm text-sand-300">{code.reward}</p><p class="mt-3 font-mono text-[10px] uppercase tracking-[.12em] text-sand-300/70">{getSource(code.sourceId).name} · {code.verifiedAt}</p></li>)}</ul> : null}
-    <p class="mt-4 border-t border-line pt-4 text-xs leading-5 text-sand-300">Expired history: {expiredCodes.length ? `${expiredCodes.length} source-traceable record(s).` : 'No previously working code has been verified as expired.'}</p>
+    <p class="mt-4 border-t border-line pt-4 text-xs leading-5 text-sand-300">{copy.expiredLabel}: {expiredCodes.length ? copy.expiredCount(expiredCodes.length) : copy.noExpired}</p>
   </section>
 </div>

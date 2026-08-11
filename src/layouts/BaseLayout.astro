@@ -12,9 +12,11 @@ interface Props {
   canonicalPath: string;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   noindex?: boolean;
+  lang?: 'en' | 'vi';
+  alternates?: Array<{ hreflang: string; href: string }>;
 }
 
-const { title, description, canonicalPath, schema = [], noindex = false } = Astro.props;
+const { title, description, canonicalPath, schema = [], noindex = false, lang = 'en', alternates = [] } = Astro.props;
 const canonical = new URL(normalizeCanonicalPath(canonicalPath), Astro.site ?? Astro.url.origin).toString();
 const socialImage = new URL('/og-image.svg', Astro.site ?? Astro.url.origin).toString();
 const socialImageAlt = 'Greedy Growers Hub player tools for codes, seeds, guides, and profit calculations';
@@ -36,7 +38,7 @@ const defaultSchemas = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -44,6 +46,7 @@ const defaultSchemas = [
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.hreflang} href={alternate.href} />)}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#06110e" />
     <meta property="og:type" content="website" />
