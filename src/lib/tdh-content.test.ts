@@ -219,11 +219,18 @@ describe('source-visible TDH heading contracts', () => {
       'How to Test a Lightning Timing Claim',
     ]);
     expectPhrases(codes, [
-      'Active Codes — Current Verified Status',
+      'Are There Any Working Greedy Growers Codes?',
+      'All Active Greedy Growers Codes',
+      'Expired Greedy Growers Codes',
       'How to Redeem Codes in Greedy Growers',
-      'Expired or Invalid Codes — Why They Fail',
-      'Codes FAQ and Verification Method',
+      'Why Is My Greedy Growers Code Not Working?',
+      'Where Are New Greedy Growers Codes Released?',
+      'Settings (reported, not in-game verified)',
+      'Active: {activeCodes.length}',
+      'Expired: {expiredCodes.length}',
+      'dateModified: evidenceByPage.codes.lastChecked',
     ]);
+    expect(codes).not.toContain('dateModified: site.checkedAt');
     expectPhrases(updates, [
       'Latest Greedy Growers Game and Data Updates',
       'Site Data Revision History',
@@ -257,11 +264,59 @@ describe('source-visible TDH heading contracts', () => {
       "import gameStatus from '../data/game-status.json'",
       'Roblox official updated time',
       'Pages affected by the latest Roblox update signal',
+      'API snapshot refreshed on August 11, 2026',
+      'snapshotCheckedLabel',
     ]);
     expectPhrases(gameStatus, [
       '"source": "Roblox Games API"',
-      '"updated": "2026-08-05T05:19:27.8636033Z"',
-      '"checkedAt": "2026-08-06"',
+      '"playing": 14076',
+      '"visits": 12912448',
+      '"updated": "2026-08-10T22:22:01.3136194Z"',
+      '"checkedAt": "2026-08-11T12:35:25+08:00"',
+    ]);
+  });
+
+  test('publishes a Vietnamese Codes page from the shared evidence and code data', () => {
+    const vietnameseCodes = readSource('../pages/vi/codes.astro');
+    const englishCodes = readSource('../pages/codes.astro');
+
+    expectPhrases(vietnameseCodes, [
+      "import { codes, site, sources } from '../../lib/content'",
+      '<CodeStatus locale="vi" />',
+      'Có code Greedy Growers nào đang hoạt động không?',
+      'Tất cả code Greedy Growers đang hoạt động',
+      'Code Greedy Growers đã hết hạn',
+      'Cách nhập code trong Greedy Growers',
+      'Tại sao code Greedy Growers không hoạt động?',
+      'Code Greedy Growers mới được phát hành ở đâu?',
+      '"Nhà trồng tham lam" có phải là Greedy Growers không?',
+      '"Những người trồng tham lam" có phải cùng một trò chơi không?',
+      'canonicalPath={metadata.canonicalPath}',
+      'lang="vi"',
+      'alternates={codeLanguageAlternates}',
+      "inLanguage: 'vi'",
+    ]);
+    expect(englishCodes).toContain('alternates={codeLanguageAlternates}');
+  });
+
+  test('keeps the unverified Discord lead dated and out of published routes', () => {
+    const englishCodes = readSource('../pages/codes.astro');
+    const vietnameseCodes = readSource('../pages/vi/codes.astro');
+    const updates = readSource('../pages/updates.astro');
+    const communityLinks = readSource('../data/community-links.json');
+
+    expectPhrases(`${englishCodes}\n${updates}`, [
+      'Official Discord: Unverified as of {discordCheckedLabel}',
+      "import communityLinks from '../data/community-links.json'",
+    ]);
+    expectPhrases(vietnameseCodes, [
+      'Discord chính thức: Chưa xác minh vào ngày {discordCheckedLabel}',
+      "import communityLinks from '../../data/community-links.json'",
+    ]);
+    expectPhrases(communityLinks, [
+      '"status": "unverified"',
+      '"checkedAt": "2026-08-11"',
+      '"candidateUrl": null',
     ]);
   });
 
@@ -337,6 +392,28 @@ describe('source-visible TDH heading contracts', () => {
     expectPhrases(tickets, [
       'Ticket Evidence Checklist',
       'Do Not Assume a Daily Reset',
+    ]);
+  });
+
+  test('embeds evidence-safe local tools without inventing a harvest target', () => {
+    const harvest = readSource('../pages/mechanics/when-to-harvest.astro');
+    const harvestTimer = readSource('../components/HarvestTimer.astro');
+    const progression = readSource('../pages/guides/progression.astro');
+    const rebirthChecklist = readSource('../components/RebirthChecklist.astro');
+
+    expectPhrases(`${harvest}\n${harvestTimer}`, [
+      '<HarvestTimer />',
+      'Set Your Own Harvest Timer',
+      'No value is prefilled because the project has no verified universal target.',
+      'data-harvest-timer',
+    ]);
+    expect(harvestTimer).not.toMatch(/name="(?:minutes|seconds)"[^>]+value=/);
+    expectPhrases(`${progression}\n${rebirthChecklist}`, [
+      '<RebirthChecklist />',
+      'Track the Rebirth Levels You Verified',
+      'Community-reported data',
+      'data-rebirth-checklist',
+      'stays in this browser',
     ]);
   });
 });

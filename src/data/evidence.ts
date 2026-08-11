@@ -37,7 +37,7 @@ export const evidenceByPage: Record<'home' | 'seeds' | 'mutations' | 'codes' | '
     version: 'Update 1.2',
     sourceCount: 3,
     claimStrength: 'unverified',
-    lastChecked: '2026-08-10',
+    lastChecked: '2026-08-11',
     knownGaps: ['no active codes confirmed', 'absence ≠ never existed'],
   },
   beginner: {

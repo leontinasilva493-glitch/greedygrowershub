@@ -52,6 +52,17 @@ describe('Guide route ownership', () => {
   });
 });
 
+describe('Localized Codes route ownership', () => {
+  test('publishes the Vietnamese Codes experiment at its canonical route', () => {
+    expect(existsSync(new URL('src/pages/vi/codes.astro', root))).toBe(true);
+  });
+
+  test('does not publish an unverified Discord route', () => {
+    expect(existsSync(new URL('src/pages/discord.astro', root))).toBe(false);
+    expect(existsSync(new URL('src/pages/discord/index.astro', root))).toBe(false);
+  });
+});
+
 describe('Mechanics route ownership', () => {
   test('publishes the mutation guide at its canonical route', () => {
     expect(existsSync(new URL('src/pages/mechanics/mutations.astro', root))).toBe(true);
