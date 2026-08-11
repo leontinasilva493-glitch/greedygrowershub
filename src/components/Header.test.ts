@@ -76,6 +76,15 @@ describe('global navigation order', () => {
     expect(headerSource).toContain("aria-current={isActive('/mechanics/mutations/') ? 'page' : undefined}");
   });
 
+  test('keeps the mobile menu trigger touch-sized and mobile links state-aware', () => {
+    const mobileNavigation = headerSource.slice(
+      headerSource.indexOf('<details class="relative lg:hidden">'),
+    );
+
+    expect(mobileNavigation).toContain('size-11');
+    expect(mobileNavigation).toContain("aria-current={isActive(item.href) ? 'page' : undefined}");
+  });
+
   test('links only to the canonical Seed List and Best Seeds routes', () => {
     const combinedNavigation = `${headerSource}\n${footerSource}`;
 

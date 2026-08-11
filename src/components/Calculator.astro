@@ -55,30 +55,9 @@ const seedComparison = buildSeedComparison(seeds, 20);
           </select>
         </label>
         <label class="grid gap-2 text-sm font-medium">
-          Fertilizer preset
-          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
-            <option value="" data-cost="0" data-multiplier="1">None · x1</option>
-            {fertilizers.map((fertilizer) => (
-              <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
-                {fertilizer.name} · x{fertilizer.boostMultiplier}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label class="grid gap-2 text-sm font-medium">
-          Garden plots <span class="font-mono text-leaf-400" data-range-label="plots">5 plots</span>
-          <input class="accent-leaf-500" name="plots" type="range" min="1" max="12" step="1" value="5" />
-        </label>
-        <label class="grid gap-2 text-sm font-medium">
-          Session time <span class="font-mono text-leaf-400" data-range-label="sessionMinutes">60 min</span>
-          <input class="accent-leaf-500" name="sessionMinutes" type="range" min="10" max="240" step="10" value="60" />
-        </label>
-        <label class="grid gap-2 text-sm font-medium sm:col-span-2">
           Failed runs before the next success
-          <span class="grid grid-cols-[1fr_auto] items-center gap-3">
-            <input class="min-w-0 rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
-            <span class="max-w-44 text-xs leading-5 text-sand-300">Count attempts already lost to lightning or another failed harvest.</span>
-          </span>
+          <input class="min-w-0 rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="failedRuns" type="number" min="0" step="1" value="0" inputmode="numeric" required />
+          <span class="text-xs leading-5 text-sand-300">Count attempts already lost to lightning or another failed harvest.</span>
         </label>
       </div>
     </fieldset>
@@ -108,13 +87,44 @@ const seedComparison = buildSeedComparison(seeds, 20);
           Harvest value
           <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestValue" type="number" min="0" step="any" value="160" inputmode="decimal" required />
         </label>
-        <label class="grid gap-2 text-sm font-medium">
+        <label class="grid gap-2 text-sm font-medium sm:col-span-2">
           Wait time (minutes)
           <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="waitMinutes" type="number" min="0.01" step="any" value="3" inputmode="decimal" required />
+        </label>
+      </div>
+    </section>
+
+    <details class="group mt-5 overflow-hidden rounded-2xl border border-line bg-ink-950/40" data-calculator-advanced>
+      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left">
+        <span>
+          <strong class="block text-sm text-white">Advanced run modelling</strong>
+          <span class="mt-1 block text-xs leading-5 text-sand-300">Add fertilizer, plot count, session length, or a reported mutation multiplier.</span>
+        </span>
+        <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line font-mono text-lg text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-medium">
+          Fertilizer preset
+          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
+            <option value="" data-cost="0" data-multiplier="1">None · x1</option>
+            {fertilizers.map((fertilizer) => (
+              <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
+                {fertilizer.name} · x{fertilizer.boostMultiplier}
+              </option>
+            ))}
+          </select>
         </label>
         <label class="grid gap-2 text-sm font-medium">
           Fertilizer cost
           <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Garden plots <span class="font-mono text-leaf-400" data-range-label="plots">5 plots</span>
+          <input class="min-h-11 accent-leaf-500" name="plots" type="range" min="1" max="12" step="1" value="5" />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Session time <span class="font-mono text-leaf-400" data-range-label="sessionMinutes">60 min</span>
+          <input class="min-h-11 accent-leaf-500" name="sessionMinutes" type="range" min="10" max="240" step="10" value="60" />
         </label>
         <div class="grid gap-3 sm:col-span-2">
           <label class="grid gap-2 text-sm font-medium">
@@ -127,7 +137,7 @@ const seedComparison = buildSeedComparison(seeds, 20);
               {mutationPresets.map((preset) => (
                 <button
                   type="button"
-                  class="rounded-xl border border-line bg-ink-950 px-3 py-2.5 text-left text-xs text-sand-300 transition hover:border-leaf-500/50 hover:text-white data-[state=active]:border-leaf-500 data-[state=active]:bg-leaf-500/10 data-[state=active]:text-white"
+                  class="min-h-11 rounded-xl border border-line bg-ink-950 px-3 py-2.5 text-left text-xs text-sand-300 transition hover:border-leaf-500/50 hover:text-white data-[state=active]:border-leaf-500 data-[state=active]:bg-leaf-500/10 data-[state=active]:text-white"
                   data-mutation-preset={preset.id}
                   data-state={preset.id === 'base' ? 'active' : 'idle'}
                   aria-pressed={preset.id === 'base' ? 'true' : 'false'}
@@ -138,7 +148,7 @@ const seedComparison = buildSeedComparison(seeds, 20);
           </fieldset>
         </div>
       </div>
-    </section>
+    </details>
 
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
     <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
@@ -192,7 +202,11 @@ const seedComparison = buildSeedComparison(seeds, 20);
         <p class="mt-2 break-all text-[clamp(1.1rem,2vw,1.5rem)] font-semibold leading-tight tracking-tight" data-output="profitPerMinute">20</p>
       </div>
     </div>
-    <p class="mt-5 text-xs leading-5 text-sand-300">This browser-only planning tool records losses you enter. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
+    <div class="mt-5 flex flex-wrap items-center gap-3 border-t border-line pt-5">
+      <button type="button" class="min-h-11 rounded-lg border border-leaf-500/35 px-4 text-sm font-bold text-leaf-300 hover:border-leaf-400 hover:text-white" data-copy-calculator-scenario>Copy this scenario</button>
+      <span class="text-xs text-leaf-300" role="status" aria-live="polite" data-calculator-share-status></span>
+    </div>
+    <p class="mt-4 text-xs leading-5 text-sand-300">This browser-only planning tool records losses you enter. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
   </div>
 
   <aside class="overflow-hidden rounded-3xl border border-line bg-ink-900/70 lg:col-span-2" aria-labelledby="seed-comparison-title">

@@ -1,6 +1,6 @@
 import { calculateProfit, getCalculatorDecision } from '../lib/calculator';
 import { calculateSessionScenario } from '../lib/calculator-session';
-import { formatCalculatorMetric } from '../lib/calculator-display';
+import { buildCalculatorShareText, formatCalculatorMetric } from '../lib/calculator-display';
 import { createCalculatorAnalyticsEvent, type CalculatorAnalyticsEventName } from '../lib/calculator-analytics';
 import { buildCalculatorContext, getMutationPreset, type MutationPreset } from '../lib/calculator-context';
 
@@ -19,9 +19,13 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
   const decisionExplanation = scope?.querySelector<HTMLElement>('[data-decision-explanation]');
   const resultSummary = scope?.querySelector<HTMLElement>('[data-result-summary]');
   const scenarioNotice = scope?.querySelector<HTMLElement>('[data-scenario-notice]');
+  const copyScenario = scope?.querySelector<HTMLButtonElement>('[data-copy-calculator-scenario]');
+  const copyStatus = scope?.querySelector<HTMLElement>('[data-calculator-share-status]');
+  const advancedDisclosure = form.querySelector<HTMLDetailsElement>('[data-calculator-advanced]');
   let activeMutation: MutationPreset = getMutationPreset('base');
 
   const track = (event: CalculatorAnalyticsEventName, label: string) => {
+    if (localStorage.getItem('greedy-growers-analytics-consent') !== 'allowed') return;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(createCalculatorAnalyticsEvent(event, label, window.location.pathname));
   };
@@ -164,11 +168,47 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
     });
   }
 
+  advancedDisclosure?.addEventListener('toggle', () => {
+    if (advancedDisclosure.open) track('calculator_advanced_opened', 'advanced-inputs');
+  });
+
   form.addEventListener('input', (event) => {
     if (event.target === multiplierInput && multiplierInput instanceof HTMLInputElement) {
       setActiveMutation({ id: 'manual', name: 'Manual', multiplier: Number(multiplierInput.value) || 1 });
     }
     update();
+  });
+
+  copyScenario?.addEventListener('click', async () => {
+    const data = new FormData(form);
+    const text = buildCalculatorShareText({
+      seedName: seedPreset?.selectedOptions[0]?.dataset.seedName ?? 'Manual values',
+      seedCost: String(data.get('seedCost') ?? ''),
+      harvestValue: String(data.get('harvestValue') ?? ''),
+      waitMinutes: String(data.get('waitMinutes') ?? ''),
+      failedRuns: String(data.get('failedRuns') ?? ''),
+      multiplier: String(data.get('harvestMultiplier') ?? ''),
+      riskAdjustedProfit: scope?.querySelector<HTMLElement>('[data-output="riskAdjustedProfit"]')?.textContent?.trim() ?? 'Not calculated',
+      profitPerMinute: scope?.querySelector<HTMLElement>('[data-output="riskAdjustedProfitPerMinute"]')?.textContent?.trim() ?? 'Not calculated',
+      url: new URL('/', window.location.origin).toString(),
+    });
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+      else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.append(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+      }
+      if (copyStatus) copyStatus.textContent = 'Scenario copied';
+      track('calculator_result_shared', 'copy-scenario');
+    } catch {
+      if (copyStatus) copyStatus.textContent = 'Copy failed';
+    }
   });
   updateContext();
   updateObservationStatus();
