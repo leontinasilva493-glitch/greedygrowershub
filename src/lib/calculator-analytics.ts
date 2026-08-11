@@ -1,7 +1,8 @@
 export type CalculatorAnalyticsEventName =
   | 'calculator_seed_selected'
   | 'calculator_fertilizer_selected'
-  | 'calculator_advanced_opened';
+  | 'calculator_advanced_opened'
+  | 'calculator_result_shared';
 
 export interface CalculatorAnalyticsEvent extends Record<string, unknown> {
   event: CalculatorAnalyticsEventName;

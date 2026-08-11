@@ -6,11 +6,14 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<nav class="mt-8 rounded-2xl border border-line bg-ink-900/70 p-3 sm:p-4" aria-label="On this page">
-  <div class="flex items-center gap-3 overflow-x-auto pb-1 [scrollbar-width:thin]">
+<nav class="sticky top-16 z-40 mt-8 rounded-2xl border border-line bg-ink-900/95 p-2 shadow-lg backdrop-blur sm:p-3" aria-label="On this page" data-reading-navigation>
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
     <span class="shrink-0 px-2 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">On this page</span>
-    {items.map((item) => (
-      <a href={item.href} class="shrink-0 rounded-full border border-line bg-ink-950 px-3 py-2 text-xs font-semibold text-sand-100 no-underline transition hover:border-leaf-500/50 hover:text-leaf-300">{item.label}</a>
+    {items.map((item, index) => (
+      <a href={item.href} aria-current={index === 0 ? 'location' : undefined} data-reading-anchor class="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-ink-950 px-4 text-xs font-semibold text-sand-100 no-underline transition hover:border-leaf-500/50 hover:text-leaf-300 aria-[current=location]:border-leaf-500/60 aria-[current=location]:bg-leaf-500/10 aria-[current=location]:text-leaf-300">{item.label}</a>
     ))}
   </div>
+  <span class="absolute inset-x-3 bottom-0 h-px overflow-hidden rounded-full bg-line" aria-hidden="true"><span class="block h-full w-full origin-left scale-x-0 bg-leaf-500" data-reading-progress></span></span>
 </nav>
+
+<script>import '../scripts/reading-progress';</script>

@@ -9,3 +9,31 @@ export function formatCalculatorMetric(value: number): string {
     ? compactFormatter.format(value)
     : standardFormatter.format(value);
 }
+
+export interface CalculatorShareSummary {
+  seedName: string;
+  seedCost: string;
+  harvestValue: string;
+  waitMinutes: string;
+  failedRuns: string;
+  multiplier: string;
+  riskAdjustedProfit: string;
+  profitPerMinute: string;
+  url: string;
+}
+
+export function buildCalculatorShareText(summary: CalculatorShareSummary): string {
+  return [
+    'Greedy Growers observed run',
+    `Seed reference: ${summary.seedName}`,
+    `Seed cost: ${summary.seedCost}`,
+    `Harvest value: ${summary.harvestValue}`,
+    `Wait: ${summary.waitMinutes} min`,
+    `Failed runs: ${summary.failedRuns}`,
+    `Multiplier: ${summary.multiplier}x`,
+    `Risk-adjusted profit: ${summary.riskAdjustedProfit}`,
+    `Adjusted profit / min: ${summary.profitPerMinute}`,
+    'Player-entered scenario, not a forecast.',
+    summary.url,
+  ].join('\n');
+}

@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+  path: string;
+}
+
+const { title, path } = Astro.props;
+---
+
+<div class="mt-6 flex flex-wrap items-center gap-2" data-share-actions data-share-title={title} data-share-path={path}>
+  <button type="button" class="min-h-11 rounded-lg border border-leaf-500/35 px-4 text-sm font-bold text-leaf-300 hover:border-leaf-400 hover:text-white" data-share-page>Share this guide</button>
+  <button type="button" class="min-h-11 rounded-lg border border-line px-4 text-sm font-semibold text-sand-100 hover:border-leaf-500/50" data-copy-page-link>Copy link</button>
+  <span class="text-xs text-leaf-300" role="status" aria-live="polite" data-share-status></span>
+</div>
+
+<script>import '../scripts/share';</script>
