@@ -35,10 +35,10 @@ const expectedMetadata = {
     h1: 'All 20 Greedy Growers Seeds Reported for Update 1.2',
   },
   bestSeeds: {
-    title: 'Greedy Growers Best Seeds: Budget & Rarity Guide (2026)',
-    description: 'Find the best Greedy Growers seeds by reported buy-in, rarity, and spawn chance. Compare budget and rare picks without relying on unverified profit rankings.',
+    title: 'Greedy Growers Seed Tier List by Budget & Rarity (2026)',
+    description: 'Compare Greedy Growers seeds in a goal-based tier list using reported buy-in, rarity, and spawn chance, without claiming unverified profit rankings today.',
     canonicalPath: '/seeds/best/',
-    h1: 'Best Greedy Growers Seeds by Budget & Rarity',
+    h1: 'Greedy Growers Seed Tier List by Player Goal',
   },
   guides: {
     title: 'Greedy Growers Guides: Beginner, Money, Rebirth & Tickets',
@@ -100,6 +100,12 @@ const expectedMetadata = {
     canonicalPath: '/updates/',
     h1: 'Greedy Growers Updates',
   },
+  officialLinks: {
+    title: 'Greedy Growers Official Links: Roblox & Discord Status',
+    description: 'Find the official Greedy Growers Roblox experience, creator and API sources, plus the current verification status of Discord and other community links.',
+    canonicalPath: '/official-links/',
+    h1: 'Greedy Growers Official Links',
+  },
 } as const;
 
 describe('indexable page metadata', () => {
@@ -144,6 +150,7 @@ describe('indexable page metadata', () => {
       'whenToHarvest',
       'mutations',
       'updates',
+      'officialLinks',
     ];
 
     expect(Object.keys(pageSeo)).toEqual(expectedKeys);

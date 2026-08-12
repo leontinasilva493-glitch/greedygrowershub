@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceBar from '../../components/EvidenceBar.astro';
 import PlayerTestCard from '../../components/PlayerTestCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import { evidenceByPage } from '../../data/evidence';
 import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
 
 const metadata = pageSeo.lightning;
@@ -14,7 +16,9 @@ const schema = [
 
 <BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schema}>
   <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-    <div class="max-w-4xl"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Facts before timing advice</p><h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1><p class="mt-5 text-lg leading-8 text-sand-300">The official game loop warns players to harvest before lightning. Exact strike odds, timers, height thresholds, and seed-specific behavior still require evidence.</p></div>
+    <div class="max-w-4xl"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Facts before timing advice</p><h1 class="mt-4 font-display text-4xl font-bold tracking-[-.045em] text-white sm:text-6xl">{metadata.h1}</h1><p class="mt-5 text-lg leading-8 text-sand-300">The official game loop warns players to harvest before lightning. Exact strike odds, timers, height thresholds, and seed-specific behavior still require evidence.</p><EvidenceBar {...evidenceByPage.lightning} /></div>
+
+    <section class="mt-10 rounded-2xl border border-amber-400/25 bg-amber-300/[.06] p-6"><p class="font-mono text-xs font-bold uppercase tracking-[.16em] text-amber-200">Post-update boundary</p><h2 class="mt-3 text-2xl font-bold text-white">Lightning Evidence After the Latest Update Signal</h2><p class="mt-3 max-w-4xl leading-7 text-sand-300">The official listing still establishes lightning as part of the loop. The August 11 API signal does not confirm unchanged strike odds, cues, thresholds, or loss consequences, so those details remain queued for controlled capture.</p></section>
 
     <aside class="mt-10 grid gap-4 md:grid-cols-3" aria-label="Lightning evidence summary"><article class="rounded-2xl border border-leaf-500/25 bg-leaf-500/[.045] p-5"><p class="font-mono text-xs uppercase tracking-[.14em] text-leaf-400">Confirmed</p><h3 class="mt-2 font-bold text-white">Lightning belongs to the official game loop</h3><p class="mt-2 text-sm leading-6 text-sand-300">The official listing tells players to harvest before lightning strikes.</p></article><article class="rounded-2xl border border-amber-400/25 bg-amber-300/[.06] p-5"><p class="font-mono text-xs uppercase tracking-[.14em] text-amber-200">Not Verified</p><h3 class="mt-2 font-bold text-white">Odds, timers, and height thresholds</h3><p class="mt-2 text-sm leading-6 text-sand-300">No reproducible public source supports a universal percentage or safe height.</p></article><article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-xs uppercase tracking-[.14em] text-sand-300">Practical decision</p><h3 class="mt-2 font-bold text-white">Use Exposure Time, Not Invented Odds</h3><p class="mt-2 text-sm leading-6 text-sand-300">A longer wait means the run remains at risk longer; it does not prove a numeric strike curve.</p></article></aside>
 

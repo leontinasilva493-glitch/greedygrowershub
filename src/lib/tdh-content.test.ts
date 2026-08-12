@@ -382,17 +382,68 @@ describe('source-visible TDH heading contracts', () => {
     ]);
     expectPhrases(bestSeeds, [
       'Best Seeds by Player Goal',
+      'Seed Tier List by Verified Dimension',
+      'Not a profit tier',
+      'Use the same seed and wait target',
       'Ranking Limits',
     ]);
     expectPhrases(progression, [
       'Early Game Checklist',
       'Mid Game Checklist',
       'Late Game Checklist',
+      'Rebirth Page Readiness',
+      'Keep Rebirth inside this progression pillar',
     ]);
     expectPhrases(tickets, [
       'Ticket Evidence Checklist',
+      'Ticket Route Publication Gate',
       'Do Not Assume a Daily Reset',
     ]);
+  });
+
+  test('turns the latest update signal into explicit recheck work', () => {
+    const updates = readSource('../pages/updates.astro');
+    const lightning = readSource('../pages/mechanics/lightning.astro');
+    const mutations = readSource('../pages/mechanics/mutations.astro');
+
+    expectPhrases(updates, [
+      'Post-Update Recheck Board',
+      'API signal only',
+      'Recheck required',
+    ]);
+    expectPhrases(lightning, ['Lightning Evidence After the Latest Update Signal']);
+    expectPhrases(mutations, ['Mutation Evidence After the Latest Update Signal']);
+  });
+
+  test('registers evidence boundaries for progression, Tickets, and lightning', () => {
+    const evidence = readSource('../data/evidence.ts');
+
+    expectPhrases(evidence, [
+      "'progression'",
+      "'tickets'",
+      "'lightning'",
+      'reset behavior unverified',
+      'Ticket grant and spend route unverified',
+      'strike odds and warning cues unverified',
+    ]);
+  });
+
+  test('publishes one official-links trust destination and links to it contextually', () => {
+    const officialLinks = readSource('../pages/official-links.astro');
+    const codes = readSource('../pages/codes.astro');
+    const updates = readSource('../pages/updates.astro');
+    const footer = readSource('../components/Footer.astro');
+
+    expectPhrases(officialLinks, [
+      'Official Roblox experience',
+      'Roblox Games API snapshot',
+      'Official Discord is not verified',
+      'How We Decide a Link Is Safe to Publish',
+      'No candidate invite is published',
+    ]);
+    for (const source of [codes, updates, footer]) {
+      expect(source).toContain('href="/official-links/"');
+    }
   });
 
   test('embeds evidence-safe local tools without inventing a harvest target', () => {
