@@ -38,12 +38,13 @@ describe('source-visible TDH heading contracts', () => {
       'data-session-label="profitPerMinute"',
       'data-session-suffix="roi"',
       'data-scenario-notice',
-      'Mobile live result preview',
+      'Decision after recorded losses',
       'Seed economy leaderboard',
       'Sell value',
       'Profit/min',
       'data-leaderboard-seed',
     ]);
+    expect(calculator.match(/data-session-output="profitPerMinute"/g)).toHaveLength(1);
     expect(calculator).not.toContain('Enter calculator inputs');
   });
 

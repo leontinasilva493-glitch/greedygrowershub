@@ -96,6 +96,43 @@ summary,
   outline-offset: 3px;
 }
 
+.calculator-range {
+  min-height: 48px;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.calculator-range::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #244438;
+}
+
+.calculator-range::-webkit-slider-thumb {
+  width: 28px;
+  height: 28px;
+  margin-top: -10px;
+  appearance: none;
+  border: 2px solid #06110e;
+  border-radius: 999px;
+  background: #65e572;
+}
+
+.calculator-range::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #244438;
+}
+
+.calculator-range::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #06110e;
+  border-radius: 999px;
+  background: #65e572;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

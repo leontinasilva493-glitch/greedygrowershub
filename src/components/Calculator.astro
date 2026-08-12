@@ -9,10 +9,14 @@ import { getCalculatorSeedCost } from '../lib/calculator-seeds';
 const fertilizerSource = getSource('greedygrowers-codes');
 const initialContext = buildCalculatorContext(null, getMutationPreset('base'));
 const seedComparison = buildSeedComparison(seeds, 20);
+const seedGroups = [...new Set(seeds.map((seed) => seed.rarity))].map((rarity) => ({
+  rarity,
+  seeds: seeds.filter((seed) => seed.rarity === rarity),
+}));
 ---
 
-<section class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title">
-  <form class="rounded-3xl border border-line bg-ink-900 p-5 sm:p-7" data-calculator>
+<form class="grid gap-5 lg:grid-cols-[.92fr_1.08fr]" aria-labelledby="calculator-title" data-calculator>
+  <section class="rounded-3xl border border-line bg-ink-900 p-5 sm:p-7">
     <div class="mb-6 flex items-center gap-3">
       <span class="grid size-10 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" /></span>
       <div class="min-w-0">
@@ -42,15 +46,19 @@ const seedComparison = buildSeedComparison(seeds, 20);
           Seed reference
           <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="seedPreset" data-seed-preset>
             <option value="">Manual values</option>
-            {seeds.map((seed) => (
-              <option
-                value={seed.id}
-                data-seed-name={seed.name}
-                data-cost-display={seed.costDisplay}
-                data-seed-cost={getCalculatorSeedCost(seed) ?? ''}
-                data-rarity={seed.rarity}
-                data-spawn-one-in={seed.spawnOneIn ?? ''}
-              >{seed.name} · {seed.rarity}</option>
+            {seedGroups.map((group) => (
+              <optgroup label={group.rarity}>
+                {group.seeds.map((seed) => (
+                  <option
+                    value={seed.id}
+                    data-seed-name={seed.name}
+                    data-cost-display={seed.costDisplay}
+                    data-seed-cost={getCalculatorSeedCost(seed) ?? ''}
+                    data-rarity={seed.rarity}
+                    data-spawn-one-in={seed.spawnOneIn ?? ''}
+                  >{seed.name} · {seed.costDisplay}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </label>
@@ -61,16 +69,6 @@ const seedComparison = buildSeedComparison(seeds, 20);
         </label>
       </div>
     </fieldset>
-
-    <section class="mt-5 rounded-2xl border border-white/10 bg-ink-950/55 p-4 lg:hidden" aria-label="Mobile live result preview">
-      <p class="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Mobile live result preview</p>
-      <div class="mt-3 grid grid-cols-2 gap-2">
-        <div class="min-w-0 overflow-hidden rounded-xl border border-leaf-500/35 bg-leaf-500/[.12] p-3"><p class="text-[11px] text-leaf-200" data-session-label="profitPerMinute">Profit / min</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-leaf-400" data-session-output="profitPerMinute">100</p></div>
-        <div class="min-w-0 overflow-hidden rounded-xl border border-orange-400/35 bg-orange-400/[.09] p-3"><p class="text-[11px] text-orange-200" data-session-label="sessionProfit">Total profit</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-orange-300" data-session-output="sessionProfit">6,000</p></div>
-        <div class="min-w-0 overflow-hidden rounded-xl border border-sky-400/35 bg-sky-400/[.09] p-3"><p class="text-[11px] text-sky-200" data-session-label="roi">ROI</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-sky-300"><span data-session-output="roi">60</span><span data-session-suffix="roi">%</span></p></div>
-        <div class="min-w-0 overflow-hidden rounded-xl border border-violet-400/35 bg-violet-400/[.09] p-3"><p class="text-[11px] text-violet-200" data-session-label="sessionRevenue">Revenue</p><p class="mt-1 break-all font-display text-[clamp(1rem,5vw,1.25rem)] font-bold leading-none tracking-tight text-violet-300" data-session-output="sessionRevenue">16,000</p></div>
-      </div>
-    </section>
 
     <section class="mt-5 rounded-2xl border border-line bg-ink-950/45" aria-labelledby="run-record-title">
       <div class="border-b border-line px-4 py-4">
@@ -94,67 +92,8 @@ const seedComparison = buildSeedComparison(seeds, 20);
       </div>
     </section>
 
-    <details class="group mt-5 overflow-hidden rounded-2xl border border-line bg-ink-950/40" data-calculator-advanced>
-      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left">
-        <span>
-          <strong class="block text-sm text-white">Advanced run modelling</strong>
-          <span class="mt-1 block text-xs leading-5 text-sand-300">Add fertilizer, plot count, session length, or a reported mutation multiplier.</span>
-        </span>
-        <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line font-mono text-lg text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span>
-      </summary>
-      <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
-        <label class="grid gap-2 text-sm font-medium">
-          Fertilizer preset
-          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
-            <option value="" data-cost="0" data-multiplier="1">None · x1</option>
-            {fertilizers.map((fertilizer) => (
-              <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
-                {fertilizer.name} · x{fertilizer.boostMultiplier}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label class="grid gap-2 text-sm font-medium">
-          Fertilizer cost
-          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" required />
-        </label>
-        <label class="grid gap-2 text-sm font-medium">
-          Garden plots <span class="font-mono text-leaf-400" data-range-label="plots">5 plots</span>
-          <input class="min-h-11 accent-leaf-500" name="plots" type="range" min="1" max="12" step="1" value="5" />
-        </label>
-        <label class="grid gap-2 text-sm font-medium">
-          Session time <span class="font-mono text-leaf-400" data-range-label="sessionMinutes">60 min</span>
-          <input class="min-h-11 accent-leaf-500" name="sessionMinutes" type="range" min="10" max="240" step="10" value="60" />
-        </label>
-        <div class="grid gap-3 sm:col-span-2">
-          <label class="grid gap-2 text-sm font-medium">
-            Harvest multiplier
-            <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" required />
-          </label>
-          <fieldset class="rounded-2xl border border-leaf-500/20 bg-leaf-500/[.035] p-4">
-            <legend class="px-1 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Update 1.2 matched community report</legend>
-            <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4" data-mutation-presets>
-              {mutationPresets.map((preset) => (
-                <button
-                  type="button"
-                  class="min-h-11 rounded-xl border border-line bg-ink-950 px-3 py-2.5 text-left text-xs text-sand-300 transition hover:border-leaf-500/50 hover:text-white data-[state=active]:border-leaf-500 data-[state=active]:bg-leaf-500/10 data-[state=active]:text-white"
-                  data-mutation-preset={preset.id}
-                  data-state={preset.id === 'base' ? 'active' : 'idle'}
-                  aria-pressed={preset.id === 'base' ? 'true' : 'false'}
-                ><strong class="block font-mono text-sm text-leaf-400">{preset.multiplier}x</strong>{preset.name}</button>
-              ))}
-            </div>
-            <p class="mt-3 text-xs leading-5 text-sand-300">A preset only replaces the multiplier input. It does not calculate mutation chance or combine multiple mutations. <a href="/mechanics/mutations/" class="font-semibold text-leaf-400">Read the evidence guide →</a></p>
-          </fieldset>
-        </div>
-      </div>
-    </details>
-
     <p class="mt-4 min-h-6 text-sm text-amber-300" data-calculator-error aria-live="polite"></p>
-    <p class="rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
-      Seed names and buy-in prices follow the source-matched Update 1.2 catalog checked {seeds[0]?.verifiedAt}. A selected seed immediately refreshes this scenario with its reported price; harvest value and wait time are always labelled as your own observation. Fertilizer presets remain a legacy community snapshot from <a class="font-semibold underline" href={fertilizerSource.url} target="_blank" rel="noopener noreferrer">{fertilizerSource.name}</a> and still need an in-game recheck.
-    </p>
-  </form>
+  </section>
 
   <div
     class="group rounded-3xl border p-5 transition-colors data-[state=break-even]:border-amber-400/35 data-[state=break-even]:bg-amber-300/[.06] data-[state=loss]:border-rose-400/35 data-[state=loss]:bg-rose-400/[.055] data-[state=needs-data]:border-amber-400/35 data-[state=needs-data]:bg-amber-300/[.045] data-[state=profitable]:border-leaf-500/35 data-[state=profitable]:bg-leaf-500/[.055] sm:p-7"
@@ -209,6 +148,67 @@ const seedComparison = buildSeedComparison(seeds, 20);
     <p class="mt-4 text-xs leading-5 text-sand-300">This browser-only planning tool records losses you enter. It does not read your Roblox account, know hidden lightning odds, or predict the next strike.</p>
   </div>
 
+  <section class="rounded-3xl border border-line bg-ink-900 p-5 sm:p-7 lg:col-start-1">
+    <details class="group overflow-hidden rounded-2xl border border-line bg-ink-950/40" data-calculator-advanced>
+      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left">
+        <span>
+          <strong class="block text-sm text-white">Advanced run modelling</strong>
+          <span class="mt-1 block text-xs leading-5 text-sand-300">Add fertilizer, plot count, session length, or a reported mutation multiplier.</span>
+        </span>
+        <span class="grid size-9 shrink-0 place-items-center rounded-full border border-line font-mono text-lg text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span>
+      </summary>
+      <div class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+        <label class="grid gap-2 text-sm font-medium">
+          Fertilizer preset
+          <select class="rounded-xl border border-leaf-500/30 bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerPreset" data-fertilizer-preset>
+            <option value="" data-cost="0" data-multiplier="1">None · x1</option>
+            {fertilizers.map((fertilizer) => (
+              <option value={fertilizer.id} data-cost={fertilizer.cost} data-multiplier={fertilizer.boostMultiplier}>
+                {fertilizer.name} · x{fertilizer.boostMultiplier}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Fertilizer cost
+          <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="fertilizerCost" type="number" min="0" step="any" value="0" inputmode="decimal" required />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Garden plots <span class="font-mono text-leaf-400" data-range-label="plots">5 plots</span>
+          <input class="calculator-range min-h-12 accent-leaf-500" name="plots" type="range" min="1" max="12" step="1" value="5" />
+        </label>
+        <label class="grid gap-2 text-sm font-medium">
+          Session time <span class="font-mono text-leaf-400" data-range-label="sessionMinutes">60 min</span>
+          <input class="calculator-range min-h-12 accent-leaf-500" name="sessionMinutes" type="range" min="10" max="240" step="10" value="60" />
+        </label>
+        <div class="grid gap-3 sm:col-span-2">
+          <label class="grid gap-2 text-sm font-medium">
+            Harvest multiplier
+            <input class="rounded-xl border border-line bg-ink-950 px-4 py-3 text-base text-sand-100" name="harvestMultiplier" type="number" min="1" step="any" value="1" inputmode="decimal" required />
+          </label>
+          <fieldset class="rounded-2xl border border-leaf-500/20 bg-leaf-500/[.035] p-4">
+            <legend class="px-1 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400">Update 1.2 matched community report</legend>
+            <div class="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4" data-mutation-presets>
+              {mutationPresets.map((preset) => (
+                <button
+                  type="button"
+                  class="min-h-11 rounded-xl border border-line bg-ink-950 px-3 py-2.5 text-left text-xs text-sand-300 transition hover:border-leaf-500/50 hover:text-white data-[state=active]:border-leaf-500 data-[state=active]:bg-leaf-500/10 data-[state=active]:text-white"
+                  data-mutation-preset={preset.id}
+                  data-state={preset.id === 'base' ? 'active' : 'idle'}
+                  aria-pressed={preset.id === 'base' ? 'true' : 'false'}
+                ><strong class="block font-mono text-sm text-leaf-400">{preset.multiplier}x</strong>{preset.name}</button>
+              ))}
+            </div>
+            <p class="mt-3 text-xs leading-5 text-sand-300">A preset only replaces the multiplier input. It does not calculate mutation chance or combine multiple mutations. <a href="/mechanics/mutations/" class="font-semibold text-leaf-400">Read the evidence guide →</a></p>
+          </fieldset>
+        </div>
+      </div>
+    </details>
+    <p class="mt-4 rounded-xl border border-amber-400/25 bg-amber-300/[.06] p-4 text-xs leading-5 text-amber-100">
+      Seed names and buy-in prices follow the source-matched Update 1.2 catalog checked {seeds[0]?.verifiedAt}. A selected seed immediately refreshes this scenario with its reported price; harvest value and wait time are always labelled as your own observation. Fertilizer presets remain a legacy community snapshot from <a class="font-semibold underline" href={fertilizerSource.url} target="_blank" rel="noopener noreferrer">{fertilizerSource.name}</a> and still need an in-game recheck.
+    </p>
+  </section>
+
   <aside class="overflow-hidden rounded-3xl border border-line bg-ink-900/70 lg:col-span-2" aria-labelledby="seed-comparison-title">
     <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line px-5 py-6 sm:px-7">
       <div>
@@ -219,7 +219,7 @@ const seedComparison = buildSeedComparison(seeds, 20);
       <a href="/seeds/list/" class="text-sm font-bold text-leaf-400 no-underline hover:text-leaf-300">Open the full Seed List →</a>
     </div>
     <details class="group" data-seed-economy-leaderboard>
-      <summary class="flex cursor-pointer list-none items-center justify-between gap-4 bg-ink-950/35 px-5 py-4 transition hover:bg-ink-950/60 sm:px-7">
+      <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 bg-ink-950/35 px-5 py-4 transition hover:bg-ink-950/60 sm:px-7">
         <span>
           <strong class="block text-sm text-white"><span class="group-open:hidden">Show the full 20-seed leaderboard</span><span class="hidden group-open:inline">Hide the full 20-seed leaderboard</span></strong>
           <span class="mt-1 block text-xs leading-5 text-sand-300">Expand only when you need every incomplete economy record.</span>
@@ -242,6 +242,6 @@ const seedComparison = buildSeedComparison(seeds, 20);
     </div>
     </details>
   </aside>
-</section>
+</form>
 
 <script>import '../scripts/calculator';</script>
