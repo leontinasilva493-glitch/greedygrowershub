@@ -52,6 +52,15 @@ describe('Guide route ownership', () => {
   });
 });
 
+describe('Trust route ownership', () => {
+  test('publishes one official links page without speculative thin routes', () => {
+    expect(existsSync(new URL('src/pages/official-links.astro', root))).toBe(true);
+    expect(existsSync(new URL('src/pages/seeds/tier-list.astro', root))).toBe(false);
+    expect(existsSync(new URL('src/pages/guides/rebirth.astro', root))).toBe(false);
+    expect(existsSync(new URL('src/pages/wiki.astro', root))).toBe(false);
+  });
+});
+
 describe('Localized Codes route ownership', () => {
   test('publishes the Vietnamese Codes experiment at its canonical route', () => {
     expect(existsSync(new URL('src/pages/vi/codes.astro', root))).toBe(true);

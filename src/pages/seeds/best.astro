@@ -25,11 +25,18 @@ const spawn = (value: number | null) => value === null ? 'Not reported' : `1 in 
     </header>
 
     <section class="mt-12 rounded-3xl border border-line bg-ink-900 p-6 sm:p-8">
-      <h2 class="text-2xl font-bold">Best Seeds by Player Goal</h2>
-      <div class="mt-6 grid gap-5 md:grid-cols-3">
-        <article><p class="font-semibold text-leaf-400">Learning the loop</p><p class="mt-2 text-sm leading-6 text-sand-300">Oak is reported free, while Pine is $25. Use low buy-in seeds to learn buying, planting, waiting, and harvesting.</p></article>
-        <article><p class="font-semibold text-leaf-400">Protecting capital</p><p class="mt-2 text-sm leading-6 text-sand-300">Choose a price that leaves enough currency for at least two more attempts; “rarer” does not mean “safer.”</p></article>
-        <article><p class="font-semibold text-leaf-400">Hunting rare stock</p><p class="mt-2 text-sm leading-6 text-sand-300">Diamond and Void have the largest reported denominator, but availability alone does not prove their return.</p></article>
+      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Best Seeds by Player Goal</p>
+      <h2 class="mt-3 text-2xl font-bold">Seed Tier List by Verified Dimension</h2>
+      <p class="mt-4 max-w-3xl leading-7 text-sand-300">This is a decision tier list — Not a profit tier. Each row uses only a dimension the current reports provide: buy-in, reserve fit, or shop rarity. Harvest value and growth time remain player-observed inputs.</p>
+      <div class="mt-7 overflow-x-auto rounded-2xl border border-line">
+        <table class="w-full min-w-[680px] text-left text-sm">
+          <thead class="bg-ink-950/55 font-mono text-xs uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Player goal</th><th class="px-5 py-4">Current tier</th><th class="px-5 py-4">Evidence used</th><th class="px-5 py-4">Next check</th></tr></thead>
+          <tbody>
+            <tr class="border-t border-line"><td class="px-5 py-4 font-bold text-white">Learn the loop</td><td class="px-5 py-4 text-leaf-400">Oak / Pine</td><td class="px-5 py-4 text-sand-300">Lowest reported buy-in</td><td class="px-5 py-4 text-sand-300">Record one clean harvest</td></tr>
+            <tr class="border-t border-line"><td class="px-5 py-4 font-bold text-white">Protect capital</td><td class="px-5 py-4 text-leaf-400">Budget-dependent</td><td class="px-5 py-4 text-sand-300">Price versus two-failure reserve</td><td class="px-5 py-4 text-sand-300">Use the same seed and wait target</td></tr>
+            <tr class="border-t border-line"><td class="px-5 py-4 font-bold text-white">Watch rare stock</td><td class="px-5 py-4 text-leaf-400">Diamond / Void</td><td class="px-5 py-4 text-sand-300">Largest reported spawn denominator</td><td class="px-5 py-4 text-sand-300">Verify the live river listing</td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
 

@@ -61,7 +61,7 @@ describe('global navigation order', () => {
     expectLabelsInOrder(footerSource, [
       '>Profit Calculator<',
       '>Seed List<',
-      '>Best Seeds<',
+      '>Seed Tier List<',
       '>Codes Status<',
       '>Updates<',
     ]);
@@ -92,6 +92,7 @@ describe('global navigation order', () => {
     expect(combinedNavigation).toContain('href: \'/seeds/best/\'');
     expect(combinedNavigation).toContain('href="/seeds/list/"');
     expect(combinedNavigation).toContain('href="/seeds/best/"');
+    expect(combinedNavigation).toContain("label: 'Seed Tier List by Goal'");
     expect(combinedNavigation).not.toContain('href: \'/seeds/\'');
     expect(combinedNavigation).not.toContain('href: \'/seeds/best-seeds/\'');
     expect(combinedNavigation).not.toContain('href="/seeds/"');
