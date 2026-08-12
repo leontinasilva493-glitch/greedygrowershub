@@ -49,7 +49,7 @@ const formatSpawnChance = (value: number | null) => value === null ? 'Not report
     </div>
   </div>
 
-  <aside class="sticky top-16 z-30 mt-4 hidden items-center justify-between gap-3 rounded-xl border border-leaf-500/35 bg-ink-950/95 p-3 shadow-xl backdrop-blur" data-compare-tray aria-label="Selected seed comparison">
+  <aside class="sticky top-[8.75rem] z-30 mt-4 hidden flex-col items-stretch justify-between gap-3 rounded-xl border border-leaf-500/35 bg-ink-950/95 p-3 shadow-xl backdrop-blur sm:flex-row sm:items-center" data-compare-tray aria-label="Selected seed comparison">
     <p class="text-sm"><strong class="text-white" data-compare-count>0 selected</strong><span class="ml-2 text-sand-300">Comparison stays available while you browse.</span></p>
     <div class="flex shrink-0 gap-2">
       <button type="button" class="min-h-11 rounded-lg px-3 text-sm font-semibold text-sand-200 hover:text-white" data-clear-comparison>Clear</button>
@@ -100,7 +100,7 @@ const formatSpawnChance = (value: number | null) => value === null ? 'Not report
 
   <p class="mt-5 hidden rounded-xl border border-line bg-ink-900 p-5 text-sm text-sand-300" data-seed-empty>No seeds match these filters.</p>
 
-  <section id="comparison" class="mt-10 scroll-mt-36 rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-7" aria-labelledby="comparison-title">
+  <section id="comparison" class="mt-10 scroll-mt-52 rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-7" aria-labelledby="comparison-title">
     <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="font-mono text-xs uppercase tracking-[.16em] text-leaf-400">Side by side</p><h2 id="comparison-title" class="mt-2 text-2xl font-semibold">Compare Two Greedy Growers Seeds</h2></div><p class="text-sm text-sand-300" data-compare-count>0 selected</p></div>
     <div class="mt-5 grid gap-4 sm:grid-cols-2" data-compare-list>
       <p class="text-sm text-sand-300" data-compare-placeholder>Select records above. Unknown values stay unknown.</p>
