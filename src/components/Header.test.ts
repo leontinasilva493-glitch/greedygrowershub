@@ -31,7 +31,7 @@ describe('global navigation order', () => {
 
   test('uses the same task order in the mobile menu', () => {
     const mobileNavigation = headerSource.slice(
-      headerSource.indexOf('<details class="relative lg:hidden">'),
+      headerSource.indexOf('<details class="relative lg:hidden" data-mobile-navigation>'),
     );
 
     expectLabelsInOrder(mobileNavigation, [
@@ -78,11 +78,23 @@ describe('global navigation order', () => {
 
   test('keeps the mobile menu trigger touch-sized and mobile links state-aware', () => {
     const mobileNavigation = headerSource.slice(
-      headerSource.indexOf('<details class="relative lg:hidden">'),
+      headerSource.indexOf('<details class="relative lg:hidden" data-mobile-navigation>'),
     );
 
     expect(mobileNavigation).toContain('size-11');
     expect(mobileNavigation).toContain("aria-current={isActive(item.href) ? 'page' : undefined}");
+  });
+
+  test('enhances the mobile menu with a dismissible scroll-locking drawer', () => {
+    const mobileNavigation = headerSource.slice(
+      headerSource.indexOf('data-mobile-navigation'),
+    );
+
+    expect(mobileNavigation).toContain('data-mobile-navigation');
+    expect(mobileNavigation).toContain('data-mobile-nav-panel');
+    expect(mobileNavigation).toContain('data-mobile-nav-backdrop');
+    expect(mobileNavigation).toContain('aria-expanded="false"');
+    expect(mobileNavigation).toContain("import '../scripts/mobile-navigation'");
   });
 
   test('links only to the canonical Seed List and Best Seeds routes', () => {

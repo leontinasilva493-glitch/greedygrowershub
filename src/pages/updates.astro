@@ -108,11 +108,14 @@ const schema = [
 
     <section class="mt-16">
       <SectionHeading eyebrow="API signal only" title="Post-Update Recheck Board" description="The Roblox updated timestamp starts a review. It does not prove that any seed value, reward, timer, or mechanic changed."/>
-      <div class="mt-8 overflow-x-auto rounded-2xl border border-line">
+      <div class="mt-8 hidden overflow-x-auto rounded-2xl border border-line md:block">
         <table class="w-full min-w-[760px] text-left text-sm">
           <thead class="bg-ink-900 font-mono text-xs uppercase tracking-[.12em] text-sand-300"><tr><th class="px-5 py-4">Area</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">What the site knows</th><th class="px-5 py-4">Next evidence action</th></tr></thead>
           <tbody>{recheckItems.map((item) => <tr class="border-t border-line bg-ink-950/40"><td class="px-5 py-4 font-bold text-white">{item.area}</td><td class="px-5 py-4"><StatusBadge state={item.state} label={item.label}/></td><td class="px-5 py-4 leading-6 text-sand-300">{item.evidence}</td><td class="px-5 py-4 leading-6 text-sand-300">{item.action}</td></tr>)}</tbody>
         </table>
+      </div>
+      <div class="mt-6 grid gap-3 md:hidden" data-mobile-recheck-board>
+        {recheckItems.map((item) => <article class="rounded-2xl border border-line bg-ink-900 p-4"><div class="flex flex-wrap items-start justify-between gap-3"><h3 class="font-bold text-white">{item.area}</h3><StatusBadge state={item.state} label={item.label}/></div><dl class="mt-4 grid gap-3 text-sm"><div><dt class="text-xs text-sand-300">What the site knows</dt><dd class="mt-1 leading-6 text-sand-100">{item.evidence}</dd></div><div><dt class="text-xs text-sand-300">Next evidence action</dt><dd class="mt-1 leading-6 text-sand-100">{item.action}</dd></div></dl></article>)}
       </div>
     </section>
 

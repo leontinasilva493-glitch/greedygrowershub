@@ -53,14 +53,14 @@ const schemas = [
 
     <OnThisPage items={[
       { label: 'Quick answer', href: '#quick-answer' },
-      { label: 'Budget / multiplier table', href: '#mutation-table' },
-      { label: 'How to interpret', href: '#how-to-interpret' },
-      { label: 'Evidence conflicts', href: '#evidence-conflicts' },
-      { label: 'Verification steps', href: '#verification-steps' },
+      { label: 'Multipliers', href: '#mutation-table' },
+      { label: 'Decisions', href: '#how-to-interpret' },
+      { label: 'Evidence', href: '#evidence-conflicts' },
+      { label: 'Verify', href: '#verification-steps' },
       { label: 'FAQ', href: '#faq' },
     ]} />
 
-    <section id="quick-answer" class="mt-10 grid scroll-mt-24 gap-4 sm:grid-cols-3" aria-label="Mutation guide summary">
+    <section id="quick-answer" class="mt-10 grid scroll-mt-40 gap-4 sm:grid-cols-3" aria-label="Mutation guide summary">
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">6</p><p class="mt-2 text-sm text-sand-300">matching mutation names across current guides</p></article>
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">2x–100x</p><p class="mt-2 text-sm text-sand-300">reported single-mutation value range</p></article>
       <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">{site.checkedAt}</p><p class="mt-2 text-sm text-sand-300">Last checked against both cited publications</p></article>
@@ -82,7 +82,7 @@ const schemas = [
       <aside class="mt-4 rounded-2xl border border-amber-400/25 bg-amber-300/[.055] p-5 text-sm leading-6 text-amber-100"><strong>Dead-tree report:</strong> both guides also say a mutated dead tree sells for more than its base version. That statement is source-matched but still lacks developer or controlled gameplay confirmation.</aside>
     </section>
 
-    <section id="mutation-table" class="mt-16 scroll-mt-24" aria-labelledby="mutation-table-title">
+    <section id="mutation-table" class="mt-16 scroll-mt-40" aria-labelledby="mutation-table-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Current reported values</p>
       <h2 id="mutation-table-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutation Multiplier Table</h2>
       <p class="mt-4 max-w-3xl leading-7 text-sand-300">Treat each row as a matched community report. The table does not assume that multiple mutation multipliers multiply together.</p>
@@ -106,11 +106,13 @@ const schemas = [
       <FeedbackPrompt path={metadata.canonicalPath} />
     </section>
 
-    <section id="how-to-interpret" class="mt-16 scroll-mt-24" aria-labelledby="weather-decision-title">
+    <section id="how-to-interpret" class="mt-16 scroll-mt-40" aria-labelledby="weather-decision-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Decision flow</p>
       <h2 id="weather-decision-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Weather → Mutation → Multiplier → Risk Decision</h2>
       <p class="mt-4 max-w-3xl leading-7 text-sand-300">Follow the report from left to right. The multiplier is potential upside, while the last column tells you what not to risk before the trigger is reproduced in your current server.</p>
-      <div class="mt-8 grid gap-4">
+      <details class="group mt-6 overflow-hidden rounded-2xl border border-line bg-ink-900" data-mutation-decision-details>
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold text-white"><span><span class="group-open:hidden">Show weather-by-weather decisions</span><span class="hidden group-open:inline">Hide weather-by-weather decisions</span></span><span class="text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+      <div class="grid gap-4 border-t border-line p-4 sm:p-5">
         {weatherMutations.map((mutation) => (
           <article class="grid gap-3 rounded-2xl border border-line bg-ink-900 p-5 lg:grid-cols-[1.1fr_auto_.8fr_auto_.7fr_auto_1.5fr] lg:items-center">
             <div><p class="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-sand-300">Event signal</p><p class="mt-2 font-semibold text-white">{mutation.reportedTrigger.replace(' Weather Event', '')}</p><p class="mt-1 text-xs text-sand-300">Reported {mutation.reportedChance}</p></div>
@@ -123,18 +125,22 @@ const schemas = [
           </article>
         ))}
       </div>
+      </details>
     </section>
 
     <section class="mt-16" aria-labelledby="get-mutations-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Trigger map</p>
       <h2 id="get-mutations-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">How to Get Mutations from Weather and Lightning</h2>
-      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+      <details class="group mt-6 overflow-hidden rounded-2xl border border-line bg-ink-900" data-mutation-trigger-details>
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-semibold text-white"><span><span class="group-open:hidden">Show reported mutation triggers</span><span class="hidden group-open:inline">Hide reported mutation triggers</span></span><span class="text-leaf-400 transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+      <div class="grid gap-6 border-t border-line p-4 sm:p-5 lg:grid-cols-2">
         <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8"><h3 class="text-xl font-bold">Weather-reported mutations</h3><div class="mt-5 grid gap-4">{weatherMutations.map((mutation) => <div class="rounded-xl border border-line bg-ink-950/55 p-4"><div class="flex items-center justify-between gap-3"><strong>{mutation.name}</strong><span class="font-mono font-bold text-leaf-400">{mutation.valueMultiplier}x</span></div><p class="mt-2 text-sm leading-6 text-sand-300">{mutation.reportedTrigger} · reported {mutation.reportedChance} chance.</p></div>)}</div></article>
         <article class="rounded-3xl border border-amber-400/25 bg-amber-300/[.045] p-6 sm:p-8"><h3 class="text-xl font-bold">Lightning-reported mutations</h3><div class="mt-5 grid gap-4">{lightningMutations.map((mutation) => <div class="rounded-xl border border-amber-400/20 bg-ink-950/45 p-4"><div class="flex items-center justify-between gap-3"><strong>{mutation.name}</strong><span class="font-mono font-bold text-amber-200">{mutation.valueMultiplier}x</span></div><p class="mt-2 text-sm leading-6 text-sand-300">{mutation.reportedTrigger}.</p></div>)}</div><p class="mt-5 text-sm leading-6 text-sand-300">Waiting for lightning still exposes the run to loss. Read the <a href="/mechanics/lightning/" class="font-bold text-leaf-400">lightning evidence guide</a> before treating these conditions as a guaranteed route.</p></article>
       </div>
+      </details>
     </section>
 
-    <section id="evidence-conflicts" class="mt-16 scroll-mt-24" aria-labelledby="evidence-conflicts-title">
+    <section id="evidence-conflicts" class="mt-16 scroll-mt-40" aria-labelledby="evidence-conflicts-title">
       <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-amber-300">Claim-by-claim status</p>
       <h2 id="evidence-conflicts-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Evidence Status and Source Conflicts</h2>
       <div class="mt-8 grid gap-4 md:grid-cols-2">
@@ -151,12 +157,12 @@ const schemas = [
       </article>
     </section>
 
-    <section id="verification-steps" class="mt-16 grid scroll-mt-24 gap-6 lg:grid-cols-2">
+    <section id="verification-steps" class="mt-16 grid scroll-mt-40 gap-6 lg:grid-cols-2">
       <article class="rounded-3xl border border-line bg-ink-900 p-6 sm:p-8"><StatusBadge state="needs-check" label="Single-source report" /><h2 class="mt-4 text-2xl font-bold">Do Greedy Growers Mutations Stack?</h2><p class="mt-4 leading-7 text-sand-300">One current source reports that a mutated plant can receive another mutation and pass those mutations to its fruit. That supports possible stacking as a research lead. It does <strong class="text-sand-100">not</strong> establish whether values add, multiply, replace one another, or follow a special formula.</p><p class="mt-4 leading-7 text-sand-300">Until a controlled comparison proves the calculation, enter the final observed harvest value into the calculator instead of multiplying reported values together.</p></article>
       <article class="rounded-3xl border border-leaf-500/25 bg-leaf-500/[.045] p-6 sm:p-8"><h2 class="text-2xl font-bold">How to Verify a Mutation in Your Server</h2><ol class="mt-5 grid gap-3 text-sm leading-6 text-sand-300"><li><strong class="text-sand-100">1.</strong> Record the seed, current plant multiplier, and unmutated comparison value.</li><li><strong class="text-sand-100">2.</strong> Capture the weather or lightning event from before the trigger through the result.</li><li><strong class="text-sand-100">3.</strong> Save the mutation label and final plant or fruit sale value.</li><li><strong class="text-sand-100">4.</strong> Repeat on the same update and change only one variable.</li><li><strong class="text-sand-100">5.</strong> Test stacked mutations separately from single-mutation results.</li></ol></article>
     </section>
 
-    <section id="faq" class="mt-16 scroll-mt-24" aria-labelledby="mutation-faq-title"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Quick answers</p><h2 id="mutation-faq-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutations FAQ</h2><div class="mt-7 grid gap-4">{faqs.map((faq) => <details class="rounded-2xl border border-line bg-ink-900 p-5 sm:p-6"><summary class="cursor-pointer list-none font-semibold">{faq.question}</summary><p class="mt-3 max-w-4xl leading-7 text-sand-300">{faq.answer}</p></details>)}</div></section>
+    <section id="faq" class="mt-16 scroll-mt-40" aria-labelledby="mutation-faq-title"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Quick answers</p><h2 id="mutation-faq-title" class="mt-3 text-3xl font-bold tracking-[-.03em]">Greedy Growers Mutations FAQ</h2><div class="mt-7 grid gap-4">{faqs.map((faq) => <details class="rounded-2xl border border-line bg-ink-900 p-5 sm:p-6"><summary class="flex min-h-11 cursor-pointer list-none items-center font-semibold">{faq.question}</summary><p class="mt-3 max-w-4xl leading-7 text-sand-300">{faq.answer}</p></details>)}</div></section>
 
     <nav class="mt-16 rounded-3xl border border-line bg-ink-900 p-6 sm:p-8" aria-label="Continue from mutations"><h2 class="text-2xl font-bold">Turn the guide into an observed result</h2><p class="mt-3 max-w-3xl leading-7 text-sand-300">Choose a seed, understand the lightning tradeoff, then calculate using the outcome from your server—not an assumed stacking formula.</p><div class="mt-6 flex flex-wrap gap-3"><a href="/seeds/list/" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Choose from all 20 seeds</a><a href="/mechanics/lightning/" class="rounded-md border border-leaf-500/35 px-5 py-3 text-sm font-bold text-leaf-400 no-underline">Review lightning risk</a><a href="/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Open the calculator</a></div></nav>
 

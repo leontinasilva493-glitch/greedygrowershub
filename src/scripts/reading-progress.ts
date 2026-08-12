@@ -4,7 +4,9 @@ document.querySelectorAll<HTMLElement>('[data-reading-navigation]').forEach((nav
     .map((anchor) => document.querySelector<HTMLElement>(anchor.hash))
     .filter((section): section is HTMLElement => Boolean(section));
   const progress = navigation.querySelector<HTMLElement>('[data-reading-progress]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame = 0;
+  let currentIndex = -1;
 
   const update = () => {
     frame = 0;
@@ -18,6 +20,12 @@ document.querySelectorAll<HTMLElement>('[data-reading-navigation]').forEach((nav
       if (index === activeIndex) anchor.setAttribute('aria-current', 'location');
       else anchor.removeAttribute('aria-current');
     });
+
+    if (activeIndex !== currentIndex) {
+      currentIndex = activeIndex;
+      const behavior: ScrollBehavior = reducedMotion.matches ? 'auto' : 'smooth';
+      anchors[activeIndex]?.scrollIntoView({ behavior, block: 'nearest', inline: 'center' });
+    }
 
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
     const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 1;

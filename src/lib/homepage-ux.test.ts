@@ -8,7 +8,7 @@ describe('homepage task path', () => {
   test('puts the live calculator immediately after the hero and before browse paths', () => {
     const heroEnd = homepage.indexOf('</section>');
     const calculatorSection = homepage.match(
-      /<section id="calculator"[\s\S]*?<CalculatorSeedPreview \/>[\s\S]*?<\/section>/,
+      /<section id="calculator"[\s\S]*?<Calculator \/>[\s\S]*?<\/section>/,
     )?.[0];
     const taskPath = homepage.match(
       /<nav[^>]+aria-label="Start with a Greedy Growers task"[\s\S]*?<\/nav>/,
@@ -18,6 +18,7 @@ describe('homepage task path', () => {
     expect(taskPath).toBeTruthy();
     expect(homepage.indexOf(calculatorSection ?? '')).toBeGreaterThan(heroEnd);
     expect(homepage.indexOf(calculatorSection ?? '')).toBeLessThan(homepage.indexOf(taskPath ?? ''));
+    expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('<CalculatorSeedPreview />'));
     expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('Update 1.2 · direct answer'));
     expect(taskPath).toContain('href="/codes/"');
     expect(taskPath).toContain('>Check Codes<');
@@ -29,6 +30,17 @@ describe('homepage task path', () => {
     expect(taskPath).toContain('>Calculate a Run<');
     expect(taskPath).toContain('href="/updates/"');
     expect(taskPath).toContain('>See What Changed<');
+  });
+
+  test('uses one mobile result region before optional advanced inputs', () => {
+    expect(calculator.match(/data-session-output="profitPerMinute"/g)).toHaveLength(1);
+    expect(calculator.match(/data-session-output="sessionProfit"/g)).toHaveLength(1);
+    expect(calculator.match(/data-session-output="roi"/g)).toHaveLength(1);
+    expect(calculator.match(/data-session-output="sessionRevenue"/g)).toHaveLength(1);
+    expect(calculator.indexOf('data-calculator-result')).toBeLessThan(
+      calculator.indexOf('data-calculator-advanced'),
+    );
+    expect(calculator).toContain('<optgroup');
   });
 
   test('keeps secondary calculator modelling controls collapsed by default', () => {
