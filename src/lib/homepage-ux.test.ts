@@ -11,7 +11,7 @@ describe('homepage task path', () => {
       /<section id="calculator"[\s\S]*?<Calculator \/>[\s\S]*?<\/section>/,
     )?.[0];
     const taskPath = homepage.match(
-      /<nav[^>]+aria-label="Start with a Greedy Growers task"[\s\S]*?<\/nav>/,
+      /<nav[^>]+aria-label="Greedy Growers wiki directory"[\s\S]*?<\/nav>/,
     )?.[0];
 
     expect(calculatorSection).toBeTruthy();
@@ -20,16 +20,19 @@ describe('homepage task path', () => {
     expect(homepage.indexOf(calculatorSection ?? '')).toBeLessThan(homepage.indexOf(taskPath ?? ''));
     expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('<CalculatorSeedPreview />'));
     expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('Update 1.2 · direct answer'));
+    expect(taskPath?.match(/<a /g)).toHaveLength(6);
     expect(taskPath).toContain('href="/codes/"');
-    expect(taskPath).toContain('>Check Codes<');
+    expect(taskPath).toContain('>Codes<');
     expect(taskPath).toContain('href="/seeds/list/"');
-    expect(taskPath).toContain('>Compare All Seeds<');
+    expect(taskPath).toContain('>All Seeds<');
     expect(taskPath).toContain('href="/mechanics/mutations/"');
-    expect(taskPath).toContain('>Understand Mutations<');
+    expect(taskPath).toContain('>All Mutations<');
+    expect(taskPath).toContain('href="/beginner-guide/"');
+    expect(taskPath).toContain('>Beginner Guide<');
     expect(taskPath).toContain('href="#calculator"');
-    expect(taskPath).toContain('>Calculate a Run<');
+    expect(taskPath).toContain('>Profit Calculator<');
     expect(taskPath).toContain('href="/updates/"');
-    expect(taskPath).toContain('>See What Changed<');
+    expect(taskPath).toContain('>Updates<');
   });
 
   test('uses one mobile result region before optional advanced inputs', () => {

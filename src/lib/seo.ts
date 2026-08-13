@@ -10,7 +10,7 @@ export interface PageMetadata {
 export const pageSeo = {
   home: {
     title: 'Greedy Growers Calculator: Profit, ROI & Lightning Risk',
-    description: 'Calculate Greedy Growers profit per minute with observed seed and fertilizer inputs. Compare ROI, break-even value, failed-run cost, and risk-adjusted returns.',
+    description: 'Explore this fan-made Greedy Growers wiki and calculator for all 20 seeds, six mutations, codes, guides, updates, player tools, ROI, and lightning risk.',
     canonicalPath: '/',
     h1: 'Greedy Growers Calculator',
   },

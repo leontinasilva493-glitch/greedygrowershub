@@ -60,10 +60,24 @@ const schemas = [
       { label: 'FAQ', href: '#faq' },
     ]} />
 
-    <section id="quick-answer" class="mt-10 grid scroll-mt-40 gap-4 sm:grid-cols-3" aria-label="Mutation guide summary">
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">6</p><p class="mt-2 text-sm text-sand-300">matching mutation names across current guides</p></article>
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">2x–100x</p><p class="mt-2 text-sm text-sand-300">reported single-mutation value range</p></article>
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-3xl font-bold text-leaf-400">{site.checkedAt}</p><p class="mt-2 text-sm text-sand-300">Last checked against both cited publications</p></article>
+    <section id="quick-answer" class="mt-10 scroll-mt-40" aria-labelledby="mutation-direct-answer-title">
+      <div class="rounded-2xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-6">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.16em] text-leaf-400">Direct answer</p>
+        <h2 id="mutation-direct-answer-title" class="mt-3 text-2xl font-bold text-white sm:text-3xl">What mutations are in Greedy Growers?</h2>
+        <p class="mt-4 max-w-4xl leading-7 text-sand-300">Two current guides match on six reported Update 1.2 mutations. The cards below name each one and its reported single-mutation multiplier; stacking math remains unverified.</p>
+      </div>
+      <ul class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Six reported Greedy Growers mutations">
+        {mutations.map((mutation) => (
+          <li class="rounded-2xl border border-line bg-ink-900 p-4">
+            <strong class="block text-sm text-white sm:text-base">{mutation.name}</strong>
+            <span class="mt-2 block font-mono text-xl font-bold text-leaf-400">{mutation.valueMultiplier}x</span>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-4 grid grid-cols-2 gap-3" aria-label="Mutation guide summary">
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-2xl font-bold text-leaf-400">2x–100x</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">reported single-mutation range</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-lg font-bold text-leaf-400 sm:text-2xl">{site.checkedAt}</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">last matched source check</p></article>
+      </div>
     </section>
 
     <aside class="mt-8 rounded-2xl border border-amber-400/30 bg-amber-300/[.06] p-5 text-sm leading-7 text-amber-100"><strong>Evidence boundary:</strong> Pro Game Guides and MrGuider agree on the six names, individual multipliers, and primary triggers. Neither is the developer. Stacking math, event timing, visual identifiers, and whether every trigger behaves identically across servers remain below our gameplay-verification threshold.</aside>

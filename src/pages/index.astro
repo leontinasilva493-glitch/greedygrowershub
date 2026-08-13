@@ -65,32 +65,36 @@ const schemas = [
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
         <div>
-          <p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Start here</p>
-          <h2 id="home-task-path-title" class="mt-2 font-display text-2xl font-bold tracking-[-.035em] text-white sm:text-3xl">Choose what you need next</h2>
+          <p class="font-mono text-[10px] font-bold uppercase tracking-[.18em] text-leaf-400">Fan-made player reference</p>
+          <h2 id="home-task-path-title" class="mt-2 font-display text-2xl font-bold tracking-[-.035em] text-white sm:text-3xl">Greedy Growers Wiki: Seeds, Mutations, Codes & Calculator</h2>
         </div>
-        <p class="max-w-xl text-sm leading-6 text-sand-300">Continue with another player task. The core calculator is above; the reported seed catalog follows below.</p>
+        <p class="max-w-xl text-sm leading-6 text-sand-300">This fan-made Greedy Growers wiki organizes the current Update 1.2 seed and mutation reports, code status, beginner guides, updates, and a player-input profit calculator. Community figures remain evidence-labeled and are not treated as official developer data.</p>
       </div>
 
-      <nav class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5" aria-label="Start with a Greedy Growers task">
-        <a href="/codes/" data-event="home_task_click" data-event-label="codes" class="group flex min-h-32 flex-col justify-between rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:-translate-y-0.5 hover:border-leaf-500/50 hover:bg-ink-850">
-          <span class="grid size-9 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="ticket" size={18}/></span>
-          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Check Codes</strong><span class="mt-1 block text-xs leading-5 text-sand-300">See the latest verified status.</span></span>
+      <nav class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-label="Greedy Growers wiki directory">
+        <a href="/seeds/list/" data-event="home_task_click" data-event-label="all-seeds" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:border-leaf-500/50 hover:bg-ink-850 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="sprout" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">All Seeds</strong><span class="mt-1 block text-sm leading-5 text-sand-300">Search, filter, and compare all 20 reported seeds.</span></span>
         </a>
-        <a href="/seeds/list/" data-event="home_task_click" data-event-label="all-seeds" class="group flex min-h-32 flex-col justify-between rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:-translate-y-0.5 hover:border-leaf-500/50 hover:bg-ink-850">
-          <span class="grid size-9 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="sprout" size={18}/></span>
-          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Compare All Seeds</strong><span class="mt-1 block text-xs leading-5 text-sand-300">Filter the current 20-seed list.</span></span>
+        <a href="/mechanics/mutations/" data-event="home_task_click" data-event-label="mutations" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:border-leaf-500/50 hover:bg-ink-850 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="bolt" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">All Mutations</strong><span class="mt-1 block text-sm leading-5 text-sand-300">Check six reported mutations, triggers, and evidence limits.</span></span>
         </a>
-        <a href="/mechanics/mutations/" data-event="home_task_click" data-event-label="mutations" class="group flex min-h-32 flex-col justify-between rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:-translate-y-0.5 hover:border-leaf-500/50 hover:bg-ink-850">
-          <span class="grid size-9 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="bolt" size={18}/></span>
-          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Understand Mutations</strong><span class="mt-1 block text-xs leading-5 text-sand-300">Check triggers and evidence limits.</span></span>
+        <a href="/codes/" data-event="home_task_click" data-event-label="codes" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:border-leaf-500/50 hover:bg-ink-850 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="ticket" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Codes</strong><span class="mt-1 block text-sm leading-5 text-sand-300">See the latest verified code status and redemption checks.</span></span>
         </a>
-        <a href="#calculator" data-event="home_task_click" data-event-label="calculator" class="group flex min-h-32 flex-col justify-between rounded-2xl border border-leaf-500/35 bg-leaf-500/[.065] p-4 no-underline transition hover:-translate-y-0.5 hover:border-leaf-400 hover:bg-leaf-500/[.1]">
-          <span class="grid size-9 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" size={18}/></span>
-          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Calculate a Run</strong><span class="mt-1 block text-xs leading-5 text-sand-300">Use your observed values now.</span></span>
+        <a href="/beginner-guide/" data-event="home_task_click" data-event-label="beginner-guide" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:border-leaf-500/50 hover:bg-ink-850 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="book" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Beginner Guide</strong><span class="mt-1 block text-sm leading-5 text-sand-300">Follow the first seed, planting, harvest, and selling loop.</span></span>
         </a>
-        <a href="/updates/" data-event="home_task_click" data-event-label="updates" class="group col-span-2 flex min-h-24 flex-row items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:-translate-y-0.5 hover:border-leaf-500/50 hover:bg-ink-850 sm:col-span-1 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-0">
-          <span class="grid size-9 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="clock" size={18}/></span>
-          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">See What Changed</strong><span class="mt-1 block text-xs leading-5 text-sand-300">Review game and data updates.</span></span>
+        <a href="/updates/" data-event="home_task_click" data-event-label="updates" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-line bg-ink-900 p-4 no-underline transition hover:border-leaf-500/50 hover:bg-ink-850 sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-leaf-500/25 bg-leaf-500/[.08] text-leaf-400"><Icon name="clock" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Updates</strong><span class="mt-1 block text-sm leading-5 text-sand-300">Review game signals, data changes, and recheck work.</span></span>
+        </a>
+        <a href="#calculator" data-event="home_task_click" data-event-label="calculator" class="group flex min-h-24 items-center gap-4 rounded-2xl border border-leaf-500/35 bg-leaf-500/[.065] p-4 no-underline transition hover:border-leaf-400 hover:bg-leaf-500/[.1] sm:min-h-32 sm:flex-col sm:items-stretch sm:justify-between sm:gap-5">
+          <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-leaf-500 text-ink-950"><Icon name="calculator" size={20}/></span>
+          <span><strong class="block font-display text-base text-white group-hover:text-leaf-300">Profit Calculator</strong><span class="mt-1 block text-sm leading-5 text-sand-300">Use your observed costs, harvest, time, and failed runs.</span></span>
         </a>
       </nav>
     </div>
