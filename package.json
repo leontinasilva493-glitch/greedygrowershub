@@ -12,6 +12,8 @@
     "astro": "astro",
     "check": "astro check",
     "test": "vitest run",
+    "test:browser": "npm run build && node tests/browser-smoke.mjs",
+    "test:browser:install": "playwright install chromium",
     "generate-types": "wrangler types",
     "deploy": "npm run build && wrangler deploy"
   },
@@ -25,6 +27,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@cloudflare/workers-types": "^5.20260727.1",
+    "playwright": "^1.62.1",
     "vitest": "^4.1.10",
     "wrangler": "^4.114.0"
   }
