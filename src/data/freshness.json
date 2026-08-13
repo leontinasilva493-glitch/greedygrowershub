@@ -1,0 +1,84 @@
+[
+  {
+    "id": "codes",
+    "checkedAt": "2026-08-13",
+    "state": "conflict",
+    "sources": [
+      {
+        "name": "MrGuider Greedy Growers codes",
+        "url": "https://www.mrguider.org/roblox/greedy-growers-codes/",
+        "trust": "reported"
+      },
+      {
+        "name": "Pro Game Guides Greedy Growers codes",
+        "url": "https://progameguides.com/roblox/greedy-growers-codes/",
+        "trust": "reported"
+      },
+      {
+        "name": "Official Roblox experience",
+        "url": "https://www.roblox.com/games/74102906764176/Greedy-Growers",
+        "trust": "official"
+      }
+    ],
+    "summary": "No active code is verified here. ILOVECATS remains a third-party lead, not an active-code entry.",
+    "conflicts": [
+      "MrGuider reports ILOVECATS for 100 Tickets, while Pro Game Guides reports zero active codes."
+    ],
+    "nextCheck": "Test ILOVECATS in the current redeem UI and look for a matching creator-owned announcement."
+  },
+  {
+    "id": "seeds",
+    "checkedAt": "2026-08-01",
+    "state": "reported",
+    "sources": [
+      {
+        "name": "Pro Game Guides Update 1.2 seed index",
+        "url": "https://progameguides.com/roblox/all-greedy-growers-seeds-costs-rarities-spawn-chances/",
+        "trust": "reported"
+      },
+      {
+        "name": "MrGuider current seed guide",
+        "url": "https://www.mrguider.org/guides/greedy-growers-seeds-list-cost-and-spawn-rate/",
+        "trust": "reported"
+      }
+    ],
+    "summary": "Two third-party publications match on the 20-seed Update 1.2 catalog; it is not creator-confirmed.",
+    "conflicts": [],
+    "nextCheck": "Compare all 20 names, prices, rarities, and spawn denominators with the live river stock after the next patch."
+  },
+  {
+    "id": "mutations",
+    "checkedAt": "2026-08-01",
+    "state": "reported",
+    "sources": [
+      {
+        "name": "Pro Game Guides Update 1.2 mutation guide",
+        "url": "https://progameguides.com/roblox/greedy-growers-mutations-multipliers-how-to-get/",
+        "trust": "reported"
+      },
+      {
+        "name": "MrGuider mutation guide",
+        "url": "https://www.mrguider.org/guides/greedy-growers-mutations-list-multiplier-values/",
+        "trust": "reported"
+      }
+    ],
+    "summary": "Two third-party publications match on six Update 1.2 mutations and their individual multipliers.",
+    "conflicts": [],
+    "nextCheck": "Reproduce each trigger and multiplier in game, then test stacking separately before publishing combined math."
+  },
+  {
+    "id": "roblox-listing",
+    "checkedAt": "2026-08-13",
+    "state": "confirmed",
+    "sources": [
+      {
+        "name": "Official Roblox experience",
+        "url": "https://www.roblox.com/games/74102906764176/Greedy-Growers",
+        "trust": "official"
+      }
+    ],
+    "summary": "The official experience listing confirms the game identity and its buy, plant, grow, and harvest-before-lightning loop.",
+    "conflicts": [],
+    "nextCheck": "Recheck the official listing description and update signal after the next Roblox experience change."
+  }
+]
