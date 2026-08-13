@@ -38,6 +38,36 @@ const validRecords: FreshnessRecord[] = [
     conflicts: [],
     nextCheck: 'Compare all 20 entries with the live river stock after the next patch.',
   },
+  {
+    id: 'mutations',
+    checkedAt: '2026-08-01',
+    state: 'reported',
+    sources: [
+      {
+        name: 'Pro Game Guides Update 1.2 mutation guide',
+        url: 'https://progameguides.com/roblox/greedy-growers-mutations-multipliers-how-to-get/',
+        trust: 'reported',
+      },
+    ],
+    summary: 'Two third-party publications report the same six-mutation catalog.',
+    conflicts: [],
+    nextCheck: 'Reproduce each mutation trigger and multiplier in game.',
+  },
+  {
+    id: 'roblox-listing',
+    checkedAt: '2026-08-13',
+    state: 'confirmed',
+    sources: [
+      {
+        name: 'Official Roblox experience',
+        url: 'https://www.roblox.com/games/74102906764176/Greedy-Growers',
+        trust: 'official',
+      },
+    ],
+    summary: 'The official experience listing confirms the game identity.',
+    conflicts: [],
+    nextCheck: 'Recheck the official listing after the next experience update.',
+  },
 ];
 
 const cloneFixture = () => structuredClone(validRecords);
@@ -48,6 +78,27 @@ describe('freshness registry validation', () => {
     records.push({ ...records[0] });
 
     expect(() => validateFreshnessRecords(records)).toThrow('Duplicate freshness id: codes');
+  });
+
+  it('rejects a registry missing an approved dataset', () => {
+    const records = cloneFixture();
+    records.pop();
+
+    expect(() => validateFreshnessRecords(records)).toThrow('Missing freshness id: roblox-listing');
+  });
+
+  it('rejects an unknown dataset ID', () => {
+    const records = cloneFixture();
+    records[3].id = 'fertilizers' as FreshnessRecord['id'];
+
+    expect(() => validateFreshnessRecords(records)).toThrow('Unsupported freshness id: fertilizers');
+  });
+
+  it('rejects a non-string dataset ID with an explicit validation error', () => {
+    const records = cloneFixture() as unknown as Array<Record<string, unknown>>;
+    records[0].id = 123;
+
+    expect(() => validateFreshnessRecords(records)).toThrow('Freshness record needs a string id');
   });
 
   it.each(['2026-8-13', '2026-02-30', 'not-a-date'])('rejects invalid checkedAt date %s', (checkedAt) => {
@@ -64,6 +115,17 @@ describe('freshness registry validation', () => {
     expect(() => validateFreshnessRecords(records)).toThrow('Freshness codes needs at least one source');
   });
 
+  it('rejects a wrong-typed source field with an explicit validation error', () => {
+    const records = cloneFixture() as unknown as Array<Record<string, unknown>>;
+    records[0].sources = [{
+      name: 123,
+      url: 'https://example.com/codes',
+      trust: 'reported',
+    }];
+
+    expect(() => validateFreshnessRecords(records)).toThrow('Freshness codes has an invalid source');
+  });
+
   it('rejects an empty next verification action', () => {
     const records = cloneFixture();
     records[0].nextCheck = '   ';
@@ -76,6 +138,13 @@ describe('freshness registry validation', () => {
     records[1].conflicts = ['An old catalog differs.'];
 
     expect(() => validateFreshnessRecords(records)).toThrow('Freshness seeds has conflicts but state is reported');
+  });
+
+  it('rejects a wrong-typed conflict with an explicit validation error', () => {
+    const records = cloneFixture() as unknown as Array<Record<string, unknown>>;
+    records[0].conflicts = [123];
+
+    expect(() => validateFreshnessRecords(records)).toThrow('Freshness codes has an invalid conflict');
   });
 });
 
