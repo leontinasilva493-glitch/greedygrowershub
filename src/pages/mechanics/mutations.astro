@@ -39,10 +39,10 @@ const schemas = [
 ---
 
 <BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
-  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20">
+  <section class="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-20" data-reading-scope>
     <header class="max-w-4xl">
       <div class="flex flex-wrap items-center gap-3"><p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Update 1.2 report · two sources matched</p><StatusBadge state="community-lead" label="Not developer-confirmed" /></div>
-      <h1 class="mt-5 text-4xl font-bold tracking-[-.04em] sm:text-6xl">{metadata.h1}</h1>
+      <h1 class="title-page mt-5 font-bold tracking-[-.04em]">{metadata.h1}</h1>
       <p class="mt-6 text-lg leading-8 text-sand-300">Mutations are reported to change the sale value of seeds, plants, or fruit. This guide compares all six current names, reported multipliers, weather or lightning conditions, and the evidence gaps you should know before planning a high-value run.</p>
       <div class="mt-7 flex flex-wrap gap-3"><a href="#mutation-table" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Compare all multipliers</a><a href="/seeds/list/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-sand-100 no-underline">Open the 20-seed list</a></div>
       <EvidenceBar {...evidenceByPage.mutations} />

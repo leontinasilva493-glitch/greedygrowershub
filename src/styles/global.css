@@ -87,6 +87,16 @@ summary,
   font-family: var(--font-display);
 }
 
+.title-home {
+  font-size: clamp(2.75rem, 9vw, 4.5rem);
+  line-height: 0.96;
+}
+
+.title-page {
+  font-size: clamp(2.25rem, 7vw, 3.75rem);
+  line-height: 1.02;
+}
+
 .font-mono {
   font-family: var(--font-mono);
 }
