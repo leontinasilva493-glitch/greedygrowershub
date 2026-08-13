@@ -85,11 +85,18 @@ const schemas = [
       { label: 'FAQ', href: '#faq' },
     ]} />
 
-    <section id="quick-answer" class="mt-10 grid scroll-mt-40 gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Seed catalog summary">
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{seeds.length}</p><p class="mt-2 text-sm text-sand-300">seeds in the matched Update 1.2 reports</p></article>
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{rarityCount}</p><p class="mt-2 text-sm text-sand-300">reported rarity groups, Common through Divine</p></article>
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">1 in {rarestSeed.spawnOneIn?.toLocaleString()}</p><p class="mt-2 text-sm text-sand-300">rarest reported spawn denominator</p></article>
-      <article class="rounded-2xl border border-line bg-ink-900 p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{site.checkedAt}</p><p class="mt-2 text-sm text-sand-300">Last checked against the cited publications</p></article>
+    <section id="quick-answer" class="mt-10 scroll-mt-40" aria-labelledby="seed-direct-answer-title">
+      <div class="rounded-2xl border border-leaf-500/25 bg-leaf-500/[.045] p-5 sm:p-6">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.16em] text-leaf-400">Direct answer</p>
+        <h2 id="seed-direct-answer-title" class="mt-3 text-2xl font-bold text-white sm:text-3xl">How many Greedy Growers seeds are there?</h2>
+        <p class="mt-4 max-w-4xl leading-7 text-sand-300">Two current independent guides report <strong>20 Greedy Growers seeds</strong> for Update 1.2, from Oak and Pine through Diamond and Void. Prices and river spawn denominators are community-matched rather than developer-confirmed.</p>
+      </div>
+      <div class="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Seed catalog summary">
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{seeds.length}</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">seeds in the matched reports</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-2xl font-bold text-leaf-400">{rarityCount}</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">reported rarity groups</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-xl font-bold text-leaf-400 sm:text-2xl">1 in {rarestSeed.spawnOneIn?.toLocaleString()}</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">rarest reported denominator</p></article>
+        <article class="rounded-2xl border border-line bg-ink-900 p-4 sm:p-5"><p class="font-mono text-lg font-bold text-leaf-400 sm:text-2xl">{site.checkedAt}</p><p class="mt-2 text-xs leading-5 text-sand-300 sm:text-sm">Last checked against cited sources</p></article>
+      </div>
     </section>
 
     <aside class="mt-8 rounded-2xl border border-amber-400/30 bg-amber-300/[.06] p-5 text-sm leading-7 text-amber-100">
