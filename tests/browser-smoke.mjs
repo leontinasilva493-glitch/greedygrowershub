@@ -7,16 +7,32 @@ const root = resolve('dist/client');
 const desktopHomepageOnly = process.argv.includes('--homepage-desktop-only');
 const routes = [
   '/',
-  '/seeds/list/',
+  '/beginner-guide/',
+  '/codes/',
+  '/contact/',
+  '/disclaimer/',
+  '/guides/',
+  '/guides/get-money-fast/',
+  '/guides/mistakes/',
+  '/guides/progression/',
+  '/guides/tickets/',
+  '/mechanics/',
+  '/mechanics/lightning/',
   '/mechanics/mutations/',
   '/mechanics/when-to-harvest/',
-  '/guides/progression/',
+  '/official-links/',
+  '/privacy/',
+  '/seeds/best/',
+  '/seeds/list/',
+  '/updates/',
+  '/vi/codes/',
 ];
 const viewports = [
   { label: '320 portrait', width: 320, height: 780 },
   { label: '360 portrait', width: 360, height: 780 },
   { label: '375 portrait', width: 375, height: 812 },
   { label: '390 portrait', width: 390, height: 844 },
+  { label: '412 portrait', width: 412, height: 915 },
   { label: '430 portrait', width: 430, height: 932 },
   { label: '768 tablet', width: 768, height: 1024 },
   { label: '812 landscape', width: 812, height: 375 },
@@ -184,6 +200,58 @@ async function assertCurrentTaskRail(page, viewport, route) {
     assert(box.width >= 44, `${viewport.label} ${route}: current task action ${index + 1} is narrower than 44px`);
   }
 }
+
+async function assertOfficialLinksPage(page, viewport, route) {
+  if (route !== '/official-links/') return;
+
+  const section = page.locator('[data-official-links]');
+  assert(await section.isVisible(), `${viewport.label} ${route}: official links section is not visible`);
+
+  const rows = section.locator('[data-official-link-row]');
+  assert(await rows.count() === 4, `${viewport.label} ${route}: official links page does not show four records`);
+
+  const labels = await rows.locator('h2, h3').evaluateAll((elements) => elements.map((element) => element.textContent?.trim()));
+  assert(
+    JSON.stringify(labels) === JSON.stringify([
+      'Official Roblox experience',
+      'Creator group',
+      'Discord',
+      'Trello/wiki board',
+    ]),
+    `${viewport.label} ${route}: official links labels are out of order`,
+  );
+
+  const actionLinks = rows.locator('[data-official-link-action]');
+  assert(await actionLinks.count() === 1, `${viewport.label} ${route}: official links page should expose exactly one confirmed external link`);
+  const href = await actionLinks.first().getAttribute('href');
+  const target = await actionLinks.first().getAttribute('target');
+  const rel = await actionLinks.first().getAttribute('rel');
+  assert(
+    href === 'https://www.roblox.com/games/74102906764176/Greedy-Growers',
+    `${viewport.label} ${route}: confirmed official link href is incorrect`,
+  );
+  assert(target === '_blank', `${viewport.label} ${route}: confirmed official link should open in a new tab`);
+  assert(rel === 'noopener noreferrer', `${viewport.label} ${route}: confirmed official link rel is incorrect`);
+
+  const linkBox = await actionLinks.first().boundingBox();
+  assert(linkBox, `${viewport.label} ${route}: confirmed official link has no box`);
+  assert(linkBox.height >= 44, `${viewport.label} ${route}: confirmed official link is shorter than 44px`);
+  assert(linkBox.width >= 44, `${viewport.label} ${route}: confirmed official link is narrower than 44px`);
+
+  for (let index = 1; index < 4; index += 1) {
+    const row = rows.nth(index);
+    assert(await row.locator('a[href]').count() === 0, `${viewport.label} ${route}: row ${index + 1} should not contain a clickable href`);
+    await expectText(
+      row,
+      '[data-official-link-status-note]',
+      'Not linked',
+      `${viewport.label} ${route}: row ${index + 1} missing the non-link status note`,
+    );
+  }
+
+  assert(await rows.locator('time[datetime]').count() === 4, `${viewport.label} ${route}: checked dates are incomplete`);
+}
+
 async function assertMobileMenu(page, viewport) {
   const menu = page.locator('[data-mobile-navigation]');
   const trigger = menu.locator('[data-mobile-nav-trigger]');
@@ -420,6 +488,7 @@ try {
         await assertAnchors(page, route, viewport);
         await assertTableMode(page, viewport, route);
         await assertCurrentTaskRail(page, viewport, route);
+        await assertOfficialLinksPage(page, viewport, route);
         assert(pageErrors.length === 0, `${viewport.label} ${route}: ${pageErrors.join('; ')}`);
         combinations += 1;
       }

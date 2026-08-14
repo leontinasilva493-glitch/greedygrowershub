@@ -1,0 +1,50 @@
+[
+  {
+    "id": "official-experience",
+    "label": "Official Roblox experience",
+    "checkedAt": "2026-08-13",
+    "state": "confirmed",
+    "url": "https://www.roblox.com/games/74102906764176/Greedy-Growers",
+    "source": {
+      "name": "Official Roblox experience page",
+      "url": "https://www.roblox.com/games/74102906764176/Greedy-Growers"
+    },
+    "safetyNote": "Use the creator-owned Roblox listing before trusting copied off-platform invites or boards."
+  },
+  {
+    "id": "creator-group",
+    "label": "Creator group",
+    "checkedAt": "2026-08-13",
+    "state": "needs-check",
+    "url": null,
+    "source": {
+      "name": "Current source registry has no exact confirmed creator group URL",
+      "url": null
+    },
+    "safetyNote": "Do not trust copied Roblox group links until a creator-owned source confirms the exact destination."
+  },
+  {
+    "id": "discord",
+    "label": "Discord",
+    "checkedAt": "2026-08-13",
+    "state": "unverified",
+    "url": null,
+    "source": {
+      "name": "No creator-owned Discord invite is confirmed in this project",
+      "url": null
+    },
+    "safetyNote": "Treat copied Discord invites as unsafe until they are linked from an official Roblox or creator-owned page."
+  },
+  {
+    "id": "trello-wiki",
+    "label": "Trello/wiki board",
+    "checkedAt": "2026-08-13",
+    "state": "unverified",
+    "url": null,
+    "source": {
+      "name": "No creator-owned Trello or wiki board is confirmed in this project",
+      "url": null
+    },
+    "safetyNote": "Do not rely on Trello or wiki URLs unless the creator publishes the exact board from an official surface."
+  }
+]
