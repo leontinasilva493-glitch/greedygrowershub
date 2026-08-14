@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Calculator from '../components/Calculator.astro';
 import CalculatorSeedPreview from '../components/CalculatorSeedPreview.astro';
 import EvidenceBar from '../components/EvidenceBar.astro';
+import CurrentTasks from '../components/CurrentTasks.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Icon from '../components/Icon.astro';
 import { evidenceByPage } from '../data/evidence';
@@ -56,6 +57,8 @@ const schemas = [
       </div>
     </div>
   </section>
+
+  <CurrentTasks />
 
   <section id="calculator" class="mx-auto max-w-7xl scroll-mt-24 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
     <Calculator />

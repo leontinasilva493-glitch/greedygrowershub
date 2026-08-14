@@ -97,6 +97,63 @@ async function assertPageWidth(page, viewport, route) {
   assert(metrics.bodyScrollWidth <= viewport.width, `${context}: body overflows horizontally`);
 }
 
+async function assertCurrentTaskRail(page, viewport, route) {
+  if (route !== '/') return;
+
+  const section = page.locator('[data-current-tasks]');
+  assert(await section.isVisible(), `${viewport.label} ${route}: current task rail is not visible`);
+
+  const cards = section.locator('[data-current-task-card]');
+  assert(await cards.count() === 4, `${viewport.label} ${route}: current task rail does not have four cards`);
+
+  const titles = await cards.locator('h3').evaluateAll((elements) => elements.map((element) => element.textContent?.trim()));
+  const hrefs = await cards.locator('[data-current-task-action]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
+  assert(
+    JSON.stringify(titles) === JSON.stringify(['Codes', 'Seeds', 'Mutations', 'Beginner']),
+    `${viewport.label} ${route}: current task titles are out of order`,
+  );
+  assert(
+    JSON.stringify(hrefs) === JSON.stringify(['/codes/', '/seeds/list/', '/mechanics/mutations/', '/beginner-guide/']),
+    `${viewport.label} ${route}: current task actions are out of order`,
+  );
+
+  const metrics = await section.evaluate((element) => {
+    const cards = [...element.querySelectorAll('[data-current-task-card]')].map((card) => {
+      const box = card.getBoundingClientRect();
+      return {
+        left: Math.round(box.left),
+        top: Math.round(box.top),
+      };
+    });
+
+    return {
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      cards,
+    };
+  });
+
+  assert(metrics.scrollWidth <= metrics.clientWidth, `${viewport.label} ${route}: current task rail overflows horizontally`);
+
+  const columnCount = new Set(metrics.cards.map((card) => card.left)).size;
+  if (viewport.width < 640) {
+    assert(columnCount === 1, `${viewport.label} ${route}: current task rail should stack to one column`);
+  } else if (viewport.width < 1280) {
+    assert(columnCount === 2, `${viewport.label} ${route}: current task rail should use two columns`);
+  }
+
+  const topPositions = metrics.cards.map((card) => card.top);
+  assert(topPositions[0] <= topPositions[1], `${viewport.label} ${route}: current task card order is unstable`);
+  assert(topPositions[1] <= topPositions[2] || columnCount > 1, `${viewport.label} ${route}: current task card order is unstable`);
+
+  const actions = cards.locator('[data-current-task-action]');
+  for (let index = 0; index < await actions.count(); index += 1) {
+    const box = await actions.nth(index).boundingBox();
+    assert(box, `${viewport.label} ${route}: current task action ${index + 1} has no box`);
+    assert(box.height >= 44, `${viewport.label} ${route}: current task action ${index + 1} is shorter than 44px`);
+    assert(box.width >= 44, `${viewport.label} ${route}: current task action ${index + 1} is narrower than 44px`);
+  }
+}
 async function assertMobileMenu(page, viewport) {
   const menu = page.locator('[data-mobile-navigation]');
   const trigger = menu.locator('[data-mobile-nav-trigger]');
@@ -199,6 +256,7 @@ try {
       await assertPageWidth(page, viewport, route);
       await assertAnchors(page, route, viewport);
       await assertTableMode(page, viewport, route);
+      await assertCurrentTaskRail(page, viewport, route);
       assert(pageErrors.length === 0, `${viewport.label} ${route}: ${pageErrors.join('; ')}`);
       combinations += 1;
     }
