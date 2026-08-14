@@ -99,10 +99,10 @@ export const pageSeo = {
     h1: 'Greedy Growers Updates',
   },
   officialLinks: {
-    title: 'Greedy Growers Official Links: Roblox & Discord Status',
-    description: 'Find the official Greedy Growers Roblox experience, creator and API sources, plus the current verification status of Discord and other community links.',
+    title: 'Greedy Growers Official Links: Verified Source Status',
+    description: 'Check Greedy Growers official links, source status, checked dates, and safety notes before you open the confirmed Roblox page or trust copied community URLs.',
     canonicalPath: '/official-links/',
-    h1: 'Greedy Growers Official Links',
+    h1: 'Greedy Growers Official Links & Source Status',
   },
 } as const satisfies Record<string, PageMetadata>;
 

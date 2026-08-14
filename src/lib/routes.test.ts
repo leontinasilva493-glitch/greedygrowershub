@@ -77,3 +77,9 @@ describe('Mechanics route ownership', () => {
     expect(existsSync(new URL('src/pages/mechanics/mutations.astro', root))).toBe(true);
   });
 });
+
+describe('Trust route ownership', () => {
+  test('publishes the official links status page at its canonical route', () => {
+    expect(existsSync(new URL('src/pages/official-links.astro', root))).toBe(true);
+  });
+});

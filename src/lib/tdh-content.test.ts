@@ -431,16 +431,24 @@ describe('source-visible TDH heading contracts', () => {
 
   test('publishes one official-links trust destination and links to it contextually', () => {
     const officialLinks = readSource('../pages/official-links.astro');
+    const officialLinksRegistry = readSource('../data/official-links.json');
     const codes = readSource('../pages/codes.astro');
     const updates = readSource('../pages/updates.astro');
     const footer = readSource('../components/Footer.astro');
 
     expectPhrases(officialLinks, [
+      'officialLinkRecords',
+      'One creator-owned destination is confirmed in this registry.',
+      'data-official-links',
+      'data-official-link-action',
+      'data-official-link-status-note',
+    ]);
+    expectPhrases(officialLinksRegistry, [
       'Official Roblox experience',
-      'Roblox Games API snapshot',
-      'Official Discord is not verified',
-      'How We Decide a Link Is Safe to Publish',
-      'No candidate invite is published',
+      'Creator group',
+      'Discord',
+      'Trello/wiki board',
+      'Treat copied Discord invites as unsafe',
     ]);
     for (const source of [codes, updates, footer]) {
       expect(source).toContain('href="/official-links/"');
