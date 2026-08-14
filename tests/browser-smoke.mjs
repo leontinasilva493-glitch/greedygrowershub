@@ -31,9 +31,31 @@ const mimeTypes = {
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
 };
+const runLogOwnedFiles = [
+  'src/components/RunLog.astro',
+  'src/lib/run-log.ts',
+  'src/scripts/calculator.ts',
+];
+const forbiddenRunLogNetworkPatterns = [
+  { label: 'fetch', pattern: /\bfetch\s*\(/ },
+  { label: 'XMLHttpRequest', pattern: /\bXMLHttpRequest\b/ },
+  { label: 'sendBeacon', pattern: /\bsendBeacon\s*\(/ },
+  { label: 'WebSocket', pattern: /\bWebSocket\b/ },
+  { label: 'EventSource', pattern: /\bEventSource\b/ },
+  { label: 'new Image', pattern: /\bnew\s+Image\s*\(/ },
+];
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+async function assertRunLogSourceContract() {
+  for (const relativePath of runLogOwnedFiles) {
+    const source = await readFile(resolve(relativePath), 'utf8');
+    for (const { label, pattern } of forbiddenRunLogNetworkPatterns) {
+      assert(!pattern.test(source), `Run-log source contract failed: ${relativePath} contains ${label}`);
+    }
+  }
 }
 
 async function resolveRequest(pathname) {
@@ -373,6 +395,7 @@ let browser;
 
 try {
   browser = await chromium.launch({ headless: true });
+  await assertRunLogSourceContract();
   if (desktopHomepageOnly) {
     await runDesktopHomepageRailCheck(browser, baseUrl);
     console.log('Browser smoke passed: 1 targeted desktop homepage rail check at 1440px.');
