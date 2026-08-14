@@ -240,6 +240,117 @@ async function assertTableMode(page, viewport, route) {
   }
 }
 
+async function expectText(page, selector, expected, message) {
+  const text = (await page.locator(selector).textContent())?.trim() ?? '';
+  assert(text.includes(expected), `${message}. Received "${text}"`);
+}
+
+async function assertRunLogFlow(browser, baseUrl) {
+  const viewport = { label: '390 portrait run-log', width: 390, height: 844 };
+  const context = await browser.newContext({
+    viewport: { width: viewport.width, height: viewport.height },
+    hasTouch: true,
+    isMobile: true,
+    reducedMotion: 'reduce',
+  });
+  const page = await context.newPage();
+  const pageErrors = [];
+  const runLogRequests = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.locator('main').waitFor({ state: 'visible' });
+  await page.locator('[data-calculator-advanced]').evaluate((details) => { details.open = true; });
+
+  const baseline = await page.evaluate(() => ({
+    localStorageKeys: Object.keys(localStorage),
+    sessionStorageKeys: Object.keys(sessionStorage),
+    dataLayerLength: (window.dataLayer ?? []).length,
+  }));
+  const requestListener = (request) => {
+    const url = new URL(request.url());
+    if (url.hostname.endsWith('clarity.ms')) return;
+    if (!request.isNavigationRequest()) runLogRequests.push(request.url());
+  };
+  page.on('request', requestListener);
+
+  const fillScenario = async (label, harvestValue) => {
+    await page.locator('[data-run-log-label]').fill(label);
+    await page.locator('input[name="seedCost"]').fill('100');
+    await page.locator('input[name="harvestValue"]').fill(String(harvestValue));
+    await page.locator('input[name="waitMinutes"]').fill('1');
+    await page.locator('input[name="fertilizerCost"]').fill('0');
+    await page.locator('input[name="harvestMultiplier"]').fill('1');
+    await page.locator('input[name="failedRuns"]').fill('0');
+  };
+
+  await page.locator('[data-run-log-label]').fill('Invalid wait time');
+  await page.locator('input[name="waitMinutes"]').fill('0');
+  await expectText(page, '[data-calculator-error]', 'Wait time must be greater than zero', `${viewport.label}: invalid calculator error was not visible`);
+  assert(!(await page.locator('[data-run-log-add]').isDisabled()), `${viewport.label}: invalid-save action was not executable`);
+  await page.locator('[data-run-log-add]').click();
+  await expectText(page, '[data-run-log-error]', 'Fix the calculator inputs before saving this run.', `${viewport.label}: invalid save error was not visible`);
+  assert(await page.locator('[data-run-log-list] > li').count() === 0, `${viewport.label}: invalid state saved a run`);
+
+  for (const [label, harvestValue] of [['Run 1', 110], ['Run 2', 120], ['Run 3', 130], ['Run 4', 140], ['Run 5', 150]]) {
+    await fillScenario(label, harvestValue);
+    await page.locator('[data-run-log-add]').click();
+  }
+  assert(await page.locator('[data-run-log-list] > li').count() === 5, `${viewport.label}: five runs were not saved`);
+  await expectText(page, '[data-run-log-count]', '5/5', `${viewport.label}: count is incorrect`);
+  await expectText(page, '[data-run-log-median]', '30', `${viewport.label}: median is incorrect`);
+  await expectText(page, '[data-run-log-range]', '10-50', `${viewport.label}: range is incorrect`);
+
+  await fillScenario('Run 6', 160);
+  await page.locator('[data-run-log-add]').click();
+  await expectText(page, '[data-run-log-error]', 'You can save at most five runs', `${viewport.label}: sixth-run rejection was not visible`);
+  assert(await page.locator('[data-run-log-list] > li').count() === 5, `${viewport.label}: sixth run changed the count`);
+
+  await page.locator('[data-run-log-remove]').first().click();
+  assert(await page.locator('[data-run-log-list] > li').count() === 4, `${viewport.label}: remove did not reduce the count`);
+  await fillScenario('Run 6 retry', 160);
+  await page.locator('[data-run-log-add]').click();
+
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async (text) => { window.__copiedRunLogText = text; } },
+    });
+  });
+  await page.locator('[data-run-log-copy]').click();
+  await expectText(page, '[data-run-log-feedback]', 'Copied the run summary.', `${viewport.label}: copy feedback was not announced`);
+  assert((await page.evaluate(() => window.__copiedRunLogText ?? '')).includes('Saved runs: 5/5'), `${viewport.label}: copied summary missed the count`);
+
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async () => { throw new Error('blocked'); } },
+    });
+  });
+  await page.locator('[data-run-log-copy]').click();
+  await expectText(page, '[data-run-log-error]', 'Clipboard copy failed. Use the fallback text area below.', `${viewport.label}: copy fallback was not visible`);
+  assert(await page.locator('[data-run-log-copy-fallback]').isVisible(), `${viewport.label}: copy fallback panel is hidden`);
+
+  await page.locator('[data-run-log-clear]').click();
+  assert(await page.locator('[data-run-log-list] > li').count() === 0, `${viewport.label}: clear did not empty the list`);
+  assert(runLogRequests.length === 0, `${viewport.label}: run log triggered network requests (${runLogRequests.join(', ')})`);
+  assert(await page.evaluate(() => (window.dataLayer ?? []).length) === baseline.dataLayerLength, `${viewport.label}: run log added analytics events`);
+
+  await fillScenario('Reload check', 170);
+  await page.locator('[data-run-log-add]').click();
+  page.off('request', requestListener);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  assert(await page.locator('[data-run-log-list] > li').count() === 0, `${viewport.label}: reload kept runs`);
+  const after = await page.evaluate(() => ({
+    localStorageKeys: Object.keys(localStorage),
+    sessionStorageKeys: Object.keys(sessionStorage),
+  }));
+  assert(JSON.stringify(after.localStorageKeys) === JSON.stringify(baseline.localStorageKeys), `${viewport.label}: localStorage keys changed`);
+  assert(JSON.stringify(after.sessionStorageKeys) === JSON.stringify(baseline.sessionStorageKeys), `${viewport.label}: sessionStorage keys changed`);
+  assert(pageErrors.length === 0, `${viewport.label}: ${pageErrors.join('; ')}`);
+  await context.close();
+}
+
 async function runDesktopHomepageRailCheck(browser, baseUrl) {
   const context = await browser.newContext({
     viewport: { width: desktopHomepageViewport.width, height: desktopHomepageViewport.height },
@@ -296,7 +407,8 @@ try {
     }
 
     await runDesktopHomepageRailCheck(browser, baseUrl);
-    console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px.`);
+    await assertRunLogFlow(browser, baseUrl);
+    console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px and 1 calculator run-log flow at 390px.`);
   }
 } finally {
   await browser?.close();

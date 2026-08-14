@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import StatusBadge from './StatusBadge.astro';
+import RunLog from './RunLog.astro';
 import { fertilizers, getSource, seeds } from '../lib/content';
 import { buildCalculatorContext, getMutationPreset, mutationPresets } from '../lib/calculator-context';
 import { buildSeedComparison } from '../lib/calculator-ranking';
@@ -243,5 +244,7 @@ const seedGroups = [...new Set(seeds.map((seed) => seed.rarity))].map((rarity) =
     </details>
   </aside>
 </form>
+
+<RunLog />
 
 <script>import '../scripts/calculator';</script>
