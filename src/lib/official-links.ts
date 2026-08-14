@@ -1,4 +1,5 @@
 import rawOfficialLinks from '../data/official-links.json';
+import { site } from './content';
 
 export type OfficialLinkState = 'confirmed' | 'needs-check' | 'unverified';
 const approvedOfficialLinkIds = [
@@ -27,6 +28,7 @@ export interface OfficialLinkRecord {
 const approvedIds = new Set<string>(approvedOfficialLinkIds);
 const states = new Set<string>(['confirmed', 'needs-check', 'unverified']);
 const isoCalendarDate = /^\d{4}-\d{2}-\d{2}$/;
+const expectedOfficialUrl = site.officialGameUrl;
 
 const isRealIsoDate = (value: string) => {
   if (!isoCalendarDate.test(value)) return false;
@@ -51,8 +53,21 @@ const isNamedSource = (value: unknown): value is OfficialLinkSource => {
   return typeof source.url === 'string';
 };
 
-export function validateOfficialLinks(records: unknown): asserts records is OfficialLinkRecord[] {
+function getCurrentUtcDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function validateOfficialLinks(
+  records: unknown,
+  options: { today?: string; officialGameUrl?: string } = {},
+): asserts records is OfficialLinkRecord[] {
   if (!Array.isArray(records)) throw new Error('Official links registry must be an array');
+  const today = options.today ?? getCurrentUtcDate();
+  const officialGameUrl = options.officialGameUrl ?? expectedOfficialUrl;
+
+  if (!isRealIsoDate(today)) {
+    throw new Error(`Invalid validation date: ${today}`);
+  }
 
   const ids = new Set<string>();
   for (const value of records) {
@@ -73,6 +88,9 @@ export function validateOfficialLinks(records: unknown): asserts records is Offi
     if (typeof record.checkedAt !== 'string' || !isRealIsoDate(record.checkedAt)) {
       throw new Error(`Invalid official link date for ${id}: ${record.checkedAt ?? ''}`);
     }
+    if (record.checkedAt > today) {
+      throw new Error(`Official link ${id} date cannot be in the future: ${record.checkedAt}`);
+    }
     if (typeof record.state !== 'string' || !states.has(record.state)) {
       throw new Error(`Unsupported official link state for ${id}: ${record.state ?? ''}`);
     }
@@ -83,12 +101,25 @@ export function validateOfficialLinks(records: unknown): asserts records is Offi
       throw new Error(`Official link ${id} needs a safety note`);
     }
 
+    if (id === 'official-experience' && record.state !== 'confirmed') {
+      throw new Error('official-experience must use the confirmed state');
+    }
+    if (id !== 'official-experience' && record.state === 'confirmed') {
+      throw new Error('Only official-experience may use the confirmed state');
+    }
+
     if (record.state === 'confirmed') {
       if (typeof record.url !== 'string' || !isHttpsUrl(record.url)) {
         throw new Error(`Official link ${id} confirmed URL must use HTTPS`);
       }
       if (typeof record.source.url !== 'string' || !isHttpsUrl(record.source.url)) {
         throw new Error(`Official link ${id} confirmed source must use HTTPS`);
+      }
+      if (id === 'official-experience' && record.url !== officialGameUrl) {
+        throw new Error(`Official link official-experience must match site.officialGameUrl: ${officialGameUrl}`);
+      }
+      if (id === 'official-experience' && record.source.url !== officialGameUrl) {
+        throw new Error(`Official link official-experience source must match site.officialGameUrl: ${officialGameUrl}`);
       }
     } else {
       if (record.url !== null) {

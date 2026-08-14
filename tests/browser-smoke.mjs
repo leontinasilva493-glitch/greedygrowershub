@@ -238,17 +238,26 @@ async function assertOfficialLinksPage(page, viewport, route) {
   assert(linkBox.height >= 44, `${viewport.label} ${route}: confirmed official link is shorter than 44px`);
   assert(linkBox.width >= 44, `${viewport.label} ${route}: confirmed official link is narrower than 44px`);
 
+  const expectedNotes = [
+    'Not linked - needs verification',
+    'Not linked - unverified',
+    'Not linked - unverified',
+  ];
+
   for (let index = 1; index < 4; index += 1) {
     const row = rows.nth(index);
     assert(await row.locator('a[href]').count() === 0, `${viewport.label} ${route}: row ${index + 1} should not contain a clickable href`);
     await expectText(
       row,
       '[data-official-link-status-note]',
-      'Not linked',
-      `${viewport.label} ${route}: row ${index + 1} missing the non-link status note`,
+      expectedNotes[index - 1],
+      `${viewport.label} ${route}: row ${index + 1} has the wrong non-link status note`,
     );
   }
 
+  const pageText = await section.textContent() ?? '';
+  assert(!pageText.includes('鈥?'), `${viewport.label} ${route}: official links page still contains mojibake text`);
+  assert(!pageText.includes('�'), `${viewport.label} ${route}: official links page still contains replacement characters`);
   assert(await rows.locator('time[datetime]').count() === 4, `${viewport.label} ${route}: checked dates are incomplete`);
 }
 

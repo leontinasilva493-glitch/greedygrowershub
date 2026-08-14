@@ -61,6 +61,20 @@ const validRecords: OfficialLinkRecord[] = [
 const cloneFixture = () => structuredClone(validRecords);
 
 describe('official links validation', () => {
+  it('rejects an official experience destination that does not match site.officialGameUrl', () => {
+    const records = cloneFixture();
+    records[0].url = 'https://www.roblox.com/games/1234567890/Wrong-Experience';
+
+    expect(() => validateOfficialLinks(records)).toThrow(`Official link official-experience must match site.officialGameUrl: ${site.officialGameUrl}`);
+  });
+
+  it('rejects an official experience source URL that does not match site.officialGameUrl', () => {
+    const records = cloneFixture();
+    records[0].source.url = 'https://www.roblox.com/games/1234567890/Wrong-Experience';
+
+    expect(() => validateOfficialLinks(records)).toThrow(`Official link official-experience source must match site.officialGameUrl: ${site.officialGameUrl}`);
+  });
+
   it('rejects duplicate IDs', () => {
     const records = cloneFixture();
     records.push({ ...records[0] });
@@ -82,11 +96,27 @@ describe('official links validation', () => {
     expect(() => validateOfficialLinks(records)).toThrow(`Invalid official link date for official-experience: ${checkedAt}`);
   });
 
+  it('rejects a future checkedAt date', () => {
+    const records = cloneFixture();
+    records[0].checkedAt = '2026-08-15';
+
+    expect(() => validateOfficialLinks(records, { today: '2026-08-14' })).toThrow('Official link official-experience date cannot be in the future: 2026-08-15');
+  });
+
   it('rejects an unsupported state', () => {
     const records = cloneFixture();
     records[0].state = 'reported' as OfficialLinkRecord['state'];
 
     expect(() => validateOfficialLinks(records)).toThrow('Unsupported official link state for official-experience: reported');
+  });
+
+  it('rejects any confirmed record outside the official experience slot', () => {
+    const records = cloneFixture();
+    records[1].state = 'confirmed';
+    records[1].url = site.officialGameUrl;
+    records[1].source.url = site.officialGameUrl;
+
+    expect(() => validateOfficialLinks(records)).toThrow('Only official-experience may use the confirmed state');
   });
 
   it('rejects a confirmed record without an HTTPS destination URL', () => {
@@ -168,5 +198,11 @@ describe('production official links registry', () => {
       state: 'unverified',
       url: null,
     });
+  });
+
+  it('keeps official-experience as the only confirmed record', () => {
+    expect(officialLinkRecords.filter((record) => record.state === 'confirmed').map((record) => record.id)).toEqual([
+      'official-experience',
+    ]);
   });
 });
