@@ -4,6 +4,7 @@ import { extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
 
 const root = resolve('dist/client');
+const desktopHomepageOnly = process.argv.includes('--homepage-desktop-only');
 const routes = [
   '/',
   '/seeds/list/',
@@ -21,6 +22,7 @@ const viewports = [
   { label: '812 landscape', width: 812, height: 375 },
   { label: '1024 desktop', width: 1024, height: 768 },
 ];
+const desktopHomepageViewport = { label: '1440 desktop', width: 1440, height: 900, touch: false };
 
 const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
@@ -140,6 +142,12 @@ async function assertCurrentTaskRail(page, viewport, route) {
     assert(columnCount === 1, `${viewport.label} ${route}: current task rail should stack to one column`);
   } else if (viewport.width < 1280) {
     assert(columnCount === 2, `${viewport.label} ${route}: current task rail should use two columns`);
+  } else {
+    assert(columnCount === 4, `${viewport.label} ${route}: current task rail should use four columns`);
+    assert(
+      new Set(metrics.cards.map((card) => card.top)).size === 1,
+      `${viewport.label} ${route}: current task rail cards should stay on one row`,
+    );
   }
 
   const topPositions = metrics.cards.map((card) => card.top);
@@ -232,41 +240,64 @@ async function assertTableMode(page, viewport, route) {
   }
 }
 
+async function runDesktopHomepageRailCheck(browser, baseUrl) {
+  const context = await browser.newContext({
+    viewport: { width: desktopHomepageViewport.width, height: desktopHomepageViewport.height },
+    reducedMotion: 'reduce',
+  });
+  const page = await context.newPage();
+  const pageErrors = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.locator('main').waitFor({ state: 'visible' });
+  await assertPageWidth(page, desktopHomepageViewport, '/');
+  await assertCurrentTaskRail(page, desktopHomepageViewport, '/');
+  assert(pageErrors.length === 0, `${desktopHomepageViewport.label} /: ${pageErrors.join('; ')}`);
+
+  await context.close();
+}
 const { server, baseUrl } = await startStaticServer();
 let browser;
 
 try {
   browser = await chromium.launch({ headless: true });
-  let combinations = 0;
+  if (desktopHomepageOnly) {
+    await runDesktopHomepageRailCheck(browser, baseUrl);
+    console.log('Browser smoke passed: 1 targeted desktop homepage rail check at 1440px.');
+  } else {
+    let combinations = 0;
 
-  for (const viewport of viewports) {
-    const context = await browser.newContext({
-      viewport: { width: viewport.width, height: viewport.height },
-      hasTouch: viewport.width < 1024,
-      isMobile: viewport.width < 768,
-      reducedMotion: 'reduce',
-    });
-    const page = await context.newPage();
-    const pageErrors = [];
-    page.on('pageerror', (error) => pageErrors.push(error.message));
+    for (const viewport of viewports) {
+      const context = await browser.newContext({
+        viewport: { width: viewport.width, height: viewport.height },
+        hasTouch: viewport.width < 1024,
+        isMobile: viewport.width < 768,
+        reducedMotion: 'reduce',
+      });
+      const page = await context.newPage();
+      const pageErrors = [];
+      page.on('pageerror', (error) => pageErrors.push(error.message));
 
-    for (const route of routes) {
-      await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded' });
-      await page.locator('main').waitFor({ state: 'visible' });
-      await assertPageWidth(page, viewport, route);
-      await assertAnchors(page, route, viewport);
-      await assertTableMode(page, viewport, route);
-      await assertCurrentTaskRail(page, viewport, route);
-      assert(pageErrors.length === 0, `${viewport.label} ${route}: ${pageErrors.join('; ')}`);
-      combinations += 1;
+      for (const route of routes) {
+        await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded' });
+        await page.locator('main').waitFor({ state: 'visible' });
+        await assertPageWidth(page, viewport, route);
+        await assertAnchors(page, route, viewport);
+        await assertTableMode(page, viewport, route);
+        await assertCurrentTaskRail(page, viewport, route);
+        assert(pageErrors.length === 0, `${viewport.label} ${route}: ${pageErrors.join('; ')}`);
+        combinations += 1;
+      }
+
+      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+      if (viewport.width < 1024) await assertMobileMenu(page, viewport);
+      await context.close();
     }
 
-    await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-    if (viewport.width < 1024) await assertMobileMenu(page, viewport);
-    await context.close();
+    await runDesktopHomepageRailCheck(browser, baseUrl);
+    console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px.`);
   }
-
-  console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports.`);
 } finally {
   await browser?.close();
   await new Promise((resolveClose) => server.close(resolveClose));
