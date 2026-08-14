@@ -44,11 +44,11 @@ describe('homepage current-task rail', () => {
     expect(home).toContain("import CurrentTasks from '../components/CurrentTasks.astro';");
     const heroEnd = home.indexOf('</section>');
     const currentTasksIndex = home.indexOf('<CurrentTasks />');
-    const readingScopeIndex = home.indexOf('<div class="relative" data-reading-scope>');
+    const calculatorIndex = home.indexOf('<section id="calculator"');
 
     expect(heroEnd).toBeGreaterThan(-1);
     expect(currentTasksIndex).toBeGreaterThan(heroEnd);
-    expect(currentTasksIndex).toBeLessThan(readingScopeIndex);
+    expect(calculatorIndex).toBeGreaterThan(currentTasksIndex);
     expect(home).toContain('Start calculating');
   });
 });
