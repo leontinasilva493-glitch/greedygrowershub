@@ -6,6 +6,7 @@ import {
   codeLanguageAlternates,
   localizedPageSeo,
   normalizeCanonicalPath,
+  type PageMetadata,
   pageSeo,
 } from './seo';
 
@@ -108,6 +109,33 @@ const expectedMetadata = {
   },
 } as const;
 
+const expectedPageImages = {
+  home: {
+    src: '/images/editorial/greedy-growers-profit-calculator-farming-loop-1440.webp',
+    alt: 'Greedy Growers concept illustration of a seed growing into a harvest tree beside coins and distant lightning.',
+  },
+  beginnerGuide: {
+    src: '/images/editorial/greedy-growers-beginner-guide-first-harvest-1440.webp',
+    alt: 'Greedy Growers beginner guide concept showing river seeds, planting stages, a growing tree, and an early harvest basket.',
+  },
+  guides: {
+    src: '/images/editorial/greedy-growers-guides-seeds-money-progression-1440.webp',
+    alt: 'Greedy Growers guides concept with an open field guide, seed samples, a harvest basket, coins, and branching garden paths.',
+  },
+  mistakes: {
+    src: '/images/editorial/greedy-growers-beginner-mistakes-safe-harvest-1440.webp',
+    alt: 'Greedy Growers beginner mistakes concept with a run notebook, reserve pouch, seed, storm clouds, and a safer harvest path.',
+  },
+  mechanics: {
+    src: '/images/editorial/greedy-growers-mechanics-lightning-mutations-harvest-1440.webp',
+    alt: 'Greedy Growers mechanics concept showing crop growth time, lightning risk, and a glowing mutation seed around a harvest tree.',
+  },
+  officialLinks: {
+    src: '/images/editorial/greedy-growers-official-links-source-check-1440.webp',
+    alt: 'Greedy Growers official links concept with blank signposts, a route notebook, and a magnifying glass at a garden crossroads.',
+  },
+} as const;
+
 describe('indexable page metadata', () => {
   it.each(Object.entries(pageSeo))('%s has concise, keyword-first metadata', (_key, metadata) => {
     expect(metadata.title.length).toBeGreaterThanOrEqual(50);
@@ -120,7 +148,34 @@ describe('indexable page metadata', () => {
   });
 
   it('matches the approved truthful TDH contract for every route', () => {
-    expect(pageSeo).toEqual(expectedMetadata);
+    const actualMetadata = Object.fromEntries(
+      Object.entries(pageSeo).map(([key, { title, description, canonicalPath, h1 }]) => [
+        key,
+        { title, description, canonicalPath, h1 },
+      ]),
+    );
+
+    expect(actualMetadata).toEqual(expectedMetadata);
+  });
+
+  it('locks page-specific editorial image metadata to its search intent', () => {
+    const actualPageImages = Object.fromEntries(
+      (Object.entries(pageSeo) as Array<[string, PageMetadata]>)
+        .filter((entry): entry is [string, PageMetadata & { image: NonNullable<PageMetadata['image']> }] => Boolean(entry[1].image))
+        .map(([key, metadata]) => [
+          key,
+          {
+            src: metadata.image.src,
+            alt: metadata.image.alt,
+          },
+        ]),
+    );
+
+    expect(actualPageImages).toEqual(expectedPageImages);
+    for (const metadata of Object.values(pageSeo)) {
+      if (!('image' in metadata)) continue;
+      expect(metadata.image).toMatchObject({ type: 'image/webp', width: 1440, height: 960 });
+    }
   });
 
   it('assigns the calculator intent exclusively to the homepage', () => {

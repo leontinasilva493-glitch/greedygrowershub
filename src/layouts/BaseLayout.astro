@@ -14,12 +14,34 @@ interface Props {
   noindex?: boolean;
   lang?: 'en' | 'vi';
   alternates?: Array<{ hreflang: string; href: string }>;
+  socialImage?: {
+    src: string;
+    alt: string;
+    type: 'image/webp' | 'image/svg+xml';
+    width: number;
+    height: number;
+  };
 }
 
-const { title, description, canonicalPath, schema = [], noindex = false, lang = 'en', alternates = [] } = Astro.props;
+const {
+  title,
+  description,
+  canonicalPath,
+  schema = [],
+  noindex = false,
+  lang = 'en',
+  alternates = [],
+  socialImage: socialImageProp,
+} = Astro.props;
 const canonical = new URL(normalizeCanonicalPath(canonicalPath), Astro.site ?? Astro.url.origin).toString();
-const socialImage = new URL('/og-image.svg', Astro.site ?? Astro.url.origin).toString();
-const socialImageAlt = 'Greedy Growers Hub player tools for codes, seeds, guides, and profit calculations';
+const socialImage = socialImageProp ?? {
+  src: '/og-image.svg',
+  alt: 'Greedy Growers Hub player tools for codes, seeds, guides, and profit calculations',
+  type: 'image/svg+xml',
+  width: 1200,
+  height: 630,
+};
+const socialImageUrl = new URL(socialImage.src, Astro.site ?? Astro.url.origin).toString();
 const schemas = Array.isArray(schema) ? schema : [schema];
 const defaultSchemas = [
   {
@@ -58,16 +80,16 @@ const defaultSchemas = [
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={socialImage} />
-    <meta property="og:image:type" content="image/svg+xml" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:type" content={socialImage.type} />
+    <meta property="og:image:width" content={String(socialImage.width)} />
+    <meta property="og:image:height" content={String(socialImage.height)} />
+    <meta property="og:image:alt" content={socialImage.alt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={socialImage} />
-    <meta name="twitter:image:alt" content={socialImageAlt} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={socialImage.alt} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />

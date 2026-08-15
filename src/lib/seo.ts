@@ -5,6 +5,13 @@ export interface PageMetadata {
   description: string;
   canonicalPath: string;
   h1: string;
+  image?: {
+    src: string;
+    alt: string;
+    type: 'image/webp';
+    width: 1440;
+    height: 960;
+  };
 }
 
 export const pageSeo = {
@@ -13,6 +20,13 @@ export const pageSeo = {
     description: 'Explore this fan-made Greedy Growers wiki and calculator for all 20 seeds, six mutations, codes, guides, updates, player tools, ROI, and lightning risk.',
     canonicalPath: '/',
     h1: 'Greedy Growers Calculator',
+    image: {
+      src: '/images/editorial/greedy-growers-profit-calculator-farming-loop-1440.webp',
+      alt: 'Greedy Growers concept illustration of a seed growing into a harvest tree beside coins and distant lightning.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
   codes: {
     title: 'Greedy Growers Codes (August 2026): Any Working Codes?',
@@ -25,6 +39,13 @@ export const pageSeo = {
     description: 'Follow this Greedy Growers beginner walkthrough to enter the right Roblox game, buy your first seed, plant it, harvest before lightning, and sell for profit.',
     canonicalPath: '/beginner-guide/',
     h1: 'Greedy Growers Beginner Guide: How to Play & First Harvest',
+    image: {
+      src: '/images/editorial/greedy-growers-beginner-guide-first-harvest-1440.webp',
+      alt: 'Greedy Growers beginner guide concept showing river seeds, planting stages, a growing tree, and an early harvest basket.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
   seeds: {
     title: 'All Greedy Growers Seeds (Update 1.2): Prices & Rarity',
@@ -43,12 +64,26 @@ export const pageSeo = {
     description: 'Explore Greedy Growers guides for beginners, fast money, progression, rebirth, fertilizer, and Tickets, with evidence labels and links to the calculator.',
     canonicalPath: '/guides/',
     h1: 'Greedy Growers Guides',
+    image: {
+      src: '/images/editorial/greedy-growers-guides-seeds-money-progression-1440.webp',
+      alt: 'Greedy Growers guides concept with an open field guide, seed samples, a harvest basket, coins, and branching garden paths.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
   mistakes: {
     title: 'Greedy Growers Beginner Mistakes: 5 Traps to Avoid',
     description: 'Learn five common Greedy Growers beginner mistakes, how to protect coins, choose safer harvest timing, check seed claims, and recover after lightning losses.',
     canonicalPath: '/guides/mistakes/',
     h1: '5 Greedy Growers Beginner Mistakes to Avoid',
+    image: {
+      src: '/images/editorial/greedy-growers-beginner-mistakes-safe-harvest-1440.webp',
+      alt: 'Greedy Growers beginner mistakes concept with a run notebook, reserve pouch, seed, storm clouds, and a safer harvest path.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
   getMoneyFast: {
     title: 'Greedy Growers Money Guide: How to Get Money Fast (2026)',
@@ -73,6 +108,13 @@ export const pageSeo = {
     description: 'Explore Greedy Growers mutations, lightning, and harvest timing. Compare reported multipliers, weather triggers, decisions, evidence limits, and test methods.',
     canonicalPath: '/mechanics/',
     h1: 'Greedy Growers Game Mechanics',
+    image: {
+      src: '/images/editorial/greedy-growers-mechanics-lightning-mutations-harvest-1440.webp',
+      alt: 'Greedy Growers mechanics concept showing crop growth time, lightning risk, and a glowing mutation seed around a harvest tree.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
   lightning: {
     title: 'Greedy Growers Lightning Guide: Risk, Timing & Strategy',
@@ -103,6 +145,13 @@ export const pageSeo = {
     description: 'Check Greedy Growers official links, source status, checked dates, and safety notes before you open the confirmed Roblox page or trust copied community URLs.',
     canonicalPath: '/official-links/',
     h1: 'Greedy Growers Official Links & Source Status',
+    image: {
+      src: '/images/editorial/greedy-growers-official-links-source-check-1440.webp',
+      alt: 'Greedy Growers official links concept with blank signposts, a route notebook, and a magnifying glass at a garden crossroads.',
+      type: 'image/webp',
+      width: 1440,
+      height: 960,
+    },
   },
 } as const satisfies Record<string, PageMetadata>;
 

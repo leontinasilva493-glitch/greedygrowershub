@@ -5,6 +5,7 @@ import { chromium } from 'playwright';
 
 const root = resolve('dist/client');
 const desktopHomepageOnly = process.argv.includes('--homepage-desktop-only');
+const editorialVisualsOnly = process.argv.includes('--editorial-visuals-only');
 const routes = [
   '/',
   '/beginner-guide/',
@@ -38,14 +39,48 @@ const viewports = [
   { label: '812 landscape', width: 812, height: 375 },
   { label: '1024 desktop', width: 1024, height: 768 },
 ];
+const editorialVisualRoutes = {
+  '/': {
+    slug: 'greedy-growers-profit-calculator-farming-loop',
+    alt: 'Greedy Growers concept illustration of a seed growing into a harvest tree beside coins and distant lightning.',
+  },
+  '/beginner-guide/': {
+    slug: 'greedy-growers-beginner-guide-first-harvest',
+    alt: 'Greedy Growers beginner guide concept showing river seeds, planting stages, a growing tree, and an early harvest basket.',
+  },
+  '/guides/': {
+    slug: 'greedy-growers-guides-seeds-money-progression',
+    alt: 'Greedy Growers guides concept with an open field guide, seed samples, a harvest basket, coins, and branching garden paths.',
+  },
+  '/mechanics/': {
+    slug: 'greedy-growers-mechanics-lightning-mutations-harvest',
+    alt: 'Greedy Growers mechanics concept showing crop growth time, lightning risk, and a glowing mutation seed around a harvest tree.',
+  },
+  '/official-links/': {
+    slug: 'greedy-growers-official-links-source-check',
+    alt: 'Greedy Growers official links concept with blank signposts, a route notebook, and a magnifying glass at a garden crossroads.',
+  },
+  '/guides/mistakes/': {
+    slug: 'greedy-growers-beginner-mistakes-safe-harvest',
+    alt: 'Greedy Growers beginner mistakes concept with a run notebook, reserve pouch, seed, storm clouds, and a safer harvest path.',
+  },
+};
+const editorialVisualViewports = [
+  { label: '320 portrait', width: 320, height: 780 },
+  { label: '430 portrait', width: 430, height: 932 },
+  { label: '1024 desktop', width: 1024, height: 768 },
+  { label: '1440 desktop', width: 1440, height: 900 },
+];
 const desktopHomepageViewport = { label: '1440 desktop', width: 1440, height: 900, touch: false };
 
 const mimeTypes = {
+  '.avif': 'image/avif',
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
 };
 const runLogOwnedFiles = [
   'src/components/RunLog.astro',
@@ -259,6 +294,75 @@ async function assertOfficialLinksPage(page, viewport, route) {
   assert(!pageText.includes('鈥?'), `${viewport.label} ${route}: official links page still contains mojibake text`);
   assert(!pageText.includes('�'), `${viewport.label} ${route}: official links page still contains replacement characters`);
   assert(await rows.locator('time[datetime]').count() === 4, `${viewport.label} ${route}: checked dates are incomplete`);
+}
+
+async function assertEditorialVisual(page, viewport, route) {
+  const visual = editorialVisualRoutes[route];
+  if (!visual) return;
+  const { slug, alt } = visual;
+
+  const figure = page.locator(`[data-editorial-visual="${slug}"]`);
+  assert(await figure.count() === 1, `${viewport.label} ${route}: expected one ${slug} editorial visual`);
+  const hero = page.locator('[data-page-hero]');
+  assert(await hero.count() === 1, `${viewport.label} ${route}: page does not expose one visual hero`);
+  assert(await hero.locator(`[data-editorial-visual="${slug}"]`).count() === 1, `${viewport.label} ${route}: editorial visual is not inside the page hero`);
+  const image = figure.locator('img');
+  const sources = figure.locator('source');
+  assert(await image.count() === 1, `${viewport.label} ${route}: editorial visual has no fallback image`);
+  assert(await sources.count() === 2, `${viewport.label} ${route}: editorial visual should publish AVIF and WebP sources`);
+  assert(await image.getAttribute('alt') === alt, `${viewport.label} ${route}: editorial image alt is not page-specific`);
+  assert(await image.getAttribute('loading') === 'eager', `${viewport.label} ${route}: hero image is not eager-loaded`);
+  assert(await image.getAttribute('fetchpriority') === 'high', `${viewport.label} ${route}: hero image does not have high fetch priority`);
+  const initialFigureBox = await figure.boundingBox();
+  assert(initialFigureBox && initialFigureBox.y < viewport.height, `${viewport.label} ${route}: hero image does not begin in the initial viewport`);
+  await image.waitFor({ state: 'visible' });
+  await image.evaluate(async (element) => {
+    if (!element.complete || element.naturalWidth === 0) await element.decode();
+  });
+
+  const metrics = await image.evaluate((element) => {
+    const box = element.getBoundingClientRect();
+    return {
+      complete: element.complete,
+      naturalWidth: element.naturalWidth,
+      naturalHeight: element.naturalHeight,
+      renderedWidth: box.width,
+      renderedHeight: box.height,
+      currentSrc: element.currentSrc,
+    };
+  });
+  assert(metrics.complete && metrics.naturalWidth > 0, `${viewport.label} ${route}: editorial image did not load`);
+  assert(Math.abs(metrics.naturalWidth / metrics.naturalHeight - 1.5) < 0.01, `${viewport.label} ${route}: source image is not 3:2`);
+  assert(Math.abs(metrics.renderedWidth / metrics.renderedHeight - 1.5) < 0.02, `${viewport.label} ${route}: rendered image ratio changed`);
+  assert(metrics.renderedWidth <= viewport.width, `${viewport.label} ${route}: editorial image overflows the viewport`);
+  const slotWidth = viewport.width < 640
+    ? viewport.width - 32
+    : viewport.width >= 800
+      ? 560
+      : viewport.width - 48;
+  const expectedSourceWidth = slotWidth <= 640 ? 640 : slotWidth <= 960 ? 960 : 1440;
+  assert(new RegExp(`-${expectedSourceWidth}\\.(avif|webp)$`).test(metrics.currentSrc), `${viewport.label} ${route}: visual loaded the wrong responsive source (${metrics.currentSrc})`);
+
+  assert(await figure.locator('figcaption').count() === 0, `${viewport.label} ${route}: editorial visual still renders a visible caption`);
+  const mainText = await page.locator('main').textContent() ?? '';
+  assert(!/AI concept illustration|AI-generated concept (?:art|diagram|illustration)/i.test(mainText), `${viewport.label} ${route}: page still exposes AI image copy`);
+
+  const expectedSocialImage = `https://greedygrowerhub.wiki/images/editorial/${slug}-1440.webp`;
+  assert(await page.locator('meta[property="og:image"]').getAttribute('content') === expectedSocialImage, `${viewport.label} ${route}: og:image is not page-specific`);
+  assert(await page.locator('meta[property="og:image:type"]').getAttribute('content') === 'image/webp', `${viewport.label} ${route}: og:image type is incorrect`);
+  assert(await page.locator('meta[property="og:image:width"]').getAttribute('content') === '1440', `${viewport.label} ${route}: og:image width is incorrect`);
+  assert(await page.locator('meta[property="og:image:height"]').getAttribute('content') === '960', `${viewport.label} ${route}: og:image height is incorrect`);
+  assert(await page.locator('meta[property="og:image:alt"]').getAttribute('content') === alt, `${viewport.label} ${route}: og:image alt is not page-specific`);
+  assert(await page.locator('meta[name="twitter:image"]').getAttribute('content') === expectedSocialImage, `${viewport.label} ${route}: twitter:image is not page-specific`);
+  assert(await page.locator('meta[name="twitter:image:alt"]').getAttribute('content') === alt, `${viewport.label} ${route}: twitter:image alt is not page-specific`);
+}
+
+async function assertDefaultSocialImage(page, viewport, route) {
+  if (route !== '/codes/') return;
+
+  assert(await page.locator('meta[property="og:image"]').getAttribute('content') === 'https://greedygrowerhub.wiki/og-image.svg', `${viewport.label} ${route}: default og:image fallback changed`);
+  assert(await page.locator('meta[property="og:image:type"]').getAttribute('content') === 'image/svg+xml', `${viewport.label} ${route}: default og:image type changed`);
+  assert(await page.locator('meta[name="twitter:image"]').getAttribute('content') === 'https://greedygrowerhub.wiki/og-image.svg', `${viewport.label} ${route}: default twitter:image fallback changed`);
 }
 
 async function assertMobileMenu(page, viewport) {
@@ -479,7 +583,10 @@ try {
   } else {
     let combinations = 0;
 
-    for (const viewport of viewports) {
+    const activeRoutes = editorialVisualsOnly ? Object.keys(editorialVisualRoutes) : routes;
+    const activeViewports = editorialVisualsOnly ? editorialVisualViewports : viewports;
+
+    for (const viewport of activeViewports) {
       const context = await browser.newContext({
         viewport: { width: viewport.width, height: viewport.height },
         hasTouch: viewport.width < 1024,
@@ -490,7 +597,7 @@ try {
       const pageErrors = [];
       page.on('pageerror', (error) => pageErrors.push(error.message));
 
-      for (const route of routes) {
+      for (const route of activeRoutes) {
         await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded' });
         await page.locator('main').waitFor({ state: 'visible' });
         await assertPageWidth(page, viewport, route);
@@ -498,18 +605,26 @@ try {
         await assertTableMode(page, viewport, route);
         await assertCurrentTaskRail(page, viewport, route);
         await assertOfficialLinksPage(page, viewport, route);
+        await assertEditorialVisual(page, viewport, route);
+        await assertDefaultSocialImage(page, viewport, route);
         assert(pageErrors.length === 0, `${viewport.label} ${route}: ${pageErrors.join('; ')}`);
         combinations += 1;
       }
 
-      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-      if (viewport.width < 1024) await assertMobileMenu(page, viewport);
+      if (!editorialVisualsOnly) {
+        await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+        if (viewport.width < 1024) await assertMobileMenu(page, viewport);
+      }
       await context.close();
     }
 
-    await runDesktopHomepageRailCheck(browser, baseUrl);
-    await assertRunLogFlow(browser, baseUrl);
-    console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px and 1 calculator run-log flow at 390px.`);
+    if (editorialVisualsOnly) {
+      console.log(`Editorial visual smoke passed: ${combinations} page/viewport combinations across ${activeViewports.length} viewports.`);
+    } else {
+      await runDesktopHomepageRailCheck(browser, baseUrl);
+      await assertRunLogFlow(browser, baseUrl);
+      console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px and 1 calculator run-log flow at 390px.`);
+    }
   }
 } finally {
   await browser?.close();

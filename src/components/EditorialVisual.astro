@@ -1,0 +1,52 @@
+---
+interface Props {
+  slug: string;
+  alt: string;
+  loading?: 'eager' | 'lazy';
+  className?: string;
+  widthPreset?: 'wide' | 'narrow' | 'hero';
+}
+
+import { getEditorialVisualSources } from '../lib/editorial-visual';
+
+const {
+  slug,
+  alt,
+  loading = 'lazy',
+  className = '',
+  widthPreset = 'wide',
+} = Astro.props;
+
+const sources = getEditorialVisualSources(slug, widthPreset);
+---
+
+<figure
+  data-editorial-visual={slug}
+  class:list={[
+    'overflow-hidden rounded-2xl border border-line bg-ink-900 shadow-[0_24px_80px_rgba(0,0,0,.24)]',
+    className,
+  ]}
+>
+  <picture>
+    <source
+      type="image/avif"
+      srcset={sources.avif}
+      sizes={sources.sizes}
+    />
+    <source
+      type="image/webp"
+      srcset={sources.webp}
+      sizes={sources.sizes}
+    />
+    <img
+      src={sources.fallback}
+      width="1536"
+      height="1024"
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      fetchpriority={loading === 'eager' ? 'high' : undefined}
+      class="block h-auto w-full bg-ink-950"
+    />
+  </picture>
+</figure>
