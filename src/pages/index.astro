@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Calculator from '../components/Calculator.astro';
 import CalculatorSeedPreview from '../components/CalculatorSeedPreview.astro';
+import EditorialVisual from '../components/EditorialVisual.astro';
 import EvidenceBar from '../components/EvidenceBar.astro';
 import CurrentTasks from '../components/CurrentTasks.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -41,10 +42,10 @@ const schemas = [
 ];
 ---
 
-<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas}>
-  <section class="border-b border-line bg-[linear-gradient(120deg,#071510_0%,#0a2117_54%,#08130f_100%)]">
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-      <div class="max-w-4xl">
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schemas} socialImage={metadata.image}>
+  <section data-page-hero class="border-b border-line bg-[linear-gradient(120deg,#071510_0%,#0a2117_54%,#08130f_100%)]">
+    <div class="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 sm:py-16 min-[800px]:grid-cols-[minmax(0,1.05fr)_minmax(22rem,.95fr)] min-[800px]:items-center min-[800px]:gap-10 lg:px-8">
+      <div class="min-w-0">
         <div class="inline-flex items-center gap-2 rounded-full border border-leaf-500/25 bg-leaf-500/[.07] px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-leaf-400"><Icon name="calculator" size={13}/> Free player-run calculator</div>
         <h1 class="title-home mt-6 font-display font-bold tracking-[-.055em] text-white">{metadata.h1}</h1>
         <p class="mt-6 max-w-3xl text-lg leading-8 text-sand-300">Calculate profit per minute, recover failed-run costs, and test your observed seed inputs before risking another tree to lightning.</p>
@@ -53,8 +54,15 @@ const schemas = [
           <a href="/mechanics/when-to-harvest/" class="rounded-md border border-line bg-ink-900 px-5 py-3 font-bold text-white no-underline">Plan when to harvest</a>
           <a href={site.officialGameUrl} target="_blank" rel="noopener noreferrer" data-event="play_roblox_click" class="inline-flex items-center gap-2 rounded-md border border-line px-5 py-3 font-bold text-white no-underline">Play on Roblox <Icon name="external" size={15}/></a>
         </div>
-        <EvidenceBar {...evidenceByPage.home} tone="subtle" />
       </div>
+      <EditorialVisual
+        slug="greedy-growers-profit-calculator-farming-loop"
+        alt={metadata.image.alt}
+        loading="eager"
+        widthPreset="hero"
+        className="min-[800px]:row-span-2"
+      />
+      <div class="min-[800px]:col-start-1"><EvidenceBar {...evidenceByPage.home} tone="subtle" /></div>
     </div>
   </section>
 

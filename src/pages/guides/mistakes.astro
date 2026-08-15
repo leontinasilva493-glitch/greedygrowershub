@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EditorialVisual from '../../components/EditorialVisual.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import { absoluteUrl, buildBreadcrumbSchema, pageSeo } from '../../lib/seo';
@@ -62,16 +63,24 @@ const schema = [
 ];
 ---
 
-<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schema}>
-  <section class="border-b border-line bg-[radial-gradient(circle_at_72%_18%,rgba(245,158,11,.12),transparent_38%)]">
-    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-      <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Fix the loss before the next seed</p>
-      <h1 class="title-page mt-4 max-w-4xl font-display font-bold tracking-[-.045em] text-white">{metadata.h1}</h1>
-      <p class="mt-5 max-w-3xl text-lg leading-8 text-sand-300">Most beginner losses start before the first repeatable harvest. Verify the game link, protect enough coins to continue, and record every failed attempt before chasing a bigger tree.</p>
-      <div class="mt-7 flex flex-wrap gap-3">
-        <a href="#five-mistakes" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Fix the five mistakes</a>
-        <a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Follow the first-harvest guide</a>
+<BaseLayout title={metadata.title} description={metadata.description} canonicalPath={metadata.canonicalPath} schema={schema} socialImage={metadata.image}>
+  <section data-page-hero class="border-b border-line bg-[radial-gradient(circle_at_72%_18%,rgba(245,158,11,.12),transparent_38%)]">
+    <div class="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 sm:py-20 min-[800px]:grid-cols-[minmax(0,1.05fr)_minmax(22rem,.95fr)] min-[800px]:items-center min-[800px]:gap-10 lg:px-8">
+      <div class="min-w-0">
+        <p class="font-mono text-xs font-semibold uppercase tracking-[.18em] text-leaf-400">Fix the loss before the next seed</p>
+        <h1 class="title-page mt-4 font-display font-bold tracking-[-.045em] text-white">{metadata.h1}</h1>
+        <p class="mt-5 text-lg leading-8 text-sand-300">Most beginner losses start before the first repeatable harvest. Verify the game link, protect enough coins to continue, and record every failed attempt before chasing a bigger tree.</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#five-mistakes" class="rounded-md bg-leaf-500 px-5 py-3 text-sm font-bold text-ink-950 no-underline">Fix the five mistakes</a>
+          <a href="/beginner-guide/" class="rounded-md border border-line px-5 py-3 text-sm font-bold text-white no-underline">Follow the first-harvest guide</a>
+        </div>
       </div>
+      <EditorialVisual
+        slug="greedy-growers-beginner-mistakes-safe-harvest"
+        alt={metadata.image.alt}
+        loading="eager"
+        widthPreset="hero"
+      />
     </div>
   </section>
 
