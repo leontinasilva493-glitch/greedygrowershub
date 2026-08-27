@@ -419,12 +419,4 @@ document.querySelectorAll<HTMLFormElement>('[data-calculator]').forEach((form) =
   updateObservationStatus();
   update();
 
-  document.querySelectorAll<HTMLButtonElement>('[data-leaderboard-seed]').forEach((button) => {
-    button.addEventListener('click', () => {
-      if (!seedPreset || !button.dataset.leaderboardSeed) return;
-      seedPreset.value = button.dataset.leaderboardSeed;
-      seedPreset.dispatchEvent(new Event('change', { bubbles: true }));
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
 });

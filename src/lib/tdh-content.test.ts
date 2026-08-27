@@ -10,22 +10,22 @@ function expectPhrases(source: string, phrases: string[]) {
 }
 
 describe('source-visible TDH heading contracts', () => {
-  test('keeps the Calculator homepage focused on four truthful sections', () => {
+  test('keeps the Calculator homepage focused on a compact truthful path', () => {
     const homepage = readSource('../pages/index.astro');
     const calculator = readSource('../components/Calculator.astro');
 
     expectPhrases(`${homepage}\n${calculator}`, [
       'Profit and Failed-Run Risk Calculator',
-      'How to Record Clean Run Data',
-      'How the Math Works (Quick Summary)',
+      'How the Greedy Growers Profit Calculator Works',
+      'Greedy Growers Wiki: Seeds, Mutations, Codes & Calculator',
       'Frequently Asked Questions',
-      'Pick One Seed and Keep the Wait Consistent',
-      'Recalculate After Every Game Update',
+      'Keep one seed and wait target consistent',
+      'Recheck after every game update',
     ]);
     expect(homepage).not.toContain('Continue with Greedy Growers guides and data');
   });
 
-  test('keeps live calculator inputs visible and exposes the economy leaderboard columns', () => {
+  test('keeps live calculator inputs visible without publishing an empty economy leaderboard', () => {
     const calculator = readSource('../components/Calculator.astro');
 
     expectPhrases(calculator, [
@@ -39,12 +39,12 @@ describe('source-visible TDH heading contracts', () => {
       'data-session-suffix="roi"',
       'data-scenario-notice',
       'Decision after recorded losses',
-      'Seed economy leaderboard',
-      'Sell value',
-      'Profit/min',
-      'data-leaderboard-seed',
+      'data-calculator-guidance',
+      'Open all reported seeds',
     ]);
     expect(calculator.match(/data-session-output="profitPerMinute"/g)).toHaveLength(1);
+    expect(calculator).not.toContain('Seed economy leaderboard');
+    expect(calculator).not.toContain('data-leaderboard-seed');
     expect(calculator).not.toContain('Enter calculator inputs');
   });
 
@@ -52,11 +52,11 @@ describe('source-visible TDH heading contracts', () => {
     const homepage = readSource('../pages/index.astro');
 
     expectPhrases(homepage, [
-      'What Changed in Greedy Growers Update 1.2?',
+      'Greedy Growers Update 1.2 Coverage',
       '20 reported seeds',
       '6 reported mutations',
-      'href="/seeds/list/"',
-      'href="/mechanics/mutations/"',
+      'Review update evidence',
+      'href="/updates/"',
     ]);
   });
 

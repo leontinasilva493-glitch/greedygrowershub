@@ -18,9 +18,10 @@ describe('homepage task path', () => {
     expect(taskPath).toBeTruthy();
     expect(homepage.indexOf(calculatorSection ?? '')).toBeGreaterThan(heroEnd);
     expect(homepage.indexOf(calculatorSection ?? '')).toBeLessThan(homepage.indexOf(taskPath ?? ''));
-    expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('<CalculatorSeedPreview />'));
-    expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('Update 1.2 · direct answer'));
-    expect(taskPath?.match(/<a /g)).toHaveLength(6);
+    expect(homepage.slice(heroEnd, homepage.indexOf(calculatorSection ?? ''))).not.toContain('<CurrentTasks />');
+    expect(homepage).not.toContain('<CalculatorSeedPreview />');
+    expect(homepage.indexOf(taskPath ?? '')).toBeLessThan(homepage.indexOf('Greedy Growers Update 1.2 Coverage'));
+    expect(taskPath?.match(/<a /g)).toHaveLength(4);
     expect(taskPath).toContain('href="/codes/"');
     expect(taskPath).toContain('>Codes<');
     expect(taskPath).toContain('href="/seeds/list/"');
@@ -29,10 +30,8 @@ describe('homepage task path', () => {
     expect(taskPath).toContain('>All Mutations<');
     expect(taskPath).toContain('href="/beginner-guide/"');
     expect(taskPath).toContain('>Beginner Guide<');
-    expect(taskPath).toContain('href="#calculator"');
-    expect(taskPath).toContain('>Profit Calculator<');
-    expect(taskPath).toContain('href="/updates/"');
-    expect(taskPath).toContain('>Updates<');
+    expect(taskPath).not.toContain('href="#calculator"');
+    expect(taskPath).not.toContain('href="/updates/"');
   });
 
   test('uses one mobile result region before optional advanced inputs', () => {
@@ -62,17 +61,14 @@ describe('homepage task path', () => {
     expect(disclosure).toContain('data-mutation-presets');
   });
 
-  test('keeps the full seed economy leaderboard collapsed by default', () => {
-    const disclosure = calculator.match(
-      /<details[^>]+data-seed-economy-leaderboard[\s\S]*?<\/details>/,
-    )?.[0];
-
-    expect(disclosure).toBeTruthy();
-    expect(disclosure?.match(/<details[^>]*>/)?.[0]).not.toContain(' open');
-    expect(disclosure).toContain('Show the full 20-seed leaderboard');
-    expect(disclosure).toContain('Evidence-aware Greedy Growers seed comparison');
-    expect(disclosure).toContain('data-leaderboard-seed');
+  test('keeps concise calculator guidance instead of an incomplete seed leaderboard', () => {
+    expect(calculator).toContain('data-calculator-guidance');
+    expect(calculator).toContain('Keep one seed and wait target consistent');
+    expect(calculator).toContain('Recheck after every game update');
+    expect(calculator).not.toContain('data-seed-economy-leaderboard');
+    expect(calculator).not.toContain('data-leaderboard-seed');
+    expect(calculator).not.toContain('Seed economy leaderboard');
     expect(calculator).toContain('href="/seeds/list/"');
-    expect(calculator).toContain('Open the full Seed List');
+    expect(calculator).toContain('Open all reported seeds');
   });
 });
