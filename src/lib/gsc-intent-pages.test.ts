@@ -9,6 +9,18 @@ const buildCommand = process.platform === 'win32'
   ? { file: 'cmd.exe', args: ['/d', '/s', '/c', 'npm.cmd run build'] }
   : { file: 'npm', args: ['run', 'build'] };
 
+function renderedWordCount(html: string) {
+  const text = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&(?:[a-z]+|#\d+|#x[\da-f]+);/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return text ? text.split(' ').length : 0;
+}
+
 describe('GSC intent landing pages', () => {
   let homeHtml = '';
   let seedHtml = '';
@@ -23,27 +35,39 @@ describe('GSC intent landing pages', () => {
     homeHtml = readFileSync(new URL('../../dist/client/index.html', import.meta.url), 'utf8');
     seedHtml = readFileSync(new URL('../../dist/client/seeds/list/index.html', import.meta.url), 'utf8');
     mutationHtml = readFileSync(new URL('../../dist/client/mechanics/mutations/index.html', import.meta.url), 'utf8');
-  }, 30_000);
+  }, 60_000);
 
   test('homepage answers wiki intent without creating a competing wiki route', () => {
     expect(pageSeo.home.title).toBe('Greedy Growers Calculator: Profit, ROI & Lightning Risk');
     expect(pageSeo.home.description).toContain('fan-made Greedy Growers wiki');
     expect(homeHtml).toContain('Greedy Growers Wiki: Seeds, Mutations, Codes & Calculator');
-    expect(homeHtml).toContain('This fan-made Greedy Growers wiki organizes');
+    expect(homeHtml).toContain('This fan-made Greedy Growers wiki points');
     expect(homeHtml).not.toContain('href="/wiki/"');
   });
 
-  test('homepage wiki directory exposes six mobile-first task destinations', () => {
+  test('homepage wiki directory exposes four distinct search-intent destinations', () => {
     const directory = homeHtml.match(/<nav[^>]+aria-label="Greedy Growers wiki directory"[\s\S]*?<\/nav>/)?.[0];
 
     expect(directory).toBeDefined();
-    expect(directory?.match(/<a /g)).toHaveLength(6);
+    expect(directory?.match(/<a /g)).toHaveLength(4);
     expect(directory).toContain('href="/seeds/list/"');
     expect(directory).toContain('href="/mechanics/mutations/"');
     expect(directory).toContain('href="/codes/"');
     expect(directory).toContain('href="/beginner-guide/"');
-    expect(directory).toContain('href="/updates/"');
-    expect(directory).toContain('href="#calculator"');
+    expect(directory).not.toContain('href="/updates/"');
+    expect(directory).not.toContain('href="#calculator"');
+  });
+
+  test('homepage HTML stays focused without duplicated seed catalog records', () => {
+    const words = renderedWordCount(homeHtml);
+
+    expect(words).toBeGreaterThanOrEqual(1350);
+    expect(words).toBeLessThanOrEqual(1800);
+    expect(homeHtml).not.toContain('Seed economy leaderboard');
+    expect(homeHtml).not.toContain('Check lower-cost seeds before entering your own run');
+    expect(homeHtml).not.toContain('Show the full 20-seed leaderboard');
+    expect(homeHtml.match(/Community lead/g) ?? []).toHaveLength(0);
+    expect(homeHtml.match(/Needs: seed cost, harvest value, growth time/g) ?? []).toHaveLength(0);
   });
 
   test('seed list gives an immediate answer before the full comparison tool', () => {

@@ -172,28 +172,40 @@ async function assertPageWidth(page, viewport, route) {
   assert(metrics.bodyScrollWidth <= viewport.width, `${context}: body overflows horizontally`);
 }
 
-async function assertCurrentTaskRail(page, viewport, route) {
+async function assertHomepageTaskPath(page, viewport, route) {
   if (route !== '/') return;
 
-  const section = page.locator('[data-current-tasks]');
-  assert(await section.isVisible(), `${viewport.label} ${route}: current task rail is not visible`);
+  assert(await page.locator('[data-current-tasks]').count() === 0, `${viewport.label} ${route}: removed current-task rail is still rendered`);
+  assert(await page.locator('[data-seed-economy-leaderboard]').count() === 0, `${viewport.label} ${route}: removed seed leaderboard is still rendered`);
 
-  const cards = section.locator('[data-current-task-card]');
-  assert(await cards.count() === 4, `${viewport.label} ${route}: current task rail does not have four cards`);
+  const calculator = page.locator('#calculator');
+  const directory = page.locator('nav[aria-label="Greedy Growers wiki directory"]');
+  assert(await calculator.isVisible(), `${viewport.label} ${route}: calculator is not visible`);
+  assert(await directory.isVisible(), `${viewport.label} ${route}: wiki directory is not visible`);
 
-  const titles = await cards.locator('h3').evaluateAll((elements) => elements.map((element) => element.textContent?.trim()));
-  const hrefs = await cards.locator('[data-current-task-action]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
+  const positions = await page.evaluate(() => ({
+    calculatorTop: document.querySelector('#calculator')?.getBoundingClientRect().top ?? -1,
+    directoryTop: document.querySelector('nav[aria-label="Greedy Growers wiki directory"]')?.getBoundingClientRect().top ?? -1,
+  }));
+  assert(positions.calculatorTop >= 0, `${viewport.label} ${route}: calculator has no layout position`);
+  assert(positions.directoryTop > positions.calculatorTop, `${viewport.label} ${route}: wiki directory appears before the calculator`);
+
+  const cards = directory.locator('a');
+  assert(await cards.count() === 4, `${viewport.label} ${route}: wiki directory does not have four cards`);
+
+  const titles = await cards.locator('strong').evaluateAll((elements) => elements.map((element) => element.textContent?.trim()));
+  const hrefs = await cards.evaluateAll((elements) => elements.map((element) => element.getAttribute('href')));
   assert(
-    JSON.stringify(titles) === JSON.stringify(['Codes', 'Seeds', 'Mutations', 'Beginner']),
-    `${viewport.label} ${route}: current task titles are out of order`,
+    JSON.stringify(titles) === JSON.stringify(['All Seeds', 'All Mutations', 'Codes', 'Beginner Guide']),
+    `${viewport.label} ${route}: wiki directory titles are out of order`,
   );
   assert(
-    JSON.stringify(hrefs) === JSON.stringify(['/codes/', '/seeds/list/', '/mechanics/mutations/', '/beginner-guide/']),
-    `${viewport.label} ${route}: current task actions are out of order`,
+    JSON.stringify(hrefs) === JSON.stringify(['/seeds/list/', '/mechanics/mutations/', '/codes/', '/beginner-guide/']),
+    `${viewport.label} ${route}: wiki directory actions are out of order`,
   );
 
-  const metrics = await section.evaluate((element) => {
-    const cards = [...element.querySelectorAll('[data-current-task-card]')].map((card) => {
+  const metrics = await directory.evaluate((element) => {
+    const cards = [...element.querySelectorAll('a')].map((card) => {
       const box = card.getBoundingClientRect();
       return {
         left: Math.round(box.left),
@@ -208,31 +220,26 @@ async function assertCurrentTaskRail(page, viewport, route) {
     };
   });
 
-  assert(metrics.scrollWidth <= metrics.clientWidth, `${viewport.label} ${route}: current task rail overflows horizontally`);
+  assert(metrics.scrollWidth <= metrics.clientWidth, `${viewport.label} ${route}: wiki directory overflows horizontally`);
 
   const columnCount = new Set(metrics.cards.map((card) => card.left)).size;
   if (viewport.width < 640) {
-    assert(columnCount === 1, `${viewport.label} ${route}: current task rail should stack to one column`);
-  } else if (viewport.width < 1280) {
-    assert(columnCount === 2, `${viewport.label} ${route}: current task rail should use two columns`);
+    assert(columnCount === 1, `${viewport.label} ${route}: wiki directory should stack to one column`);
+  } else if (viewport.width < 1024) {
+    assert(columnCount === 2, `${viewport.label} ${route}: wiki directory should use two columns`);
   } else {
-    assert(columnCount === 4, `${viewport.label} ${route}: current task rail should use four columns`);
+    assert(columnCount === 4, `${viewport.label} ${route}: wiki directory should use four columns`);
     assert(
       new Set(metrics.cards.map((card) => card.top)).size === 1,
-      `${viewport.label} ${route}: current task rail cards should stay on one row`,
+      `${viewport.label} ${route}: wiki directory cards should stay on one row`,
     );
   }
 
-  const topPositions = metrics.cards.map((card) => card.top);
-  assert(topPositions[0] <= topPositions[1], `${viewport.label} ${route}: current task card order is unstable`);
-  assert(topPositions[1] <= topPositions[2] || columnCount > 1, `${viewport.label} ${route}: current task card order is unstable`);
-
-  const actions = cards.locator('[data-current-task-action]');
-  for (let index = 0; index < await actions.count(); index += 1) {
-    const box = await actions.nth(index).boundingBox();
-    assert(box, `${viewport.label} ${route}: current task action ${index + 1} has no box`);
-    assert(box.height >= 44, `${viewport.label} ${route}: current task action ${index + 1} is shorter than 44px`);
-    assert(box.width >= 44, `${viewport.label} ${route}: current task action ${index + 1} is narrower than 44px`);
+  for (let index = 0; index < await cards.count(); index += 1) {
+    const box = await cards.nth(index).boundingBox();
+    assert(box, `${viewport.label} ${route}: wiki directory card ${index + 1} has no box`);
+    assert(box.height >= 44, `${viewport.label} ${route}: wiki directory card ${index + 1} is shorter than 44px`);
+    assert(box.width >= 44, `${viewport.label} ${route}: wiki directory card ${index + 1} is narrower than 44px`);
   }
 }
 
@@ -554,7 +561,7 @@ async function assertRunLogFlow(browser, baseUrl) {
   await context.close();
 }
 
-async function runDesktopHomepageRailCheck(browser, baseUrl) {
+async function runDesktopHomepagePathCheck(browser, baseUrl) {
   const context = await browser.newContext({
     viewport: { width: desktopHomepageViewport.width, height: desktopHomepageViewport.height },
     reducedMotion: 'reduce',
@@ -566,7 +573,7 @@ async function runDesktopHomepageRailCheck(browser, baseUrl) {
   await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
   await page.locator('main').waitFor({ state: 'visible' });
   await assertPageWidth(page, desktopHomepageViewport, '/');
-  await assertCurrentTaskRail(page, desktopHomepageViewport, '/');
+  await assertHomepageTaskPath(page, desktopHomepageViewport, '/');
   assert(pageErrors.length === 0, `${desktopHomepageViewport.label} /: ${pageErrors.join('; ')}`);
 
   await context.close();
@@ -578,8 +585,8 @@ try {
   browser = await chromium.launch({ headless: true });
   await assertRunLogSourceContract();
   if (desktopHomepageOnly) {
-    await runDesktopHomepageRailCheck(browser, baseUrl);
-    console.log('Browser smoke passed: 1 targeted desktop homepage rail check at 1440px.');
+    await runDesktopHomepagePathCheck(browser, baseUrl);
+    console.log('Browser smoke passed: 1 targeted desktop homepage task-path check at 1440px.');
   } else {
     let combinations = 0;
 
@@ -603,7 +610,7 @@ try {
         await assertPageWidth(page, viewport, route);
         await assertAnchors(page, route, viewport);
         await assertTableMode(page, viewport, route);
-        await assertCurrentTaskRail(page, viewport, route);
+        await assertHomepageTaskPath(page, viewport, route);
         await assertOfficialLinksPage(page, viewport, route);
         await assertEditorialVisual(page, viewport, route);
         await assertDefaultSocialImage(page, viewport, route);
@@ -621,9 +628,9 @@ try {
     if (editorialVisualsOnly) {
       console.log(`Editorial visual smoke passed: ${combinations} page/viewport combinations across ${activeViewports.length} viewports.`);
     } else {
-      await runDesktopHomepageRailCheck(browser, baseUrl);
+      await runDesktopHomepagePathCheck(browser, baseUrl);
       await assertRunLogFlow(browser, baseUrl);
-      console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage rail check at 1440px and 1 calculator run-log flow at 390px.`);
+      console.log(`Browser smoke passed: ${combinations} page/viewport combinations across ${viewports.length} viewports, plus 1 targeted desktop homepage task-path check at 1440px and 1 calculator run-log flow at 390px.`);
     }
   }
 } finally {
